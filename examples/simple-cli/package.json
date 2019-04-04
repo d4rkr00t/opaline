@@ -1,0 +1,14 @@
+{
+  "name": "simple-cli",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "bin": {
+    "simplecli": "./index.js"
+  },
+  "dependencies": {
+    "cli": "^1.0.0"
+  }
+}

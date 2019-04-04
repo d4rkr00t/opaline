@@ -1,0 +1,14 @@
+{
+  "name": "cli",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^11.13.0",
+    "minimist": "^1.2.0"
+  }
+}
