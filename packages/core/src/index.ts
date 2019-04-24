@@ -137,7 +137,6 @@ async function run({
     await command(inputs, flags);
     process.exit(0);
   } catch (error) {
-    console.error(error.message);
     if (error instanceof OpalineError) {
       process.exit(error.code);
     } else {

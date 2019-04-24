@@ -121,7 +121,6 @@ async function run({ commandsDirPath, commandName, argv, isCommand }) {
         process.exit(0);
     }
     catch (error) {
-        console.error(error.message);
         if (error instanceof error_1.OpalineError) {
             process.exit(error.code);
         }
