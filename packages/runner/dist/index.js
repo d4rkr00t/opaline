@@ -58,13 +58,11 @@ class TaskWrapper {
                     this.print(item, level + 1);
                 }
                 else {
-                    /* eslint-disable no-console */
                     console.log(indent(item, level));
                 }
             });
         }
         else {
-            /* eslint-disable no-console */
             console.log(indent(text, level));
         }
         if (shouldRestartSpinner) {
@@ -142,7 +140,6 @@ function createCommand(tasks) {
         }
         const timing = (Date.now() - startTime) / 1000;
         const rounded = Math.round(timing * 100) / 100;
-        /* eslint-disable no-console */
         console.log(`🏁 Done in ${rounded}s.`);
         process.exit(0);
     };

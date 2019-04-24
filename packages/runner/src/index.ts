@@ -90,12 +90,10 @@ export class TaskWrapper<C = any, P = any> {
         if (Array.isArray(item)) {
           this.print(item, level + 1);
         } else {
-          /* eslint-disable no-console */
           console.log(indent(item, level));
         }
       });
     } else {
-      /* eslint-disable no-console */
       console.log(indent(text, level));
     }
 
@@ -193,7 +191,6 @@ export function createCommand<C, P>(tasks: Array<Task<C, P>>) {
     const timing = (Date.now() - startTime) / 1000;
     const rounded = Math.round(timing * 100) / 100;
 
-    /* eslint-disable no-console */
     console.log(`🏁 Done in ${rounded}s.`);
     process.exit(0);
   };
