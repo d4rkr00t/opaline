@@ -7,6 +7,8 @@ import { isVersion, isHelp } from "./utils/args";
 import { findCommand } from "./utils/commands";
 import { OpalineError } from "./utils/error";
 
+export { OpalineError };
+
 export default async function cli(
   rawArgv: typeof process.argv,
   dir: string,

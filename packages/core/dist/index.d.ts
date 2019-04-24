@@ -1,3 +1,5 @@
+import { OpalineError } from "./utils/error";
+export { OpalineError };
 export default function cli(rawArgv: typeof process.argv, dir: string, packageJson: {
     name: string;
     version: string;

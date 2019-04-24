@@ -18,6 +18,7 @@ const help_1 = require("./commands/help");
 const args_1 = require("./utils/args");
 const commands_1 = require("./utils/commands");
 const error_1 = require("./utils/error");
+exports.OpalineError = error_1.OpalineError;
 async function cli(rawArgv, dir, packageJson) {
     let cliName = packageJson.bin
         ? Object.keys(packageJson.bin)[0]
