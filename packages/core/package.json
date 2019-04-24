@@ -6,6 +6,9 @@
   "description": "",
   "keywords": [],
   "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
   "dependencies": {
     "@types/minimist": "^1.2.0",
     "@types/node": "^11.13.0",

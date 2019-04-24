@@ -127,21 +127,15 @@ function createCommand(tasks) {
         const sharedCtx = {};
         const startTime = Date.now();
         for (const task of tasks) {
-            try {
-                const wrappedTask = new TaskWrapper(sharedCtx, params, task);
-                await wrappedTask.run();
-                if (wrappedTask.isAborted) {
-                    process.exit(0);
-                }
-            }
-            catch (error) {
-                process.exit(1);
+            const wrappedTask = new TaskWrapper(sharedCtx, params, task);
+            await wrappedTask.run();
+            if (wrappedTask.isAborted) {
+                return;
             }
         }
         const timing = (Date.now() - startTime) / 1000;
         const rounded = Math.round(timing * 100) / 100;
         console.log(`🏁 Done in ${rounded}s.`);
-        process.exit(0);
     };
 }
 exports.createCommand = createCommand;

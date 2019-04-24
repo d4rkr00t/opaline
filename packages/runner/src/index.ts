@@ -176,15 +176,11 @@ export function createCommand<C, P>(tasks: Array<Task<C, P>>) {
     const startTime = Date.now();
 
     for (const task of tasks) {
-      try {
-        const wrappedTask = new TaskWrapper<C, P>(sharedCtx, params, task);
-        await wrappedTask.run();
+      const wrappedTask = new TaskWrapper<C, P>(sharedCtx, params, task);
+      await wrappedTask.run();
 
-        if (wrappedTask.isAborted) {
-          process.exit(0);
-        }
-      } catch (error) {
-        process.exit(1);
+      if (wrappedTask.isAborted) {
+        return;
       }
     }
 
@@ -192,6 +188,5 @@ export function createCommand<C, P>(tasks: Array<Task<C, P>>) {
     const rounded = Math.round(timing * 100) / 100;
 
     console.log(`🏁 Done in ${rounded}s.`);
-    process.exit(0);
   };
 }
