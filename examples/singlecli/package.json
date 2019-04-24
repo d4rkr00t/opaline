@@ -1,0 +1,14 @@
+{
+  "name": "single-cli",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Example CLI tool using opaline CLI framework.",
+  "keywords": [],
+  "license": "MIT",
+  "bin": {
+    "singlecli": "./index.js"
+  },
+  "dependencies": {
+    "@opaline/core": "^1.0.0"
+  }
+}

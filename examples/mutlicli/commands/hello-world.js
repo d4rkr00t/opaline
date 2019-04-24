@@ -4,6 +4,7 @@ module.exports = function helloWorld(inputs, flags) {
 
 module.exports.options = {
   name: {
+    description: "Some important flag",
     type: "string",
     alias: "n",
     default: "john"
@@ -12,5 +13,5 @@ module.exports.options = {
 
 module.exports.help = {
   description: () => "prints inputs and flags",
-  example: ({ name }) => `${name} hello-world --some --random --flags`
+  example: ({ name }) => `$ ${name} hello-world --some --random --flags`
 };

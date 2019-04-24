@@ -1,67 +1,162 @@
 import * as path from "path";
 import { readdirSync } from "fs";
 import chalk from "chalk";
-import { print, printList } from "../utils/print";
+import { print, printList, PrintableOutput } from "../utils/print";
+import { findCommand, CommandModule, CommandOptions } from "../utils/commands";
 
-export function helpCommand({
-  commandsDirPath,
-  packageJson
-}: {
+type CommandArgs = {
+  cliName: string;
+  commandName: string;
+  commands: Array<string>;
   commandsDirPath: string;
   packageJson: { name: string; version: string; description: string };
-}) {
-  let commands = readdirSync(commandsDirPath);
-  commands.sort((a, b) => {
-    if (a.startsWith("index.")) {
-      return -1;
-    }
-    if (b.startsWith("index.")) {
-      return 1;
-    }
-    return 0;
-  });
+  isSingle: boolean;
+};
+let helpFlag: [string, string] = ["--help", "Prints help."];
+let versionFlag: [string, string] = ["--version, -v", "Prints version."];
+let printListWithFmt = (list: Array<[string, string]>) =>
+  printList(list, s => chalk.yellow(s));
 
-  let output = [
+/**
+ * Help command handler
+ */
+export function helpCommand(args: CommandArgs) {
+  if (args.isSingle) {
+    print(singleCommandCliHelp(args));
+  } else if (args.commandName !== "index") {
+    print(subCommandHelp(args));
+  } else {
+    print(multiCommandCliHelp(args));
+  }
+}
+
+/**
+ * Generates overview help for a multi-command cli
+ */
+export function multiCommandCliHelp(args: CommandArgs): PrintableOutput {
+  let { commands, packageJson, commandsDirPath, cliName } = args;
+
+  let defaultOptions: Array<[string, string]> = [];
+  if (findCommand(commands, "index")) {
+    let defaultCommand = require(path.resolve(
+      path.join(commandsDirPath, "index")
+    )) as CommandModule;
+    defaultOptions = formatOptions(defaultCommand.options || {});
+  }
+
+  return [
     `${packageJson.name} [${packageJson.version}]`,
     "",
     packageJson.description,
     "",
     chalk.green("Options"),
-    [
-      `${chalk.yellow("-v, --version")}   Prints version.`,
-      `${chalk.yellow("--help")}          Prints help.`
-    ],
+    printListWithFmt([...defaultOptions, helpFlag, versionFlag]),
     "",
     chalk.green("Commands"),
-    createCommandsHelp({ commands, commandsDirPath, packageJson })
+    createSubCommandsHelp(args),
+    "",
+    chalk.dim(
+      `Run '${cliName} COMMAND --help' for more information on specific commands.`
+    )
   ];
-  print(output);
 }
 
-export function createCommandsHelp({
-  commands,
-  commandsDirPath,
-  packageJson
-}: {
-  commands: Array<string>;
-  commandsDirPath: string;
-  packageJson: { name: string; version: string; description: string };
-}) {
-  return printList(
-    commands.reduce<Array<[string, string]>>((acc, commandName) => {
-      let name = commandName.startsWith("index.")
-        ? "[default]"
-        : commandName.split(".")[0];
-      let command = require(path.resolve(
-        path.join(commandsDirPath, commandName)
-      ));
-      acc.push([
-        name,
-        command.help ? command.help.description() : "No description"
-      ]);
-      return acc;
-    }, []),
-    s => chalk.yellow(s),
-    16
+function createSubCommandsHelp({ commands, commandsDirPath }: CommandArgs) {
+  return printListWithFmt(
+    commands
+      .filter(c => !c.startsWith("index."))
+      .reduce<Array<[string, string]>>((acc, commandName) => {
+        let name = commandName.split(".")[0];
+        let command = require(path.resolve(
+          path.join(commandsDirPath, commandName)
+        )) as CommandModule;
+        acc.push([
+          name,
+          command.help && command.help.description
+            ? command.help.description()
+            : "No description."
+        ]);
+        return acc;
+      }, [])
   );
+}
+
+/**
+ * Generates help for a subcommand of a mutli-command cli
+ */
+export function subCommandHelp(args: CommandArgs): PrintableOutput {
+  let { packageJson, commandsDirPath, commandName, cliName } = args;
+  let command = require(path.resolve(
+    path.join(commandsDirPath, commandName)
+  )) as CommandModule;
+
+  let example: PrintableOutput = [];
+  if (command.help && command.help.example) {
+    example = [
+      "",
+      chalk.green("Examples"),
+      [command.help.example({ name: cliName })]
+    ];
+  }
+
+  return [
+    `${packageJson.name} [${packageJson.version}]`,
+    "",
+    `${commandName} – ${
+      command.help && command.help.description
+        ? command.help.description()
+        : "No description."
+    }`,
+    "",
+    chalk.green("Options"),
+    printListWithFmt([...formatOptions(command.options || {}), helpFlag]),
+    ...example
+  ];
+}
+
+/**
+ * Generates help for a single command cli
+ */
+export function singleCommandCliHelp(args: CommandArgs): PrintableOutput {
+  let { packageJson, commandsDirPath, commandName } = args;
+  let command = require(path.resolve(
+    path.join(commandsDirPath, commandName)
+  )) as CommandModule;
+
+  return [
+    `${packageJson.name} [${packageJson.version}]`,
+    "",
+    packageJson.description +
+      " " +
+      (command.help && command.help.description
+        ? command.help.description()
+        : ""),
+    "",
+    chalk.green("Options"),
+    [
+      ...printListWithFmt([
+        ...formatOptions(command.options || {}),
+        versionFlag,
+        helpFlag
+      ])
+    ]
+  ];
+}
+
+/**
+ * Formats command options using following structure:
+ *   --flag, -f   Description [type] [default: value]
+ */
+export function formatOptions(options: any): Array<[string, string]> {
+  return Object.keys(options).reduce<Array<[string, string]>>((acc, name) => {
+    let opt = options[name] as CommandOptions;
+    let title = `--${name}${opt.alias ? ", -" + opt.alias : ""}`;
+    let desc = [opt.description || "No description."];
+
+    if (opt.type) desc.push(chalk.dim("[" + opt.type + "]"));
+    if (opt.default) desc.push(chalk.dim("[default: " + opt.default + "]"));
+    acc.push([title, desc.join(" ")]);
+
+    return acc;
+  }, []);
 }
