@@ -1,8 +1,6 @@
-import * as path from "path";
-import { readdirSync } from "fs";
 import chalk from "chalk";
 import { print, printList, PrintableOutput } from "../utils/print";
-import { findCommand, CommandModule, CommandOptions } from "../utils/commands";
+import { findCommand, CommandOptions, requireCommand } from "../utils/commands";
 
 type CommandArgs = {
   cliName: string;
@@ -38,9 +36,7 @@ export function multiCommandCliHelp(args: CommandArgs): PrintableOutput {
 
   let defaultOptions: Array<[string, string]> = [];
   if (findCommand(commands, "index")) {
-    let defaultCommand = require(path.resolve(
-      path.join(commandsDirPath, "index")
-    )) as CommandModule;
+    let defaultCommand = requireCommand(commandsDirPath, "index");
     defaultOptions = formatOptions(defaultCommand.options || {});
   }
 
@@ -67,9 +63,7 @@ function createSubCommandsHelp({ commands, commandsDirPath }: CommandArgs) {
       .filter(c => !c.startsWith("index."))
       .reduce<Array<[string, string]>>((acc, commandName) => {
         let name = commandName.split(".")[0];
-        let command = require(path.resolve(
-          path.join(commandsDirPath, commandName)
-        )) as CommandModule;
+        let command = requireCommand(commandsDirPath, commandName);
         acc.push([
           name,
           command.help && command.help.description
@@ -86,9 +80,7 @@ function createSubCommandsHelp({ commands, commandsDirPath }: CommandArgs) {
  */
 export function subCommandHelp(args: CommandArgs): PrintableOutput {
   let { packageJson, commandsDirPath, commandName, cliName } = args;
-  let command = require(path.resolve(
-    path.join(commandsDirPath, commandName)
-  )) as CommandModule;
+  let command = requireCommand(commandsDirPath, commandName);
 
   let example: PrintableOutput = [];
   if (command.help && command.help.example) {
@@ -118,20 +110,29 @@ export function subCommandHelp(args: CommandArgs): PrintableOutput {
  * Generates help for a single command cli
  */
 export function singleCommandCliHelp(args: CommandArgs): PrintableOutput {
-  let { packageJson, commandsDirPath, commandName } = args;
-  let command = require(path.resolve(
-    path.join(commandsDirPath, commandName)
-  )) as CommandModule;
+  let { packageJson, commandsDirPath, commandName, cliName } = args;
+  let command = requireCommand(commandsDirPath, commandName);
+
+  let example: PrintableOutput = [];
+  if (command.help && command.help.example) {
+    example = [
+      chalk.green("Usage"),
+      [command.help.example({ name: cliName })],
+      ""
+    ];
+  }
 
   return [
     `${packageJson.name} [${packageJson.version}]`,
     "",
+    // TODO: Description can be empty
     packageJson.description +
       " " +
       (command.help && command.help.description
         ? command.help.description()
         : ""),
     "",
+    ...example,
     chalk.green("Options"),
     [
       ...printListWithFmt([
@@ -154,7 +155,10 @@ export function formatOptions(options: any): Array<[string, string]> {
     let desc = [opt.description || "No description."];
 
     if (opt.type) desc.push(chalk.dim("[" + opt.type + "]"));
-    if (opt.default) desc.push(chalk.dim("[default: " + opt.default + "]"));
+    if (opt.default !== undefined) {
+      // TODO: add quotes around strings
+      desc.push(chalk.dim("[default: " + String(opt.default) + "]"));
+    }
     acc.push([title, desc.join(" ")]);
 
     return acc;

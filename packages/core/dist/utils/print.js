@@ -21,7 +21,7 @@ function print(text, level = 1) {
 }
 exports.print = print;
 function printList(list, formatTitle = s => s, customMinLength = 0) {
-    let minLength = Math.max(list.reduce((acc, item) => (item[0].length > acc ? item[0].length : acc), 0) + 4, customMinLength);
+    let minLength = Math.max(list.reduce((acc, item) => (item[0].length > acc ? item[0].length : acc), 0) + 5, customMinLength);
     return list.reduce((acc, item) => acc.concat(formatTitle(item[0].padEnd(minLength, " ")) + item[1]), []);
 }
 exports.printList = printList;

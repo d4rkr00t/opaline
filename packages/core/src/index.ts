@@ -1,13 +1,19 @@
 import * as path from "path";
 import { readdirSync } from "fs";
 import minimist from "minimist";
-import buildOptions from "minimist-options";
+import buildOptions, { Options } from "minimist-options";
 import { helpCommand } from "./commands/help";
 import { isVersion, isHelp } from "./utils/args";
-import { findCommand } from "./utils/commands";
+import {
+  findCommand,
+  requireCommand,
+  CommandModule,
+  CommandFlags,
+  CommandInputs
+} from "./utils/commands";
 import { OpalineError } from "./utils/error";
 
-export { OpalineError };
+export { OpalineError, CommandModule, CommandFlags, CommandInputs };
 
 export default async function cli(
   rawArgv: typeof process.argv,
@@ -25,6 +31,7 @@ export default async function cli(
   let argv = rawArgv.slice(2);
   let commandName = argv[0];
   let commandsDirPath = path.join(dir, "commands");
+  // TODO: handle directory doesn't exist
   let commands = readdirSync(commandsDirPath);
   let isCommand = !!commandName && !commandName.startsWith("-");
   let hasCommand = findCommand.bind(null, commands);
@@ -71,6 +78,7 @@ export default async function cli(
         commands,
         commandsDirPath,
         packageJson,
+        // THIS DOESN'T WORK as TS outputs a lot of crap e.g. definitions
         isSingle: commands.length === 1
       });
     } else if (isCommand && !hasCommand(commandName)) {
@@ -82,7 +90,13 @@ export default async function cli(
 
   // # 3
   else if (isCommand && hasCommand(commandName)) {
-    return await run({ commandName, commandsDirPath, argv, isCommand });
+    return await run({
+      commands,
+      commandName,
+      commandsDirPath,
+      argv,
+      isCommand
+    });
   }
 
   // # 4 – single command cli
@@ -90,6 +104,7 @@ export default async function cli(
     // # 4.1 | 4.2
     if (hasCommand("index")) {
       return await run({
+        commands,
         commandName: "index",
         commandsDirPath,
         argv,
@@ -105,6 +120,7 @@ export default async function cli(
     // # 5.1 | 5.2
     if (hasCommand("index")) {
       return await run({
+        commands,
         commandName: "index",
         commandsDirPath,
         argv,
@@ -120,20 +136,22 @@ async function run({
   commandsDirPath,
   commandName,
   argv,
-  isCommand
+  isCommand,
+  commands
 }: {
   commandsDirPath: string;
   commandName: string;
   argv: Array<string>;
   isCommand: boolean;
+  commands: Array<string>;
 }) {
-  let commandPath = path.resolve(path.join(commandsDirPath, commandName));
-  let command = require(commandPath);
+  let command = requireCommand(commandsDirPath, commandName);
   let { _: rawInputs, ...flags } = minimist(
     argv,
-    buildOptions((command || {}).options || {})
+    buildOptions(((command || {}).options as Options) || {})
   );
-  let inputs = isCommand ? rawInputs.slice(1) : rawInputs;
+  let inputs =
+    isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
 
   try {
     await command(inputs, flags);

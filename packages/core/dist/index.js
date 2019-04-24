@@ -26,6 +26,7 @@ async function cli(rawArgv, dir, packageJson) {
     let argv = rawArgv.slice(2);
     let commandName = argv[0];
     let commandsDirPath = path.join(dir, "commands");
+    // TODO: handle directory doesn't exist
     let commands = fs_1.readdirSync(commandsDirPath);
     let isCommand = !!commandName && !commandName.startsWith("-");
     let hasCommand = commands_1.findCommand.bind(null, commands);
@@ -69,6 +70,7 @@ async function cli(rawArgv, dir, packageJson) {
                 commands,
                 commandsDirPath,
                 packageJson,
+                // THIS DOESN'T WORK as TS outputs a lot of crap e.g. definitions
                 isSingle: commands.length === 1
             });
         }
@@ -78,13 +80,20 @@ async function cli(rawArgv, dir, packageJson) {
     }
     // # 3
     else if (isCommand && hasCommand(commandName)) {
-        return await run({ commandName, commandsDirPath, argv, isCommand });
+        return await run({
+            commands,
+            commandName,
+            commandsDirPath,
+            argv,
+            isCommand
+        });
     }
     // # 4 – single command cli
     else if (commands.length === 1) {
         // # 4.1 | 4.2
         if (hasCommand("index")) {
             return await run({
+                commands,
                 commandName: "index",
                 commandsDirPath,
                 argv,
@@ -100,6 +109,7 @@ async function cli(rawArgv, dir, packageJson) {
         // # 5.1 | 5.2
         if (hasCommand("index")) {
             return await run({
+                commands,
                 commandName: "index",
                 commandsDirPath,
                 argv,
@@ -112,11 +122,10 @@ async function cli(rawArgv, dir, packageJson) {
     }
 }
 exports.default = cli;
-async function run({ commandsDirPath, commandName, argv, isCommand }) {
-    let commandPath = path.resolve(path.join(commandsDirPath, commandName));
-    let command = require(commandPath);
+async function run({ commandsDirPath, commandName, argv, isCommand, commands }) {
+    let command = commands_1.requireCommand(commandsDirPath, commandName);
     let { _: rawInputs, ...flags } = minimist_1.default(argv, minimist_options_1.default((command || {}).options || {}));
-    let inputs = isCommand ? rawInputs.slice(1) : rawInputs;
+    let inputs = isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
     try {
         await command(inputs, flags);
         process.exit(0);

@@ -28,7 +28,7 @@ export function printList(
     list.reduce(
       (acc, item) => (item[0].length > acc ? item[0].length : acc),
       0
-    ) + 4,
+    ) + 5,
     customMinLength
   );
   return list.reduce<Array<string>>(

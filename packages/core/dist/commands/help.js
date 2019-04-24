@@ -1,16 +1,8 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const path = __importStar(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
 const print_1 = require("../utils/print");
 const commands_1 = require("../utils/commands");
@@ -39,7 +31,7 @@ function multiCommandCliHelp(args) {
     let { commands, packageJson, commandsDirPath, cliName } = args;
     let defaultOptions = [];
     if (commands_1.findCommand(commands, "index")) {
-        let defaultCommand = require(path.resolve(path.join(commandsDirPath, "index")));
+        let defaultCommand = commands_1.requireCommand(commandsDirPath, "index");
         defaultOptions = formatOptions(defaultCommand.options || {});
     }
     return [
@@ -62,7 +54,7 @@ function createSubCommandsHelp({ commands, commandsDirPath }) {
         .filter(c => !c.startsWith("index."))
         .reduce((acc, commandName) => {
         let name = commandName.split(".")[0];
-        let command = require(path.resolve(path.join(commandsDirPath, commandName)));
+        let command = commands_1.requireCommand(commandsDirPath, commandName);
         acc.push([
             name,
             command.help && command.help.description
@@ -77,7 +69,7 @@ function createSubCommandsHelp({ commands, commandsDirPath }) {
  */
 function subCommandHelp(args) {
     let { packageJson, commandsDirPath, commandName, cliName } = args;
-    let command = require(path.resolve(path.join(commandsDirPath, commandName)));
+    let command = commands_1.requireCommand(commandsDirPath, commandName);
     let example = [];
     if (command.help && command.help.example) {
         example = [
@@ -103,17 +95,27 @@ exports.subCommandHelp = subCommandHelp;
  * Generates help for a single command cli
  */
 function singleCommandCliHelp(args) {
-    let { packageJson, commandsDirPath, commandName } = args;
-    let command = require(path.resolve(path.join(commandsDirPath, commandName)));
+    let { packageJson, commandsDirPath, commandName, cliName } = args;
+    let command = commands_1.requireCommand(commandsDirPath, commandName);
+    let example = [];
+    if (command.help && command.help.example) {
+        example = [
+            chalk_1.default.green("Usage"),
+            [command.help.example({ name: cliName })],
+            ""
+        ];
+    }
     return [
         `${packageJson.name} [${packageJson.version}]`,
         "",
+        // TODO: Description can be empty
         packageJson.description +
             " " +
             (command.help && command.help.description
                 ? command.help.description()
                 : ""),
         "",
+        ...example,
         chalk_1.default.green("Options"),
         [
             ...printListWithFmt([
@@ -136,8 +138,10 @@ function formatOptions(options) {
         let desc = [opt.description || "No description."];
         if (opt.type)
             desc.push(chalk_1.default.dim("[" + opt.type + "]"));
-        if (opt.default)
-            desc.push(chalk_1.default.dim("[default: " + opt.default + "]"));
+        if (opt.default !== undefined) {
+            // TODO: add quotes around strings
+            desc.push(chalk_1.default.dim("[default: " + String(opt.default) + "]"));
+        }
         acc.push([title, desc.join(" ")]);
         return acc;
     }, []);
