@@ -5,6 +5,7 @@ import buildOptions from "minimist-options";
 import { helpCommand } from "./commands/help";
 import { isVersion, isHelp } from "./utils/args";
 import { findCommand } from "./utils/commands";
+import { OpalineError } from "./utils/error";
 
 export default async function cli(
   rawArgv: typeof process.argv,
@@ -136,8 +137,12 @@ async function run({
     await command(inputs, flags);
     process.exit(0);
   } catch (error) {
-    console.error(error);
-    process.exit(1);
+    console.error(error.message);
+    if (error instanceof OpalineError) {
+      process.exit(error.code);
+    } else {
+      process.exit(1);
+    }
   }
 }
 

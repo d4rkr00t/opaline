@@ -17,6 +17,7 @@ const minimist_options_1 = __importDefault(require("minimist-options"));
 const help_1 = require("./commands/help");
 const args_1 = require("./utils/args");
 const commands_1 = require("./utils/commands");
+const error_1 = require("./utils/error");
 async function cli(rawArgv, dir, packageJson) {
     let cliName = packageJson.bin
         ? Object.keys(packageJson.bin)[0]
@@ -120,8 +121,13 @@ async function run({ commandsDirPath, commandName, argv, isCommand }) {
         process.exit(0);
     }
     catch (error) {
-        console.error(error);
-        process.exit(1);
+        console.error(error.message);
+        if (error instanceof error_1.OpalineError) {
+            process.exit(error.code);
+        }
+        else {
+            process.exit(1);
+        }
     }
 }
 function version(v) {
