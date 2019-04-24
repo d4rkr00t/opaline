@@ -1,0 +1,15 @@
+{
+  "name": "@opaline/runner",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^11.13.0",
+    "@types/ora": "^3.2.0",
+    "chalk": "^2.4.2",
+    "ora": "^3.4.0"
+  }
+}
