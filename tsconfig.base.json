@@ -6,6 +6,7 @@
     "declaration": true /* Generates corresponding '.d.ts' file. */,
     "declarationMap": true /* Generates a sourcemap for each corresponding '.d.ts' file. */,
 
+    "incremental": true,
     "composite": true /* Enable project compilation */,
 
     /* Strict Type-Checking Options */
