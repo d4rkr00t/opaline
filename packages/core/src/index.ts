@@ -47,10 +47,10 @@ export default async function opaline(
   // 3. If command is passed and exists -> run
   // 4. If command doesn't exist and single command cli
   //   4.1. Check if index exists -> run
-  //   4.2. If index doesn't exist -> error
+  //   4.2. If index doesn't exist -> help
   // 5. If command doesn't exist and multi command cli
   //   5.1. If index exists -> run
-  //   5.2. If index doesn't exist -> error
+  //   5.2. If index doesn't exist -> help
 
   // # 0
   if (!commands.length) {
@@ -95,7 +95,6 @@ export default async function opaline(
   // # 3
   else if (isCommand && hasCommand(commandName)) {
     return await run({
-      commands,
       commandName,
       commandsDirPath,
       argv,
@@ -108,14 +107,21 @@ export default async function opaline(
     // # 4.1 | 4.2
     if (hasCommand("index")) {
       return await run({
-        commands,
         commandName: "index",
         commandsDirPath,
         argv,
         isCommand
       });
     } else {
-      return error(`Command not found. Try "${cliName} --help"`);
+      return help({
+        helpFormatter,
+        cliName,
+        commandName: "",
+        commands,
+        commandsDirPath,
+        packageJson,
+        isSingle: commands.length === 1
+      });
     }
   }
 
@@ -124,14 +130,21 @@ export default async function opaline(
     // # 5.1 | 5.2
     if (hasCommand("index")) {
       return await run({
-        commands,
         commandName: "index",
         commandsDirPath,
         argv,
         isCommand
       });
     } else {
-      return error(`Command not found. Try "${cliName} --help"`);
+      return help({
+        helpFormatter,
+        cliName,
+        commandName: "",
+        commands,
+        commandsDirPath,
+        packageJson,
+        isSingle: commands.length === 1
+      });
     }
   }
 }
@@ -140,19 +153,17 @@ async function run({
   commandsDirPath,
   commandName,
   argv,
-  isCommand,
-  commands
+  isCommand
 }: {
   commandsDirPath: string;
   commandName: string;
   argv: Array<string>;
   isCommand: boolean;
-  commands: Array<string>;
 }) {
-  let command = requireCommand(commandsDirPath, commandName);
+  let command = requireCommand(commandsDirPath, commandName)!;
   let { _: rawInputs, ...flags } = minimist(
     argv,
-    buildOptions(((command || {}).options as Options) || {})
+    buildOptions((command || { options: {} }).options as Options)
   );
   let inputs =
     isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
@@ -210,3 +221,4 @@ function help({
 
 // TODO: logging
 // TODO: command aliases
+// TODO: support single command cli without default

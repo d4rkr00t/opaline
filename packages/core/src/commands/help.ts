@@ -8,7 +8,7 @@ import { findCommand, CommandOptions, requireCommand } from "../utils/commands";
 export function helpCommand(args: CommandArgs) {
   if (args.isSingle) {
     print(singleCommandCliHelp(args));
-  } else if (args.commandName !== "index") {
+  } else if (args.commandName && args.commandName !== "index") {
     print(subCommandHelp(args));
   } else {
     print(multiCommandCliHelp(args));
@@ -36,7 +36,7 @@ export function multiCommandCliHelp(args: CommandArgs): PrintableOutput {
       .filter(c => !c.startsWith("index."))
       .reduce<Array<HelpCommandData>>((acc, commandName) => {
         let name = commandName.split(".")[0];
-        let command = requireCommand(commandsDirPath, commandName);
+        let command = requireCommand(commandsDirPath, commandName)!;
         acc.push({
           name,
           title:
@@ -70,7 +70,7 @@ export function multiCommandCliHelp(args: CommandArgs): PrintableOutput {
  */
 export function subCommandHelp(args: CommandArgs): PrintableOutput {
   let { packageJson, commandsDirPath, commandName, cliName } = args;
-  let command = requireCommand(commandsDirPath, commandName);
+  let command = requireCommand(commandsDirPath, commandName)!;
 
   let help = args.helpFormatter({
     commandName,

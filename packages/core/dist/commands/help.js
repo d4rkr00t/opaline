@@ -8,7 +8,7 @@ const commands_1 = require("../utils/commands");
 function helpCommand(args) {
   if (args.isSingle) {
     print_1.print(singleCommandCliHelp(args));
-  } else if (args.commandName !== "index") {
+  } else if (args.commandName && args.commandName !== "index") {
     print_1.print(subCommandHelp(args));
   } else {
     print_1.print(multiCommandCliHelp(args));

@@ -8,7 +8,8 @@ export function findCommand(commands: Array<string>, commandName: string) {
 export function requireCommand(
   commandsDirPath: string,
   commandName: string
-): CommandModule {
+): CommandModule | undefined {
+  if (!commandName) return;
   let commandPath = path.resolve(path.join(commandsDirPath, commandName));
   let command = require(commandPath);
 

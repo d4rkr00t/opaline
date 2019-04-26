@@ -49,10 +49,10 @@ async function opaline(rawArgv, dir, packageJson) {
   // 3. If command is passed and exists -> run
   // 4. If command doesn't exist and single command cli
   //   4.1. Check if index exists -> run
-  //   4.2. If index doesn't exist -> error
+  //   4.2. If index doesn't exist -> help
   // 5. If command doesn't exist and multi command cli
   //   5.1. If index exists -> run
-  //   5.2. If index doesn't exist -> error
+  //   5.2. If index doesn't exist -> help
   // # 0
   if (!commands.length) {
     return error(`Need to add at least 1 command to ${commandsDirPath}...`);
@@ -93,7 +93,6 @@ async function opaline(rawArgv, dir, packageJson) {
   // # 3
   else if (isCommand && hasCommand(commandName)) {
     return await run({
-      commands,
       commandName,
       commandsDirPath,
       argv,
@@ -105,14 +104,21 @@ async function opaline(rawArgv, dir, packageJson) {
     // # 4.1 | 4.2
     if (hasCommand("index")) {
       return await run({
-        commands,
         commandName: "index",
         commandsDirPath,
         argv,
         isCommand
       });
     } else {
-      return error(`Command not found. Try "${cliName} --help"`);
+      return help({
+        helpFormatter,
+        cliName,
+        commandName: "",
+        commands,
+        commandsDirPath,
+        packageJson,
+        isSingle: commands.length === 1
+      });
     }
   }
   // # 5 – multi-command cli
@@ -120,29 +126,30 @@ async function opaline(rawArgv, dir, packageJson) {
     // # 5.1 | 5.2
     if (hasCommand("index")) {
       return await run({
-        commands,
         commandName: "index",
         commandsDirPath,
         argv,
         isCommand
       });
     } else {
-      return error(`Command not found. Try "${cliName} --help"`);
+      return help({
+        helpFormatter,
+        cliName,
+        commandName: "",
+        commands,
+        commandsDirPath,
+        packageJson,
+        isSingle: commands.length === 1
+      });
     }
   }
 }
 exports.default = opaline;
-async function run({
-  commandsDirPath,
-  commandName,
-  argv,
-  isCommand,
-  commands
-}) {
+async function run({ commandsDirPath, commandName, argv, isCommand }) {
   let command = commands_1.requireCommand(commandsDirPath, commandName);
   let { _: rawInputs, ...flags } = minimist_1.default(
     argv,
-    minimist_options_1.default((command || {}).options || {})
+    minimist_options_1.default((command || { options: {} }).options)
   );
   let inputs =
     isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
@@ -187,3 +194,4 @@ function help({
 }
 // TODO: logging
 // TODO: command aliases
+// TODO: support single command cli without default

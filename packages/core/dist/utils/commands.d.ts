@@ -6,7 +6,7 @@ export declare function findCommand(
 export declare function requireCommand(
   commandsDirPath: string,
   commandName: string
-): CommandModule;
+): CommandModule | undefined;
 export declare type CommandOptions = {
   title?: string;
   type?: string;
