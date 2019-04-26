@@ -1,10 +1,10 @@
-module.exports = function MainCommand() {
-  console.log("main");
+module.exports = function MainCommand(inputs, flags) {
+  console.log("name is:", flags.name);
 };
 
 module.exports.options = {
   name: {
-    description: "Some important flag",
+    title: "Some important flag",
     type: "string",
     alias: "n",
     default: "john"
@@ -12,6 +12,12 @@ module.exports.options = {
 };
 
 module.exports.help = {
+  usage: ({ cliName }) => `$ ${cliName} [COMMAND] [--options]`,
   description: () => "Prints inputs and flags.",
-  example: ({ name }) => `$ ${name} --some --random --flags`
+  examples: ({ cliName }) => [
+    {
+      example: `$ ${cliName} --name john`,
+      description: "Print a name"
+    }
+  ]
 };

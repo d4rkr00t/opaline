@@ -2,6 +2,7 @@ import * as path from "path";
 import { readdirSync } from "fs";
 import minimist from "minimist";
 import buildOptions, { Options } from "minimist-options";
+import defaultHelpFormatter from "@opaline/help-theme-default";
 import { helpCommand } from "./commands/help";
 import { isVersion, isHelp } from "./utils/args";
 import {
@@ -15,7 +16,7 @@ import { OpalineError } from "./utils/error";
 
 export { OpalineError, CommandModule, CommandFlags, CommandInputs };
 
-export default async function cli(
+export default async function opaline(
   rawArgv: typeof process.argv,
   dir: string,
   packageJson: {
@@ -25,6 +26,7 @@ export default async function cli(
     bin: Record<string, string>;
   }
 ) {
+  let helpFormatter = defaultHelpFormatter;
   let cliName = packageJson.bin
     ? Object.keys(packageJson.bin)[0]
     : packageJson.name;
@@ -64,6 +66,7 @@ export default async function cli(
   else if (isHelp(argv)) {
     if (!isCommand && hasCommand("index")) {
       return help({
+        helpFormatter,
         cliName,
         commandName: "index",
         commands,
@@ -73,6 +76,7 @@ export default async function cli(
       });
     } else if (isCommand && hasCommand(commandName)) {
       return help({
+        helpFormatter,
         cliName,
         commandName,
         commands,
@@ -176,6 +180,7 @@ function error(msg: string) {
 }
 
 function help({
+  helpFormatter,
   cliName,
   commandName,
   commands,
@@ -183,6 +188,7 @@ function help({
   packageJson,
   isSingle
 }: {
+  helpFormatter: any;
   cliName: string;
   commandName: string;
   commands: Array<string>;
@@ -191,6 +197,7 @@ function help({
   isSingle: boolean;
 }) {
   helpCommand({
+    helpFormatter,
     cliName,
     commandName,
     commands,
@@ -202,3 +209,4 @@ function help({
 }
 
 // TODO: logging
+// TODO: command aliases

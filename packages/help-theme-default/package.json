@@ -1,5 +1,5 @@
 {
-  "name": "@opaline/core",
+  "name": "@opaline/help-theme-default",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "description": "",
@@ -9,11 +9,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@opaline/help-theme-default": "^1.0.0",
-    "@types/minimist": "^1.2.0",
     "@types/node": "^11.13.0",
-    "chalk": "^2.4.2",
-    "minimist": "^1.2.0",
-    "minimist-options": "^4.0.1"
+    "chalk": "^2.4.2"
   }
 }

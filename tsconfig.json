@@ -1,5 +1,9 @@
 {
   "files": [],
   "include": [],
-  "references": [{ "path": "./packages/core" }, { "path": "./packages/runner" }]
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/runner" },
+    { "path": "./packages/help-theme-default" }
+  ]
 }

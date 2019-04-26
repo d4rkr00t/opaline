@@ -4,7 +4,7 @@ module.exports = function MainCommand() {
 
 module.exports.options = {
   name: {
-    description: "Some important flag",
+    title: "Some important flag",
     type: "string",
     alias: "n",
     default: "john"
@@ -13,5 +13,7 @@ module.exports.options = {
 
 module.exports.help = {
   description: () => "Prints inputs and flags.",
-  example: ({ name }) => `$ ${name} --some --random --flags`
+  examples: ({ cliName }) => [
+    { example: `$ ${cliName} --some --random --flags` }
+  ]
 };

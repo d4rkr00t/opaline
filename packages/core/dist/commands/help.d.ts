@@ -1,16 +1,5 @@
+import { HelpOptionData } from "@opaline/help-theme-default";
 import { PrintableOutput } from "../utils/print";
-declare type CommandArgs = {
-    cliName: string;
-    commandName: string;
-    commands: Array<string>;
-    commandsDirPath: string;
-    packageJson: {
-        name: string;
-        version: string;
-        description: string;
-    };
-    isSingle: boolean;
-};
 /**
  * Help command handler
  */
@@ -26,11 +15,22 @@ export declare function subCommandHelp(args: CommandArgs): PrintableOutput;
 /**
  * Generates help for a single command cli
  */
-export declare function singleCommandCliHelp(args: CommandArgs): PrintableOutput;
-/**
- * Formats command options using following structure:
- *   --flag, -f   Description [type] [default: value]
- */
-export declare function formatOptions(options: any): Array<[string, string]>;
+export declare function singleCommandCliHelp(
+  args: CommandArgs
+): PrintableOutput;
+declare type CommandArgs = {
+  helpFormatter: any;
+  cliName: string;
+  commandName: string;
+  commands: Array<string>;
+  commandsDirPath: string;
+  packageJson: {
+    name: string;
+    version: string;
+    description: string;
+  };
+  isSingle: boolean;
+};
+export declare function formatOptions(options: any): Array<HelpOptionData>;
 export {};
 //# sourceMappingURL=help.d.ts.map

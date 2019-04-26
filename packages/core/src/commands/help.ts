@@ -1,19 +1,6 @@
-import chalk from "chalk";
-import { print, printList, PrintableOutput } from "../utils/print";
+import { HelpCommandData, HelpOptionData } from "@opaline/help-theme-default";
+import { print, PrintableOutput } from "../utils/print";
 import { findCommand, CommandOptions, requireCommand } from "../utils/commands";
-
-type CommandArgs = {
-  cliName: string;
-  commandName: string;
-  commands: Array<string>;
-  commandsDirPath: string;
-  packageJson: { name: string; version: string; description: string };
-  isSingle: boolean;
-};
-let helpFlag: [string, string] = ["--help", "Prints help."];
-let versionFlag: [string, string] = ["--version, -v", "Prints version."];
-let printListWithFmt = (list: Array<[string, string]>) =>
-  printList(list, s => chalk.yellow(s));
 
 /**
  * Help command handler
@@ -34,45 +21,48 @@ export function helpCommand(args: CommandArgs) {
 export function multiCommandCliHelp(args: CommandArgs): PrintableOutput {
   let { commands, packageJson, commandsDirPath, cliName } = args;
 
-  let defaultOptions: Array<[string, string]> = [];
-  if (findCommand(commands, "index")) {
-    let defaultCommand = requireCommand(commandsDirPath, "index");
-    defaultOptions = formatOptions(defaultCommand.options || {});
-  }
+  let defaultCommand = findCommand(commands, "index")
+    ? requireCommand(commandsDirPath, "index")
+    : undefined;
 
-  return [
-    `${packageJson.name} [${packageJson.version}]`,
-    "",
-    packageJson.description,
-    "",
-    chalk.green("Options"),
-    printListWithFmt([...defaultOptions, helpFlag, versionFlag]),
-    "",
-    chalk.green("Commands"),
-    createSubCommandsHelp(args),
-    "",
-    chalk.dim(
-      `Run '${cliName} COMMAND --help' for more information on specific commands.`
-    )
-  ];
-}
+  let options = {
+    ...(defaultCommand && defaultCommand.options),
+    help: helpFlag,
+    version: versionFlag
+  };
 
-function createSubCommandsHelp({ commands, commandsDirPath }: CommandArgs) {
-  return printListWithFmt(
-    commands
+  function createSubCommandsHelp() {
+    return commands
       .filter(c => !c.startsWith("index."))
-      .reduce<Array<[string, string]>>((acc, commandName) => {
+      .reduce<Array<HelpCommandData>>((acc, commandName) => {
         let name = commandName.split(".")[0];
         let command = requireCommand(commandsDirPath, commandName);
-        acc.push([
+        acc.push({
           name,
-          command.help && command.help.description
-            ? command.help.description()
-            : "No description."
-        ]);
+          title:
+            command.help && command.help.title
+              ? command.help.title({ cliName })
+              : "No description"
+        });
         return acc;
-      }, [])
-  );
+      }, []);
+  }
+
+  return args.helpFormatter({
+    cliName,
+    cliVersion: packageJson.version,
+    description: packageJson.description,
+    commands: createSubCommandsHelp(),
+    options: formatOptions(options),
+    usage:
+      defaultCommand && defaultCommand.help && defaultCommand.help.usage
+        ? defaultCommand.help.usage({ cliName })
+        : "",
+    examples:
+      defaultCommand && defaultCommand.help && defaultCommand.help.examples
+        ? defaultCommand.help.examples({ cliName })
+        : []
+  });
 }
 
 /**
@@ -82,28 +72,30 @@ export function subCommandHelp(args: CommandArgs): PrintableOutput {
   let { packageJson, commandsDirPath, commandName, cliName } = args;
   let command = requireCommand(commandsDirPath, commandName);
 
-  let example: PrintableOutput = [];
-  if (command.help && command.help.example) {
-    example = [
-      "",
-      chalk.green("Examples"),
-      [command.help.example({ name: cliName })]
-    ];
+  let help = args.helpFormatter({
+    commandName,
+    cliName,
+    cliVersion: packageJson.version,
+    description:
+      command.help && command.help.description
+        ? command.help.description({ cliName })
+        : "",
+    options: formatOptions(command.options || {}),
+    usage:
+      command && command.help && command.help.usage
+        ? command.help.usage({ cliName })
+        : "",
+    examples:
+      command && command.help && command.help.examples
+        ? command.help.examples({ cliName })
+        : []
+  });
+
+  if (!help.length) {
+    return ["", "No help provided for this command!"];
   }
 
-  return [
-    `${packageJson.name} [${packageJson.version}]`,
-    "",
-    `${commandName} – ${
-      command.help && command.help.description
-        ? command.help.description()
-        : "No description."
-    }`,
-    "",
-    chalk.green("Options"),
-    printListWithFmt([...formatOptions(command.options || {}), helpFlag]),
-    ...example
-  ];
+  return help;
 }
 
 /**
@@ -113,54 +105,50 @@ export function singleCommandCliHelp(args: CommandArgs): PrintableOutput {
   let { packageJson, commandsDirPath, commandName, cliName } = args;
   let command = requireCommand(commandsDirPath, commandName);
 
-  let example: PrintableOutput = [];
-  if (command.help && command.help.example) {
-    example = [
-      chalk.green("Usage"),
-      [command.help.example({ name: cliName })],
-      ""
-    ];
-  }
+  let options = {
+    ...(command && command.options),
+    help: helpFlag,
+    version: versionFlag
+  };
 
-  return [
-    `${packageJson.name} [${packageJson.version}]`,
-    "",
-    // TODO: Description can be empty
-    packageJson.description +
-      " " +
-      (command.help && command.help.description
-        ? command.help.description()
-        : ""),
-    "",
-    ...example,
-    chalk.green("Options"),
-    [
-      ...printListWithFmt([
-        ...formatOptions(command.options || {}),
-        versionFlag,
-        helpFlag
-      ])
-    ]
-  ];
+  return args.helpFormatter({
+    cliName,
+    cliVersion: packageJson.version,
+    description: packageJson.description,
+    options: formatOptions(options),
+    usage:
+      command && command.help && command.help.usage
+        ? command.help.usage({ cliName })
+        : "",
+    examples:
+      command && command.help && command.help.examples
+        ? command.help.examples({ cliName })
+        : []
+  });
 }
 
-/**
- * Formats command options using following structure:
- *   --flag, -f   Description [type] [default: value]
- */
-export function formatOptions(options: any): Array<[string, string]> {
-  return Object.keys(options).reduce<Array<[string, string]>>((acc, name) => {
+type CommandArgs = {
+  helpFormatter: any;
+  cliName: string;
+  commandName: string;
+  commands: Array<string>;
+  commandsDirPath: string;
+  packageJson: { name: string; version: string; description: string };
+  isSingle: boolean;
+};
+
+let helpFlag = {
+  title: "Output usage information"
+};
+
+let versionFlag = {
+  title: "Output the version number"
+};
+
+export function formatOptions(options: any): Array<HelpOptionData> {
+  return Object.keys(options).reduce<Array<HelpOptionData>>((acc, name) => {
     let opt = options[name] as CommandOptions;
-    let title = `--${name}${opt.alias ? ", -" + opt.alias : ""}`;
-    let desc = [opt.description || "No description."];
-
-    if (opt.type) desc.push(chalk.dim("[" + opt.type + "]"));
-    if (opt.default !== undefined) {
-      // TODO: add quotes around strings
-      desc.push(chalk.dim("[default: " + String(opt.default) + "]"));
-    }
-    acc.push([title, desc.join(" ")]);
-
+    acc.push({ name, ...opt });
     return acc;
   }, []);
 }
