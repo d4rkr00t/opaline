@@ -6,7 +6,7 @@
   "keywords": [],
   "license": "MIT",
   "bin": {
-    "singlecli": "./index.js"
+    "singlecli": "./cli/index.js"
   },
   "dependencies": {
     "@opaline/core": "^1.0.0"

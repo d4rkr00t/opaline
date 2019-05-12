@@ -1,23 +1,15 @@
-module.exports = function MainCommand(inputs, flags) {
-  console.log("name is:", flags.name);
-};
-
-module.exports.options = {
-  name: {
-    title: "Some important flag",
-    type: "string",
-    alias: "n",
-    default: "john"
-  }
-};
-
-module.exports.help = {
-  usage: ({ cliName }) => `$ ${cliName} [COMMAND] [--options]`,
-  description: () => "Prints inputs and flags.",
-  examples: ({ cliName }) => [
-    {
-      example: `$ ${cliName} --name john`,
-      description: "Print a name"
-    }
-  ]
-};
+/**
+ * Prints inputs and flags
+ *
+ * @usage $ {cliName} --name john
+ *
+ * @param {string[]} $inputs
+ * @param {string} [name="john"] Some important flag
+ * @alias name:n
+ *
+ * @example $ {cliName} --name john
+ */
+export default function MainCommand($inputs, name) {
+  console.log("input is", $inputs);
+  console.log("name is:", name);
+}

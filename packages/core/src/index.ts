@@ -1,42 +1,21 @@
-import * as path from "path";
-import { readdirSync } from "fs";
-import minimist from "minimist";
-import buildOptions, { Options } from "minimist-options";
+import { Options } from "minimist-options";
 import defaultHelpFormatter from "@opaline/help-theme-default";
-import { helpCommand } from "./commands/help";
+import { helpCommand } from "./handlers/help";
 import { isVersion, isHelp } from "./utils/args";
-import {
-  findCommand,
-  requireCommand,
-  CommandModule,
-  CommandFlags,
-  CommandInputs
-} from "./utils/commands";
 import { OpalineError } from "./utils/error";
+import { OpalineConfig } from "./types";
 
-export { OpalineError, CommandModule, CommandFlags, CommandInputs };
+export { OpalineError, OpalineConfig };
 
 export default async function opaline(
   rawArgv: typeof process.argv,
-  dir: string,
-  packageJson: {
-    name: string;
-    version: string;
-    description: string;
-    bin: Record<string, string>;
-  }
+  config: OpalineConfig
 ) {
   let helpFormatter = defaultHelpFormatter;
-  let cliName = packageJson.bin
-    ? Object.keys(packageJson.bin)[0]
-    : packageJson.name;
   let argv = rawArgv.slice(2);
   let commandName = argv[0];
-  let commandsDirPath = path.join(dir, "commands");
-  // TODO: handle directory doesn't exist
-  let commands = readdirSync(commandsDirPath);
   let isCommand = !!commandName && !commandName.startsWith("-");
-  let hasCommand = findCommand.bind(null, commands);
+  let hasCommand = (name: string) => !!config.commands[name];
 
   // 0. If no commands -> blow up!
   // 1. If --version and command is not passed -> print version
@@ -53,41 +32,32 @@ export default async function opaline(
   //   5.2. If index doesn't exist -> help
 
   // # 0
-  if (!commands.length) {
-    return error(`Need to add at least 1 command to ${commandsDirPath}...`);
+  if (!config.commands.length) {
+    return error(`Need to add at least 1 command...`);
   }
 
   // # 1
-  else if (isVersion(argv) && !isCommand) {
-    return version(packageJson.version);
+  if (isVersion(argv) && !isCommand) {
+    return version(config.cliVersion);
   }
 
   // # 2
   else if (isHelp(argv)) {
-    if (!isCommand && hasCommand("index")) {
+    if (!isCommand) {
       return help({
         helpFormatter,
-        cliName,
-        commandName: "index",
-        commands,
-        commandsDirPath,
-        packageJson,
-        isSingle: commands.length === 1
+        config,
+        commandName: "index"
       });
     } else if (isCommand && hasCommand(commandName)) {
       return help({
         helpFormatter,
-        cliName,
-        commandName,
-        commands,
-        commandsDirPath,
-        packageJson,
-        // THIS DOESN'T WORK as TS outputs a lot of crap e.g. definitions
-        isSingle: commands.length === 1
+        config,
+        commandName
       });
     } else if (isCommand && !hasCommand(commandName)) {
       return error(
-        `Command "${commandName}" doesn't exist, help can't be printed for it. Try "${cliName} --help"`
+        `Command "${commandName}" doesn't exist, help can't be printed for it. Try "${config.cliName} --help"`
       );
     }
   }
@@ -96,82 +66,79 @@ export default async function opaline(
   else if (isCommand && hasCommand(commandName)) {
     return await run({
       commandName,
-      commandsDirPath,
+      config,
       argv,
       isCommand
     });
   }
 
   // # 4 – single command cli
-  else if (commands.length === 1) {
+  else if (config.isSingleCommand) {
     // # 4.1 | 4.2
     if (hasCommand("index")) {
       return await run({
         commandName: "index",
-        commandsDirPath,
+        config,
         argv,
         isCommand
       });
     } else {
       return help({
         helpFormatter,
-        cliName,
-        commandName: "",
-        commands,
-        commandsDirPath,
-        packageJson,
-        isSingle: commands.length === 1
+        config,
+        commandName: ""
       });
     }
   }
 
   // # 5 – multi-command cli
-  else if (commands.length > 1) {
+  else if (!config.isSingleCommand) {
     // # 5.1 | 5.2
     if (hasCommand("index")) {
       return await run({
         commandName: "index",
-        commandsDirPath,
+        config,
         argv,
         isCommand
       });
     } else {
       return help({
         helpFormatter,
-        cliName,
-        commandName: "",
-        commands,
-        commandsDirPath,
-        packageJson,
-        isSingle: commands.length === 1
+        config,
+        commandName: ""
       });
     }
   }
 }
 
 async function run({
-  commandsDirPath,
+  config,
   commandName,
   argv,
   isCommand
 }: {
-  commandsDirPath: string;
+  config: OpalineConfig;
   commandName: string;
   argv: Array<string>;
   isCommand: boolean;
 }) {
-  let command = requireCommand(commandsDirPath, commandName)!;
+  let minimist = require("minimist");
+  let buildOptions = require("minimist-options");
+  let command = config.commands[commandName];
   let { _: rawInputs, ...flags } = minimist(
     argv,
-    buildOptions((command || { options: {} }).options as Options)
+    buildOptions(command.meta.options as Options)
   );
   let inputs =
     isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
+  let args = Object.keys(command.meta.options || {}).map(opt => flags[opt]);
 
   try {
-    await command(inputs, flags);
-    process.exit(0);
+    await command
+      .load()
+      .apply(null, command.meta.shouldPassInputs ? [inputs, ...args] : args);
   } catch (error) {
+    console.log(error);
     if (error instanceof OpalineError) {
       process.exit(error.code);
     } else {
@@ -192,33 +159,20 @@ function error(msg: string) {
 
 function help({
   helpFormatter,
-  cliName,
-  commandName,
-  commands,
-  commandsDirPath,
-  packageJson,
-  isSingle
+  config,
+  commandName
 }: {
   helpFormatter: any;
-  cliName: string;
+  config: OpalineConfig;
   commandName: string;
-  commands: Array<string>;
-  commandsDirPath: string;
-  packageJson: any;
-  isSingle: boolean;
 }) {
   helpCommand({
     helpFormatter,
-    cliName,
-    commandName,
-    commands,
-    commandsDirPath,
-    packageJson,
-    isSingle
+    config,
+    commandName
   });
   process.exit(0);
 }
 
 // TODO: logging
 // TODO: command aliases
-// TODO: support single command cli without default

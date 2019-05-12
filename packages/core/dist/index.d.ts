@@ -1,14 +1,5 @@
-import { CommandModule, CommandFlags, CommandInputs } from "./utils/commands";
 import { OpalineError } from "./utils/error";
-export { OpalineError, CommandModule, CommandFlags, CommandInputs };
-export default function opaline(
-  rawArgv: typeof process.argv,
-  dir: string,
-  packageJson: {
-    name: string;
-    version: string;
-    description: string;
-    bin: Record<string, string>;
-  }
-): Promise<void>;
+import { OpalineConfig } from "./types";
+export { OpalineError, OpalineConfig };
+export default function opaline(rawArgv: typeof process.argv, config: OpalineConfig): Promise<void>;
 //# sourceMappingURL=index.d.ts.map

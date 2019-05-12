@@ -1,12 +1,4 @@
 import { HelpExampleData } from "@opaline/help-theme-default";
-export declare function findCommand(
-  commands: Array<string>,
-  commandName: string
-): string | undefined;
-export declare function requireCommand(
-  commandsDirPath: string,
-  commandName: string
-): CommandModule | undefined;
 export declare type CommandOptions = {
   title?: string;
   type?: string;

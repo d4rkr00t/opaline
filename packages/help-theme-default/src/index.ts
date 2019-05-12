@@ -13,6 +13,10 @@ export default function helpFormatter(help: HelpData | HelpSubCommandData) {
 function formatSubCommandHelpData(help: HelpSubCommandData) {
   let output: any = [];
 
+  if (help.title) {
+    output.push("", help.title);
+  }
+
   if (help.usage) {
     output.push("", chalk.bold("USAGE"), [help.usage]);
   }
@@ -32,11 +36,7 @@ function formatSubCommandHelpData(help: HelpSubCommandData) {
   }
 
   if (help.examples && help.examples.length) {
-    output.push(
-      "",
-      chalk.bold("EXAMPLES"),
-      ...help.examples.map(formatExample)
-    );
+    output.push("", chalk.bold("EXAMPLES"), ...help.examples);
   }
 
   return output;
@@ -45,8 +45,8 @@ function formatSubCommandHelpData(help: HelpSubCommandData) {
 function formatHelpData(help: HelpData) {
   let output: any = [];
 
-  if (help.description) {
-    output.push("", help.description);
+  if (help.cliDescription) {
+    output.push("", help.cliDescription);
   }
 
   output.push("", chalk.bold("VERSION"), [
@@ -90,11 +90,7 @@ function formatHelpData(help: HelpData) {
   }
 
   if (help.examples && help.examples.length) {
-    output.push(
-      "",
-      chalk.bold("EXAMPLES"),
-      ...help.examples.map(formatExample)
-    );
+    output.push("", chalk.bold("EXAMPLES"), ...help.examples);
   }
 
   return output;
@@ -134,16 +130,6 @@ function formatOption(option: HelpOptionData): [string, string] {
 }
 
 /**
- * Formats examples data: [example, description]
- */
-function formatExample(example: HelpExampleData) {
-  return [
-    example.example,
-    example.description ? chalk.dim(example.description) : ""
-  ].filter(Boolean);
-}
-
-/**
  * Capitalize first letter of a string
  */
 function capFirst(str: string): string {
@@ -163,21 +149,22 @@ function join(arr: Array<string>, sep: string = ", ") {
 export type HelpData = {
   cliName: string;
   cliVersion: string;
-  description?: string;
+  cliDescription?: string;
   usage?: string;
   commands?: Array<HelpCommandData>;
   options?: Array<HelpOptionData>;
-  examples?: Array<HelpExampleData>;
+  examples?: Array<string>;
 };
 
 export type HelpSubCommandData = {
   cliName: string;
   cliVersion: string;
-  commandName: string;
+  title?: string;
   description?: string;
+  commandName: string;
   usage?: string;
   options?: Array<HelpOptionData>;
-  examples?: Array<HelpExampleData>;
+  examples?: Array<string>;
 };
 
 export type HelpCommandData = {

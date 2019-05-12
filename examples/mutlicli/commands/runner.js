@@ -13,6 +13,6 @@ let task2 = {
   }
 };
 
-module.exports = async function runnerCommand() {
+export default async function runnerCommand() {
   await createCommand([task1, task2])();
-};
+}
