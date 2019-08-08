@@ -3,6 +3,7 @@ import * as fs from "fs";
 import { promisify } from "util";
 import Bundler from "parcel-bundler";
 import chokidar from "chokidar";
+import { printInfo } from "@opaline/core";
 import { getProjectInfo, ProjectInfo } from "./project-info";
 import { parseCommands } from "./commands-parser";
 import { createEntryPoint } from "./entry-generator";
@@ -118,12 +119,12 @@ export class Compiler {
       });
       watcher
         .on("add", file => {
-          console.log("New command has been added:", file);
+          printInfo("New command has been added: " + file);
           console.log();
           this.updateBundler();
         })
         .on("unlink", file => {
-          console.log("Command has been deleted:", file);
+          printInfo("Command has been deleted: " + file);
           console.log();
           this.updateBundler();
         });

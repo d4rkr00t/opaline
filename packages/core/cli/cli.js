@@ -8,24 +8,12 @@ let config = {
   cliDescription: pkg.description,
   isSingleCommand: false,
   commands: {
-    bla: {
-      commandName: "bla",
-      meta: {
-        title: "No description",
-        description: "",
-        usage: "",
-        examples: [],
-        shouldPassInputs: false,
-        options: {}
-      },
-      load: () => require("./commands/bla").default
-    },
     build: {
       commandName: "build",
       meta: {
         title: "Production build for opaline based cli tool",
         description: "",
-        usage: "{binName} build",
+        usage: "opaline build",
         examples: [],
         shouldPassInputs: false,
         options: {}
@@ -37,24 +25,12 @@ let config = {
       meta: {
         title: "Development mode for building opaline based cli tools",
         description: "",
-        usage: "{binName} dev",
+        usage: "opaline dev",
         examples: [],
         shouldPassInputs: false,
         options: {}
       },
       load: () => require("./commands/dev").default
-    },
-    test: {
-      commandName: "test",
-      meta: {
-        title: "No description",
-        description: "",
-        usage: "",
-        examples: [],
-        shouldPassInputs: false,
-        options: {}
-      },
-      load: () => require("./commands/test").default
     }
   }
 };

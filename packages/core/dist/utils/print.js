@@ -1,5 +1,11 @@
 "use strict";
+var __importDefault =
+  (this && this.__importDefault) ||
+  function(mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
 Object.defineProperty(exports, "__esModule", { value: true });
+const chalk_1 = __importDefault(require("chalk"));
 function indent(text, level = 1) {
   return `${"".padStart(level * 2, " ")}${text}`;
 }
@@ -18,3 +24,18 @@ function print(text, level = 1) {
   }
 }
 exports.print = print;
+function printError(err) {
+  if (typeof err === "string") {
+    print(chalk_1.default.red(`[ERROR] `) + err);
+  } else {
+    print([
+      chalk_1.default.red(`[ERROR] ${err.name}: ${err.message}`),
+      err.stack ? err.stack.split("\n") : []
+    ]);
+  }
+}
+exports.printError = printError;
+function printInfo(text) {
+  print(chalk_1.default.blue("[INFO] ") + text);
+}
+exports.printInfo = printInfo;

@@ -370,7 +370,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
           return __awaiter(this, void 0, Promise, function() {
             var pkgJson,
               projectRootDir,
-              binName,
+              cliName,
               binOutputPath,
               commandsOutputPath,
               commandsDirPath;
@@ -386,7 +386,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                 case 1:
                   pkgJson = _a.sent();
                   projectRootDir = path.dirname(pkgJson.path);
-                  binName =
+                  cliName =
                     typeof pkgJson.package.bin === "string"
                       ? pkgJson.package.name
                       : Object.keys(pkgJson.package.bin)[0];
@@ -394,7 +394,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     projectRootDir,
                     typeof pkgJson.package.bin === "string"
                       ? pkgJson.package.bin
-                      : pkgJson.package.bin[binName]
+                      : pkgJson.package.bin[cliName]
                   );
                   commandsOutputPath = path.join(
                     path.dirname(binOutputPath),
@@ -411,7 +411,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                     {
                       pkgJson: pkgJson,
                       projectRootDir: projectRootDir,
-                      binName: binName,
+                      cliName: cliName,
                       binOutputPath: binOutputPath,
                       commandsOutputPath: commandsOutputPath,
                       commandsDirPath: commandsDirPath
@@ -683,7 +683,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                   commandFileContent = _a.sent();
                   meta = getMetaFromJSDoc({
                     jsdocComment: getCommandJSDoc(commandFileContent),
-                    binName: project.binName
+                    cliName: project.cliName
                   });
                   return [
                     2,
@@ -722,7 +722,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         function getMetaFromJSDoc(_a) {
           var jsdocComment = _a.jsdocComment,
-            binName = _a.binName;
+            cliName = _a.cliName;
           var jsdoc = jsdocComment
             ? doctrine.parse(jsdocComment, {
                 unwrap: true,
@@ -746,13 +746,13 @@ parcelRequire = (function(modules, cache, entry, globalName) {
               }) || {
                 description: ""
               }
-            ).description.replace("{cliName}", binName),
+            ).description.replace("{cliName}", cliName),
             examples: jsdoc.tags
               .filter(function(tag) {
                 return tag.title === "example";
               })
               .map(function(tag) {
-                return tag.description.replace("{cliName}", binName);
+                return tag.description.replace("{cliName}", cliName);
               }),
             shouldPassInputs: !!jsdoc.tags.find(function(tag) {
               return tag.title === "param" && tag.name === "$inputs";
@@ -804,7 +804,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
             '#!/usr/bin/env node\n\nlet cli = require("@opaline/core").default;\nlet pkg = require("' +
             pkgJsonRelativePath +
             '");\nlet config = {\n  cliName: "' +
-            project.binName +
+            project.cliName +
             '",\n  cliVersion: pkg.version,\n  cliDescription: pkg.description,\n  isSingleCommand: ' +
             (commandsData.length === 1 ? "true" : "false") +
             ",\n  commands: {\n    " +
@@ -841,7 +841,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
               path.join(binOutputPath, "commands", commandName)
             )
           );
-        } // TODO: binName -> cliName
+        }
       },
       {}
     ],
@@ -1303,6 +1303,8 @@ parcelRequire = (function(modules, cache, entry, globalName) {
 
         var chokidar_1 = __importDefault(require("chokidar"));
 
+        var core_1 = require("@opaline/core");
+
         var project_info_1 = require("./project-info");
 
         var commands_parser_1 = require("./commands-parser");
@@ -1608,12 +1610,23 @@ parcelRequire = (function(modules, cache, entry, globalName) {
                             ignoreInitial: true
                           }
                         );
-                        watcher.on("add", function(p) {
-                          console.log("New command has been added:", p);
-                          console.log();
+                        watcher
+                          .on("add", function(file) {
+                            core_1.printInfo(
+                              "New command has been added: " + file
+                            );
+                            console.log();
 
-                          _this.updateBundler();
-                        });
+                            _this.updateBundler();
+                          })
+                          .on("unlink", function(file) {
+                            core_1.printInfo(
+                              "Command has been deleted: " + file
+                            );
+                            console.log();
+
+                            _this.updateBundler();
+                          });
                       }
 
                       return [
@@ -1816,7 +1829,7 @@ parcelRequire = (function(modules, cache, entry, globalName) {
         /**
          * Development mode for building opaline based cli tools
          *
-         * @usage {binName} dev
+         * @usage {cliName} dev
          */
 
         function dev() {

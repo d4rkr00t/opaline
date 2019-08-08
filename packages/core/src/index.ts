@@ -4,8 +4,10 @@ import { helpCommand } from "./handlers/help";
 import { isVersion, isHelp } from "./utils/args";
 import { OpalineError } from "./utils/error";
 import { OpalineConfig } from "./types";
+import { printError, printInfo } from "./utils/print";
 
 export { OpalineError, OpalineConfig };
+export { printError, printInfo };
 
 export default async function opaline(
   rawArgv: typeof process.argv,
@@ -32,7 +34,7 @@ export default async function opaline(
   //   5.2. If index doesn't exist -> help
 
   // # 0
-  if (!config.commands.length) {
+  if (!Object.keys(config.commands).length) {
     return error(`Need to add at least 1 command...`);
   }
 
@@ -138,7 +140,8 @@ async function run({
       .load()
       .apply(null, command.meta.shouldPassInputs ? [inputs, ...args] : args);
   } catch (error) {
-    console.log(error);
+    printError(error);
+
     if (error instanceof OpalineError) {
       process.exit(error.code);
     } else {
@@ -153,7 +156,7 @@ function version(v: string) {
 }
 
 function error(msg: string) {
-  console.error(msg);
+  printError(msg);
   process.exit(1);
 }
 

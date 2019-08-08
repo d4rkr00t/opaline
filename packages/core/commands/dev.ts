@@ -3,7 +3,7 @@ import { Compiler } from "../commands-common/compiler";
 /**
  * Development mode for building opaline based cli tools
  *
- * @usage {binName} dev
+ * @usage {cliName} dev
  */
 export default async function dev() {
   let compiler = new Compiler({ cwd: process.cwd(), mode: "development" });

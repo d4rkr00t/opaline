@@ -1,3 +1,5 @@
+import chalk from "chalk";
+
 export interface NestedPrintableOutput extends Array<PrintableOutput> {}
 export type PrintableOutput = string | Array<string | NestedPrintableOutput>;
 
@@ -17,4 +19,19 @@ export function print(text: PrintableOutput, level: number = 1) {
   } else {
     console.log(indent(text, level));
   }
+}
+
+export function printError(err: Error | string) {
+  if (typeof err === "string") {
+    print(chalk.red(`[ERROR] `) + err);
+  } else {
+    print([
+      chalk.red(`[ERROR] ${err.name}: ${err.message}`),
+      err.stack ? err.stack.split("\n") : []
+    ]);
+  }
+}
+
+export function printInfo(text: string) {
+  print(chalk.blue("[INFO] ") + text);
 }
