@@ -12,20 +12,21 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@babel/parser": "^7.5.5",
-    "@babel/traverse": "^7.5.5",
+    "@babel/parser": "^7.8.4",
+    "@babel/traverse": "^7.8.4",
     "@opaline/help-theme-default": "^1.0.0",
-    "@types/babel__traverse": "^7.0.7",
+    "@types/babel__traverse": "^7.0.9",
     "@types/doctrine": "^0.0.3",
     "@types/minimist": "^1.2.0",
     "@types/node": "^12.6.9",
-    "@types/parcel-bundler": "^1.12.0",
-    "chalk": "^2.4.2",
-    "chokidar": "^3.0.2",
+    "chalk": "^3.0.0",
+    "chokidar": "^3.3.1",
     "doctrine": "^3.0.0",
     "minimist": "^1.2.0",
-    "minimist-options": "^4.0.1",
-    "parcel-bundler": "^1.12.3",
-    "read-pkg-up": "^6.0.0"
+    "minimist-options": "^4.0.2",
+    "rollup": "^1.31.1",
+    "rollup-plugin-typescript": "^1.0.1",
+    "read-pkg-up": "^7.0.1",
+    "rimraf": "^3.0.2"
   }
 }

@@ -13,8 +13,10 @@ const args_1 = require("./utils/args");
 const error_1 = require("./utils/error");
 exports.OpalineError = error_1.OpalineError;
 const print_1 = require("./utils/print");
+exports.print = print_1.print;
 exports.printError = print_1.printError;
 exports.printInfo = print_1.printInfo;
+exports.printWarning = print_1.printWarning;
 async function opaline(rawArgv, config) {
   let helpFormatter = help_theme_default_1.default;
   let argv = rawArgv.slice(2);

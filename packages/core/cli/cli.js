@@ -18,7 +18,7 @@ let config = {
         shouldPassInputs: false,
         options: {}
       },
-      load: () => require("./commands/build").default
+      load: () => require("./commands/build")
     },
     dev: {
       commandName: "dev",
@@ -30,7 +30,7 @@ let config = {
         shouldPassInputs: false,
         options: {}
       },
-      load: () => require("./commands/dev").default
+      load: () => require("./commands/dev")
     }
   }
 };

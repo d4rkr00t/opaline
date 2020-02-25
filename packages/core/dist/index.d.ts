@@ -1,8 +1,8 @@
 import { OpalineError } from "./utils/error";
 import { OpalineConfig } from "./types";
-import { printError, printInfo } from "./utils/print";
+import { print, printError, printInfo, printWarning } from "./utils/print";
 export { OpalineError, OpalineConfig };
-export { printError, printInfo };
+export { print, printError, printInfo, printWarning };
 export default function opaline(
   rawArgv: typeof process.argv,
   config: OpalineConfig
