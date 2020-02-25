@@ -31,7 +31,7 @@ let config = {
       load: () => require("${getRelativeCommandPath(
         project.binOutputPath,
         command.commandName
-      )}").default
+      )}")
     }`
       )
       .join(", ")}

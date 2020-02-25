@@ -10,7 +10,7 @@ function indent(text, level = 1) {
   return `${"".padStart(level * 2, " ")}${text}`;
 }
 exports.indent = indent;
-function print(text, level = 1) {
+function print(text, level = 0) {
   if (Array.isArray(text)) {
     text.forEach(item => {
       if (Array.isArray(item)) {
@@ -24,6 +24,10 @@ function print(text, level = 1) {
   }
 }
 exports.print = print;
+function printWarning(text) {
+  print(chalk_1.default.yellow("[WARN] ") + text);
+}
+exports.printWarning = printWarning;
 function printError(err) {
   if (typeof err === "string") {
     print(chalk_1.default.red(`[ERROR] `) + err);
