@@ -15,14 +15,14 @@ export async function getProjectInfo(cwd: string): Promise<ProjectInfo> {
   let pkgJson = await readPackageJson(cwd);
   let projectRootDir = path.dirname(pkgJson.path);
   let cliName =
-    typeof pkgJson.package.bin === "string"
-      ? pkgJson.package.name
-      : Object.keys(pkgJson.package.bin!)[0];
+    typeof pkgJson.packageJson.bin === "string"
+      ? pkgJson.packageJson.name
+      : Object.keys(pkgJson.packageJson.bin!)[0];
   let binOutputPath = path.join(
     projectRootDir,
-    typeof pkgJson.package.bin === "string"
-      ? pkgJson.package.bin
-      : pkgJson.package.bin![cliName]
+    typeof pkgJson.packageJson.bin === "string"
+      ? pkgJson.packageJson.bin
+      : pkgJson.packageJson.bin![cliName]
   );
   let commandsOutputPath = path.join(path.dirname(binOutputPath), "commands");
   let commandsDirPath = path.join(
@@ -43,7 +43,7 @@ export async function getProjectInfo(cwd: string): Promise<ProjectInfo> {
 export type ProjectInfo = {
   pkgJson: {
     path: string;
-    package: Package;
+    packageJson: Package;
   };
   cliName: string;
   binOutputPath: string;

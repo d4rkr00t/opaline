@@ -27,12 +27,12 @@ async function readPackageJson(cwd) {
 async function getProjectInfo(cwd) {
     let pkgJson = await readPackageJson(cwd);
     let projectRootDir = path.dirname(pkgJson.path);
-    let cliName = typeof pkgJson.package.bin === "string"
-        ? pkgJson.package.name
-        : Object.keys(pkgJson.package.bin)[0];
-    let binOutputPath = path.join(projectRootDir, typeof pkgJson.package.bin === "string"
-        ? pkgJson.package.bin
-        : pkgJson.package.bin[cliName]);
+    let cliName = typeof pkgJson.packageJson.bin === "string"
+        ? pkgJson.packageJson.name
+        : Object.keys(pkgJson.packageJson.bin)[0];
+    let binOutputPath = path.join(projectRootDir, typeof pkgJson.packageJson.bin === "string"
+        ? pkgJson.packageJson.bin
+        : pkgJson.packageJson.bin[cliName]);
     let commandsOutputPath = path.join(path.dirname(binOutputPath), "commands");
     let commandsDirPath = path.join(projectRootDir, (pkgJson["@opaline"] && pkgJson["@opaline"].root) || "./commands");
     return {
