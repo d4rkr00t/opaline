@@ -22,7 +22,7 @@
     "chalk": "^3.0.0",
     "chokidar": "^3.3.1",
     "doctrine": "^3.0.0",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.2",
     "minimist-options": "^4.0.2",
     "rollup": "^1.31.1",
     "rollup-plugin-typescript": "^1.0.1",
