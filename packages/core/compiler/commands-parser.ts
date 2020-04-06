@@ -38,7 +38,6 @@ async function parseCommand(
 function getCommandJSDoc(content: string) {
   let ast = parser.parse(content, {
     sourceType: "module",
-    // TODO: support flow and ts
     plugins: ["typescript"]
   });
   let comment;
@@ -83,10 +82,8 @@ function getMetaFromJSDoc({
       if (tag.title !== "param" || tag.name === "$inputs") return acc;
       acc[tag.name] = {
         title: tag.description,
-        type: tag.type.name || tag.type.expression.name,
-        // TODO: aliases
-        // TODO: process default properly
-        default: tag.default
+        type: (tag.type as any).name || (tag.type as any).expression.name,
+        default: (tag as any).default
       };
       return acc;
     }, {})

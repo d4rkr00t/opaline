@@ -69,9 +69,7 @@ function formatHelpData(help: HelpData) {
         [
           chalk.yellow("> NOTE:"),
           chalk.dim(
-            `To view the usage information for a specific command, run '${
-              help.cliName
-            } [COMMAND] --help'`
+            `To view the usage information for a specific command, run '${help.cliName} [COMMAND] --help'`
           )
         ],
         " "
@@ -100,7 +98,7 @@ function formatHelpData(help: HelpData) {
  * Check whether given help data correspond to main help or sub command help
  */
 function isSubCommandHelp(help: any): help is HelpSubCommandData {
-  return !!help.commandName;
+  return Boolean(help && help.commandName);
 }
 
 /**

@@ -33,7 +33,6 @@
     "lint:staged"
   ],
   "ava": {
-    "compileEnhancements": false,
     "extensions": [
       "ts"
     ],
