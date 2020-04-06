@@ -1,10 +1,14 @@
 {
   "name": "@opaline/core",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "./dist/index.js",
   "description": "Opaline CLI Tools Framework",
   "keywords": [],
   "license": "MIT",
+  "scripts": {
+    "build": "./cli/cli.js build",
+    "prepare": "npm run build"
+  },
   "bin": {
     "opaline": "./cli/cli.js"
   },
