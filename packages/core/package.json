@@ -24,7 +24,7 @@
     "doctrine": "^3.0.0",
     "minimist": "^1.2.3",
     "minimist-options": "^4.0.2",
-    "rollup": "^1.31.1",
+    "rollup": "^2.3.3",
     "rollup-plugin-typescript": "^1.0.1",
     "read-pkg-up": "^7.0.1",
     "rimraf": "^3.0.2"
