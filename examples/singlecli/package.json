@@ -9,6 +9,6 @@
     "singlecli": "./cli/index.js"
   },
   "dependencies": {
-    "@opaline/core": "^1.0.0"
+    "@opaline/core": "^0.0.2"
   }
 }

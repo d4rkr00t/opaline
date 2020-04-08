@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { promisify } from "util";
 import * as chokidar from "chokidar";
 import rollup from "rollup";
-import typescript from "rollup-plugin-typescript";
+import sucrase from "@rollup/plugin-sucrase";
 import rimraf from "rimraf";
 import chalk from "chalk";
 import { printWarning, print } from "@opaline/core";
@@ -60,11 +60,9 @@ export class Compiler {
         }
       },
       plugins: [
-        typescript({
-          rootDir: this.project.projectRootDir,
-          allowJs: true,
-          esModuleInterop: true,
-          target: "ES2017"
+        sucrase({
+          exclude: ["node_modules/**"],
+          transforms: ["typescript"]
         })
       ]
     };
@@ -121,7 +119,7 @@ export class Compiler {
 
       let message = [
         chalk.green(
-          `🦄 Built in ${(endTime[0] / 1000 + endTime[1] / 1e6).toFixed(2)}ms!`
+          `🦄 Built in ${(endTime[0] * 1000 + endTime[1] / 1e6).toFixed(2)}ms!`
         ),
         ""
       ];
