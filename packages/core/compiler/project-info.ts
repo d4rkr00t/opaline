@@ -22,7 +22,10 @@ export async function getProjectInfo(cwd: string): Promise<ProjectInfo> {
       "",
       '"bin": {',
       '  "mycli": "./cli/cli.js"',
-      "}"
+      "}",
+      "",
+      "Choose any path and name for 'cli.js', don't need to create this file,",
+      "opaline will generate it for you at provided path."
     ]);
   }
 

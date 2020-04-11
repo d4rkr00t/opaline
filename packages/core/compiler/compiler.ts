@@ -6,7 +6,7 @@ import rollup from "rollup";
 import sucrase from "@rollup/plugin-sucrase";
 import rimraf from "rimraf";
 import chalk from "chalk";
-import { printWarning, print } from "@opaline/core";
+import { printWarning, print, OpalineError } from "@opaline/core";
 import { getProjectInfo, ProjectInfo } from "./project-info";
 import { parseCommands } from "./commands-parser";
 import { createEntryPoint } from "./entry-generator";
@@ -69,12 +69,22 @@ export class Compiler {
   }
 
   private async getCommands() {
-    return (await readdir(this.project.commandsDirPath)).filter(
-      file =>
-        !file.endsWith(".d.ts") &&
-        !file.endsWith(".map") &&
-        !file.startsWith("_")
-    );
+    try {
+      return (await readdir(this.project.commandsDirPath)).filter(
+        file =>
+          !file.endsWith(".d.ts") &&
+          !file.endsWith(".map") &&
+          !file.startsWith("_")
+      );
+    } catch (e) {
+      throw new OpalineError(
+        `${this.project.commandsDirPath} folder doesn't exist`,
+        [
+          "",
+          "Please create 'commands' folder, because this is where opaline is expecting to find cli commands to compile."
+        ]
+      );
+    }
   }
 
   private getEntryPoints(commands: Array<string>) {

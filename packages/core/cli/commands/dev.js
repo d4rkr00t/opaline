@@ -10,7 +10,7 @@ require("rimraf");
 require("chalk");
 require("@opaline/core");
 require("read-pkg-up");
-var compiler = require("./compiler-9c5d8e3e.js");
+var compiler = require("./compiler-122dc901.js");
 require("@babel/parser");
 require("@babel/traverse");
 require("doctrine");
