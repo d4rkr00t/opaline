@@ -39,6 +39,13 @@ export class Compiler {
   private async init(watch: boolean) {
     this.project = await getProjectInfo(this.cwd);
     this.commands = await this.getCommands();
+
+    if (!this.commands.length) {
+      throw new OpalineError("OP004: Commands folder is empty", [
+        "",
+        `Add a file/files to "${this.project.commandsDirPath}", for example "index.js".`
+      ]);
+    }
   }
 
   private async updateCommands() {
@@ -78,7 +85,7 @@ export class Compiler {
       );
     } catch (e) {
       throw new OpalineError(
-        `${this.project.commandsDirPath} folder doesn't exist`,
+        `OP003: ${this.project.commandsDirPath} folder doesn't exist`,
         [
           "",
           "Please create 'commands' folder, because this is where opaline is expecting to find cli commands to compile."

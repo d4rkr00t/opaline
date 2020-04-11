@@ -8,28 +8,13 @@ let config = {
   cliDescription: pkg.description,
   isSingleCommand: false,
   commands: {
-    build: {
+    "build": {
       commandName: "build",
-      meta: {
-        title: "Production build for opaline based cli tool",
-        description: "",
-        usage: "opaline build",
-        examples: [],
-        shouldPassInputs: false,
-        options: {}
-      },
+      meta: {"title":"Production build for opaline based cli tool","description":"","usage":"opaline build","examples":[],"shouldPassInputs":false,"options":{}},
       load: () => require("./commands/build")
-    },
-    dev: {
+    }, "dev": {
       commandName: "dev",
-      meta: {
-        title: "Development mode for building opaline based cli tools",
-        description: "",
-        usage: "opaline dev",
-        examples: [],
-        shouldPassInputs: false,
-        options: {}
-      },
+      meta: {"title":"Development mode for building opaline based cli tools","description":"","usage":"opaline dev","examples":[],"shouldPassInputs":false,"options":{}},
       load: () => require("./commands/dev")
     }
   }
