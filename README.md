@@ -69,19 +69,3 @@ export default function command($input, param1, param2) {
   console.log("hello world!");
 }
 ```
-
-Issues:
-
-```
-Empty project:
-
-[ERROR] TypeError: Cannot convert undefined or null to object
-  TypeError: Cannot convert undefined or null to object
-      at Function.keys (<anonymous>)
-      at getProjectInfo (/Users/ssysoev/Development/review-tools/node_modules/@opaline/core/cli/commands/compiler-d0bafe78.js:35:16)
-      at async Compiler.init (/Users/ssysoev/Development/review-tools/node_modules/@opaline/core/cli/commands/compiler-d0bafe78.js:228:20)
-      at async Compiler.compile (/Users/ssysoev/Development/review-tools/node_modules/@opaline/core/cli/commands/compiler-d0bafe78.js:286:5)
-      at async run (/Users/ssysoev/Development/review-tools/node_modules/@opaline/core/dist/index.js:126:5)
-      at async opaline (/Users/ssysoev/Development/review-tools/node_modules/@opaline/core/dist/index.js:69:12)
-
-```
