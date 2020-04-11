@@ -5,7 +5,7 @@ import { OpalineError } from "@opaline/core";
 export async function readPackageJson(cwd: string) {
   let pkgJson = await readPkgUp({ cwd, normalize: true });
   if (!pkgJson) {
-    throw new OpalineError();
+    throw new OpalineError("OP002: No package.json file found");
   }
 
   return pkgJson;
@@ -14,10 +14,22 @@ export async function readPackageJson(cwd: string) {
 export async function getProjectInfo(cwd: string): Promise<ProjectInfo> {
   let pkgJson = await readPackageJson(cwd);
   let projectRootDir = path.dirname(pkgJson.path);
+
+  if (!pkgJson.packageJson.bin) {
+    throw new OpalineError("OP001: Bin field is empty in package.json", [
+      "",
+      "Please add 'bin' field to package.json, example:",
+      "",
+      '"bin": {',
+      '  "mycli": "./cli/cli.js"',
+      "}"
+    ]);
+  }
+
   let cliName =
     typeof pkgJson.packageJson.bin === "string"
       ? pkgJson.packageJson.name
-      : Object.keys(pkgJson.packageJson.bin!)[0];
+      : Object.keys(pkgJson.packageJson.bin)[0];
   let binOutputPath = path.join(
     projectRootDir,
     typeof pkgJson.packageJson.bin === "string"

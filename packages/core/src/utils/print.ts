@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { OpalineError } from "../utils/error";
 
 //
 //
@@ -31,14 +32,18 @@ export function printWarning(text: string) {
   print(chalk.yellow("[WARN] ") + text);
 }
 
-export function printError(err: Error | string) {
+export function printError(
+  err: OpalineError | Error | string,
+  verbose: boolean = false
+) {
   if (typeof err === "string") {
     print(chalk.red(`[ERROR] `) + err);
   } else {
-    print([
-      chalk.red(`[ERROR] ${err.name}: ${err.message}`),
-      err.stack ? err.stack.split("\n") : []
-    ]);
+    print(
+      [chalk.red(`[ERROR] ${err.name}: ${err.message}`)]
+        .concat((err as OpalineError).hint ? (err as OpalineError).hint! : [])
+        .concat(verbose && err.stack ? err.stack.split("\n") : [])
+    );
   }
 }
 

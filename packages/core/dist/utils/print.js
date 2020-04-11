@@ -28,14 +28,15 @@ function printWarning(text) {
   print(chalk_1.default.yellow("[WARN] ") + text);
 }
 exports.printWarning = printWarning;
-function printError(err) {
+function printError(err, verbose = false) {
   if (typeof err === "string") {
     print(chalk_1.default.red(`[ERROR] `) + err);
   } else {
-    print([
-      chalk_1.default.red(`[ERROR] ${err.name}: ${err.message}`),
-      err.stack ? err.stack.split("\n") : []
-    ]);
+    print(
+      [chalk_1.default.red(`[ERROR] ${err.name}: ${err.message}`)]
+        .concat(err.hint ? err.hint : [])
+        .concat(verbose && err.stack ? err.stack.split("\n") : [])
+    );
   }
 }
 exports.printError = printError;
