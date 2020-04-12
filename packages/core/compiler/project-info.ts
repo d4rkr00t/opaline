@@ -7,7 +7,6 @@ export async function readPackageJson(cwd: string) {
   if (!pkgJson) {
     throw new OpalineError("OP002: No package.json file found");
   }
-
   return pkgJson;
 }
 
