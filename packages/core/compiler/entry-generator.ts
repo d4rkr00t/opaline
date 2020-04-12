@@ -28,10 +28,18 @@ let config = {
         command => `"${command.commandName}": {
       commandName: "${command.commandName}",
       meta: ${JSON.stringify(command.meta)},
-      load: () => require("${getRelativeCommandPath(
-        project.binOutputPath,
-        command.commandName
-      )}")
+      load: () => {
+        let command = require("${getRelativeCommandPath(
+          project.binOutputPath,
+          command.commandName
+        )}");
+
+        if (typeof command !== "function") {
+          throw new Error(\`Command "${
+            command.commandName
+          }" doesn't export a function...\`)
+        }
+      }
     }`
       )
       .join(", ")}
