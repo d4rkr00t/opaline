@@ -13,7 +13,7 @@
     "opaline": "./cli/cli.js"
   },
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=10.0.0"
   },
   "dependencies": {
     "@babel/parser": "^7.8.4",
