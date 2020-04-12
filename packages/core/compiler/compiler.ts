@@ -155,6 +155,8 @@ export class Compiler {
         }
       }
 
+      this.onBundled();
+
       print(message);
     } catch (error) {
       console.error(error);
