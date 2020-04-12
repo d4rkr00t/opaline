@@ -30,9 +30,11 @@ Add `bin` to `package.json`, opaline will use this to generate an entry point fo
 
 ```json
 "bin": {
-  "mycli": "./cli/cli.js"
+  "mycli": "./dist/cli.js"
 },
 ```
+
+> You don't need to create this file, opaline will generate it for you.
 
 Create first command:
 
