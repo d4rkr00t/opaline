@@ -7,5 +7,5 @@ import { Compiler } from "../compiler/compiler";
  */
 export default async function build() {
   let compiler = new Compiler({ cwd: process.cwd(), mode: "production" });
-  return compiler.compile({ watch: false });
+  return await compiler.compile({ watch: false });
 }

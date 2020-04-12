@@ -8,7 +8,7 @@ var path = require("path");
 var fs = require("fs");
 var util = require("util");
 var chokidar = require("chokidar");
-var rollup = _interopDefault(require("rollup"));
+var rollup = require("rollup");
 var sucrase = _interopDefault(require("@rollup/plugin-sucrase"));
 var rimraf = _interopDefault(require("rimraf"));
 var chalk = _interopDefault(require("chalk"));
@@ -24,7 +24,6 @@ async function readPackageJson(cwd) {
   if (!pkgJson) {
     throw new core.OpalineError("OP002: No package.json file found");
   }
-
   return pkgJson;
 }
 
@@ -65,14 +64,14 @@ async function getProjectInfo(cwd) {
   if (commandsOutputPath === commandsDirPath) {
     throw new core.OpalineError("OP005: Source and output folder is the same", [
       "",
-      "Please add 'bin' field to package.json, example:",
+      "Source: " + commandsDirPath,
+      "Output: " + commandsOutputPath,
+      "",
+      "Please update 'bin' field in package.json to have a nested output folder, example:",
       "",
       '"bin": {',
-      '  "mycli": "./cli/cli.js"',
-      "}",
-      "",
-      "Choose any path and name for 'cli.js', don't need to create this file,",
-      "opaline will generate it for you at provided path."
+      '  "mycli": "./my-output-folder/cli.js"',
+      "}"
     ]);
   }
 
@@ -177,10 +176,18 @@ let config = {
         command => `"${command.commandName}": {
       commandName: "${command.commandName}",
       meta: ${JSON.stringify(command.meta)},
-      load: () => require("${getRelativeCommandPath(
-        project.binOutputPath,
-        command.commandName
-      )}")
+      load: () => {
+        let command = require("${getRelativeCommandPath(
+          project.binOutputPath,
+          command.commandName
+        )}");
+
+        if (typeof command !== "function") {
+          throw new Error(\`Command "${
+            command.commandName
+          }" doesn't export a function...\`)
+        }
+      }
     }`
       )
       .join(", ")}

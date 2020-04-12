@@ -10,7 +10,7 @@ require("rimraf");
 require("chalk");
 require("@opaline/core");
 require("read-pkg-up");
-var compiler = require("./compiler-655a71b0.js");
+var compiler = require("./compiler-e2121bf7.js");
 require("@babel/parser");
 require("@babel/traverse");
 require("doctrine");
@@ -26,7 +26,7 @@ async function build() {
     cwd: process.cwd(),
     mode: "production"
   });
-  return compiler$1.compile({ watch: false });
+  return await compiler$1.compile({ watch: false });
 }
 
 module.exports = build;

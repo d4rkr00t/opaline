@@ -2,7 +2,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { promisify } from "util";
 import * as chokidar from "chokidar";
-import rollup from "rollup";
+import * as rollup from "rollup";
 import sucrase from "@rollup/plugin-sucrase";
 import rimraf from "rimraf";
 import chalk from "chalk";
@@ -155,7 +155,7 @@ export class Compiler {
         }
       }
 
-      this.onBundled();
+      await this.onBundled();
 
       print(message);
     } catch (error) {
