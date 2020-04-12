@@ -45,6 +45,20 @@ export async function getProjectInfo(cwd: string): Promise<ProjectInfo> {
     (pkgJson["@opaline"] && pkgJson["@opaline"].root) || "./commands"
   );
 
+  if (commandsOutputPath === commandsDirPath) {
+    throw new OpalineError("OP005: Source and output folder is the same", [
+      "",
+      "Source: " + commandsDirPath,
+      "Output: " + commandsOutputPath,
+      "",
+      "Please update 'bin' field in package.json to have a nested output folder, example:",
+      "",
+      '"bin": {',
+      '  "mycli": "./my-output-folder/cli.js"',
+      "}"
+    ]);
+  }
+
   return {
     pkgJson,
     projectRootDir,
