@@ -187,6 +187,8 @@ let config = {
             command.commandName
           }" doesn't export a function...\`)
         }
+
+        return command;
       }
     }`
       )
@@ -277,7 +279,8 @@ class Compiler {
         file =>
           !file.endsWith(".d.ts") &&
           !file.endsWith(".map") &&
-          !file.startsWith("_")
+          !file.startsWith("_") &&
+          !file.startsWith(".")
       );
     } catch (e) {
       throw new core.OpalineError(

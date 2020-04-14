@@ -24,6 +24,8 @@ let config = {
         if (typeof command !== "function") {
           throw new Error(`Command "build" doesn't export a function...`);
         }
+
+        return command;
       }
     },
     dev: {
@@ -42,6 +44,8 @@ let config = {
         if (typeof command !== "function") {
           throw new Error(`Command "dev" doesn't export a function...`);
         }
+
+        return command;
       }
     }
   }

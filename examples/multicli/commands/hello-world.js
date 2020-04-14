@@ -9,6 +9,6 @@
  *
  * @example $ {cliName} hello-world --name john
  */
-export default function helloWorld($input, name) {
-  console.log({ $input, name });
+export default function helloWorld($inputs, name) {
+  console.log({ $inputs, name });
 }

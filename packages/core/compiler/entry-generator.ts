@@ -39,6 +39,8 @@ let config = {
             command.commandName
           }" doesn't export a function...\`)
         }
+
+        return command;
       }
     }`
       )
