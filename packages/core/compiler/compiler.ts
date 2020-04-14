@@ -81,7 +81,8 @@ export class Compiler {
         file =>
           !file.endsWith(".d.ts") &&
           !file.endsWith(".map") &&
-          !file.startsWith("_")
+          !file.startsWith("_") &&
+          !file.startsWith(".")
       );
     } catch (e) {
       throw new OpalineError(

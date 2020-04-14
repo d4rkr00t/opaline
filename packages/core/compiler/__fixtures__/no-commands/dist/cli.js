@@ -8,8 +8,8 @@ let config = {
   cliDescription: pkg.description,
   isSingleCommand: true,
   commands: {
-    index: {
-      commandName: "index",
+    "": {
+      commandName: "",
       meta: {
         title: "No description",
         description: "",
@@ -19,10 +19,10 @@ let config = {
         options: {}
       },
       load: () => {
-        let command = require("./commands/index");
+        let command = require("./commands");
 
         if (typeof command !== "function") {
-          throw new Error(`Command "index" doesn't export a function...`);
+          throw new Error(`Command "" doesn't export a function...`);
         }
       }
     }

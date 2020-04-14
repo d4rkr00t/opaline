@@ -353,7 +353,7 @@ class Compiler {
         }
       }
 
-      this.onBundled();
+      await this.onBundled();
 
       core.print(message);
     } catch (error) {
