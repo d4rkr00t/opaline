@@ -80,10 +80,15 @@ function getMetaFromJSDoc({
 
     options: jsdoc.tags.reduce((acc, tag) => {
       if (tag.title !== "param" || tag.name === "$inputs") return acc;
+      let type = (tag.type as any).name || (tag.type as any).expression.name;
+      let defaultValue = (tag as any).default;
       acc[tag.name] = {
         title: tag.description,
-        type: (tag.type as any).name || (tag.type as any).expression.name,
-        default: (tag as any).default
+        type,
+        default:
+          defaultValue && type === "number"
+            ? parseInt(defaultValue)
+            : defaultValue
       };
       return acc;
     }, {})

@@ -24,7 +24,15 @@ let config = {
           }
         }
       },
-      load: () => require("./commands/hello-world").default
+      load: () => {
+        let command = require("./commands/hello-world");
+
+        if (typeof command !== "function") {
+          throw new Error(`Command "hello-world" doesn't export a function...`);
+        }
+
+        return command;
+      }
     },
     index: {
       commandName: "index",
@@ -39,10 +47,19 @@ let config = {
             title: "Some important flag",
             type: "string",
             default: '"john"'
-          }
+          },
+          age: { title: "Some important flag", type: "number", default: 20 }
         }
       },
-      load: () => require("./commands/index").default
+      load: () => {
+        let command = require("./commands/index");
+
+        if (typeof command !== "function") {
+          throw new Error(`Command "index" doesn't export a function...`);
+        }
+
+        return command;
+      }
     },
     runner: {
       commandName: "runner",
@@ -54,7 +71,15 @@ let config = {
         shouldPassInputs: false,
         options: {}
       },
-      load: () => require("./commands/runner").default
+      load: () => {
+        let command = require("./commands/runner");
+
+        if (typeof command !== "function") {
+          throw new Error(`Command "runner" doesn't export a function...`);
+        }
+
+        return command;
+      }
     }
   }
 };
