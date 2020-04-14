@@ -4,8 +4,10 @@
   "private": true,
   "description": "",
   "scripts": {
+    "ci:build": "npm run build",
+    "ci:test:coverage": "nyc --reporter=lcov npm test",
     "test": "ava",
-    "test:coverage": "nyc --reporter=lcov --reporter=text --all --include='**/**/*.ts' ava",
+    "test:coverage": "nyc --reporter=lcov --reporter=text npm test",
     "build": "tsc -b ./",
     "lint:staged": "lint-staged --no-stash",
     "postinstall": "npm run build"
@@ -44,5 +46,16 @@
     "require": [
       "ts-node/register/transpile-only"
     ]
+  },
+  "nyc": {
+    "per-file": true,
+    "include": [
+      "**/**/*.ts"
+    ],
+    "exclude": [
+      "**/**/*.test.ts"
+    ],
+    "cache": true,
+    "all": true
   }
 }
