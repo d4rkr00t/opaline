@@ -34,13 +34,15 @@ export class TaskWrapper<C = any, P = any> {
   private sharedCtx: C;
   private task: Task;
   private spinner: ora.Ora;
+  private debug: boolean;
 
   isAborted = false;
 
-  constructor(sharedCtx: C, params: P, task: Task) {
+  constructor(sharedCtx: C, params: P, task: Task, debug = false) {
     this.params = params;
     this.sharedCtx = sharedCtx;
     this.task = task;
+    this.debug = debug;
     this._title =
       typeof task.title === "string"
         ? task.title
@@ -167,20 +169,22 @@ export class TaskWrapper<C = any, P = any> {
         this.print(taskResult);
       }
     } catch (e) {
-      this.spinner.fail(chalk.red(`[error] ${e}`));
-      console.log(e.stack);
+      this.spinner.stop();
+      if (this.debug) {
+        console.log(e.stack);
+      }
       throw e;
     }
   }
 }
 
-export function createCommand<C, P>(tasks: Array<Task<C, P>>) {
+export function createCommand<C, P>(tasks: Array<Task<C, P>>, debug = false) {
   return async function run(params: P) {
     const sharedCtx: any = {};
     const startTime = Date.now();
 
     for (const task of tasks) {
-      const wrappedTask = new TaskWrapper<C, P>(sharedCtx, params, task);
+      const wrappedTask = new TaskWrapper<C, P>(sharedCtx, params, task, debug);
       await wrappedTask.run();
 
       if (wrappedTask.isAborted) {

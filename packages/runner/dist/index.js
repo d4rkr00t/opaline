@@ -13,11 +13,12 @@ function indent(text, level = 1) {
 }
 exports.indent = indent;
 class TaskWrapper {
-  constructor(sharedCtx, params, task) {
+  constructor(sharedCtx, params, task, debug = false) {
     this.isAborted = false;
     this.params = params;
     this.sharedCtx = sharedCtx;
     this.task = task;
+    this.debug = debug;
     this._title =
       typeof task.title === "string"
         ? task.title
@@ -124,19 +125,21 @@ class TaskWrapper {
         this.print(taskResult);
       }
     } catch (e) {
-      this.spinner.fail(chalk_1.default.red(`[error] ${e}`));
-      console.log(e.stack);
+      this.spinner.stop();
+      if (this.debug) {
+        console.log(e.stack);
+      }
       throw e;
     }
   }
 }
 exports.TaskWrapper = TaskWrapper;
-function createCommand(tasks) {
+function createCommand(tasks, debug = false) {
   return async function run(params) {
     const sharedCtx = {};
     const startTime = Date.now();
     for (const task of tasks) {
-      const wrappedTask = new TaskWrapper(sharedCtx, params, task);
+      const wrappedTask = new TaskWrapper(sharedCtx, params, task, debug);
       await wrappedTask.run();
       if (wrappedTask.isAborted) {
         return;

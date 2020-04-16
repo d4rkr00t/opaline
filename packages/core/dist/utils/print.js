@@ -30,10 +30,10 @@ function printWarning(text) {
 exports.printWarning = printWarning;
 function printError(err, verbose = false) {
   if (typeof err === "string") {
-    print(chalk_1.default.red(`[ERROR] `) + err);
+    print(err);
   } else {
     print(
-      [chalk_1.default.red(`[ERROR] ${err.name}: ${err.message}`)]
+      [chalk_1.default.red(`${err.message}`)]
         .concat(err.hint ? err.hint : [])
         .concat(verbose && err.stack ? err.stack.split("\n") : [])
     );

@@ -9,6 +9,7 @@ var fs = require("fs");
 var util = require("util");
 var chalk = _interopDefault(require("chalk"));
 var core = require("@opaline/core");
+var messages = require("./messages-95ed9aae.js");
 var cp = require("child_process");
 var enquirer = require("enquirer");
 var mkdirp = _interopDefault(require("mkdirp"));
@@ -22,22 +23,19 @@ let pexec = util.promisify(cp.exec);
  *
  * @usage {cliName} create app
  * @param {string[]} $inputs Name of a CLI tool
+ * @param {boolean} debug Enables verbose logging and stack traces
  */
-async function create([name] = []) {
+async function create([name] = [], debug = false) {
   if (!name) {
-    throw new core.OpalineError("OP006: Name of a CLI tools is required", [
-      "",
-      "> opaline create app"
-    ]);
+    throw core.OpalineError.fromArray(
+      messages.OP006_errorProjectNameIsRequired()
+    );
   }
 
-  return await runner.createCommand([
-    initialize,
-    createMainFolder,
-    npmInit,
-    updatePackageJson,
-    bootstrapFiles
-  ])({ name });
+  return await runner.createCommand(
+    [initialize, createMainFolder, npmInit, updatePackageJson, bootstrapFiles],
+    debug
+  )({ name });
 }
 
 let exist = async file => {
@@ -54,7 +52,9 @@ let initialize = {
   async task(ctx, { name }, runner) {
     let dir = path.join(process.cwd(), name);
     if (!(await exist(dir))) {
-      throw new core.OpalineError(`OP007: Folder "${dir}" already exists...`);
+      throw core.OpalineError.fromArray(
+        messages.OP007_errorProjectFolderExists(dir)
+      );
     }
 
     runner.stopAndClearSpinner();
@@ -66,6 +66,7 @@ let initialize = {
           type: "input",
           name: "bin",
           message: "Name of a bin file for the cli:",
+          hint: "> name --params",
           initial: name
         },
         {
@@ -151,13 +152,11 @@ let bootstrapFiles = {
 
     return [
       "",
-      "Almost there! Just a few small steps left:",
+      "Almost there! Just a few steps left:",
       "",
       chalk`– {yellow cd ${ctx.name}}`,
       chalk`– {yellow npm install {dim or} yarn install}`,
       chalk`– {yellow npm run dev {dim or} yarn dev {dim # to start developing your CLI!}}`,
-      "",
-      chalk.green("Enjoy!"),
       ""
     ];
   }

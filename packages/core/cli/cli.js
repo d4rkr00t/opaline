@@ -36,7 +36,12 @@ let config = {
         usage: "opaline create app",
         examples: [],
         shouldPassInputs: true,
-        options: {}
+        options: {
+          debug: {
+            title: "Enables verbose logging and stack traces",
+            type: "boolean"
+          }
+        }
       },
       load: () => {
         let command = require("./commands/create");

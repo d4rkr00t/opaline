@@ -27,8 +27,9 @@ export declare class TaskWrapper<C = any, P = any> {
   private sharedCtx;
   private task;
   private spinner;
+  private debug;
   isAborted: boolean;
-  constructor(sharedCtx: C, params: P, task: Task);
+  constructor(sharedCtx: C, params: P, task: Task, debug?: boolean);
   skip(): void;
   abort(): void;
   progress(text: string): void;
@@ -45,6 +46,7 @@ export declare class TaskWrapper<C = any, P = any> {
   run(): Promise<void>;
 }
 export declare function createCommand<C, P>(
-  tasks: Array<Task<C, P>>
+  tasks: Array<Task<C, P>>,
+  debug?: boolean
 ): (params: P) => Promise<void>;
 //# sourceMappingURL=index.d.ts.map

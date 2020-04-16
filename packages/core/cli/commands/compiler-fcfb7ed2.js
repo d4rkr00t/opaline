@@ -14,6 +14,7 @@ var rimraf = _interopDefault(require("rimraf"));
 var chalk = _interopDefault(require("chalk"));
 var core = require("@opaline/core");
 var readPkgUp = _interopDefault(require("read-pkg-up"));
+var messages = require("./messages-95ed9aae.js");
 var parser = require("@babel/parser");
 var traverse = _interopDefault(require("@babel/traverse"));
 var doctrine = require("doctrine");
@@ -22,7 +23,7 @@ var cp = require("child_process");
 async function readPackageJson(cwd) {
   let pkgJson = await readPkgUp({ cwd, normalize: true });
   if (!pkgJson) {
-    throw new core.OpalineError("OP002: No package.json file found");
+    throw core.OpalineError.fromArray(messages.OP002_errorNoPackageJson());
   }
   return pkgJson;
 }
@@ -32,17 +33,7 @@ async function getProjectInfo(cwd) {
   let projectRootDir = path.dirname(pkgJson.path);
 
   if (!pkgJson.packageJson.bin) {
-    throw new core.OpalineError("OP001: Bin field is empty in package.json", [
-      "",
-      "Please add 'bin' field to package.json, example:",
-      "",
-      '"bin": {',
-      '  "mycli": "./cli/cli.js"',
-      "}",
-      "",
-      "Choose any path and name for 'cli.js', don't need to create this file,",
-      "opaline will generate it for you at provided path."
-    ]);
+    throw core.OpalineError.fromArray(messages.OP001_errorBinIsEmpty());
   }
 
   let cliName =
@@ -62,17 +53,9 @@ async function getProjectInfo(cwd) {
   );
 
   if (commandsOutputPath === commandsDirPath) {
-    throw new core.OpalineError("OP005: Source and output folder is the same", [
-      "",
-      "Source: " + commandsDirPath,
-      "Output: " + commandsOutputPath,
-      "",
-      "Please update 'bin' field in package.json to have a nested output folder, example:",
-      "",
-      '"bin": {',
-      '  "mycli": "./my-output-folder/cli.js"',
-      "}"
-    ]);
+    throw core.OpalineError.fromArray(
+      messages.OP005_errorSrcEqDest(commandsDirPath, commandsOutputPath)
+    );
   }
 
   return {
@@ -244,10 +227,9 @@ class Compiler {
     this.commands = await this.getCommands();
 
     if (!this.commands.length) {
-      throw new core.OpalineError("OP004: Commands folder is empty", [
-        "",
-        `Add a file/files to "${this.project.commandsDirPath}", for example "index.js".`
-      ]);
+      throw core.OpalineError.fromArray(
+        messages.OP004_errorEmptyCommandsFolder(this.project.commandsDirPath)
+      );
     }
   }
 
@@ -288,12 +270,8 @@ class Compiler {
           !file.startsWith(".")
       );
     } catch (e) {
-      throw new core.OpalineError(
-        `OP003: ${this.project.commandsDirPath} folder doesn't exist`,
-        [
-          "",
-          "Please create 'commands' folder, because this is where opaline is expecting to find cli commands to compile."
-        ]
+      throw core.OpalineError.fromArray(
+        messages.OP003_errorNoCommandsFolder(this.project.commandsDirPath)
       );
     }
   }

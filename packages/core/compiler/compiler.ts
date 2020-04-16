@@ -11,6 +11,10 @@ import { getProjectInfo, ProjectInfo } from "./project-info";
 import { parseCommands } from "./commands-parser";
 import { createEntryPoint } from "./entry-generator";
 import { link } from "./link";
+import {
+  OP003_errorNoCommandsFolder,
+  OP004_errorEmptyCommandsFolder
+} from "./messages";
 
 let readdir = promisify(fs.readdir);
 let writeFile = promisify(fs.writeFile);
@@ -41,10 +45,9 @@ export class Compiler {
     this.commands = await this.getCommands();
 
     if (!this.commands.length) {
-      throw new OpalineError("OP004: Commands folder is empty", [
-        "",
-        `Add a file/files to "${this.project.commandsDirPath}", for example "index.js".`
-      ]);
+      throw OpalineError.fromArray(
+        OP004_errorEmptyCommandsFolder(this.project.commandsDirPath)
+      );
     }
   }
 
@@ -85,12 +88,8 @@ export class Compiler {
           !file.startsWith(".")
       );
     } catch (e) {
-      throw new OpalineError(
-        `OP003: ${this.project.commandsDirPath} folder doesn't exist`,
-        [
-          "",
-          "Please create 'commands' folder, because this is where opaline is expecting to find cli commands to compile."
-        ]
+      throw OpalineError.fromArray(
+        OP003_errorNoCommandsFolder(this.project.commandsDirPath)
       );
     }
   }

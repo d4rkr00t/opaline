@@ -37,10 +37,10 @@ export function printError(
   verbose: boolean = false
 ) {
   if (typeof err === "string") {
-    print(chalk.red(`[ERROR] `) + err);
+    print(err);
   } else {
     print(
-      [chalk.red(`[ERROR] ${err.name}: ${err.message}`)]
+      [chalk.red(`${err.message}`)]
         .concat((err as OpalineError).hint ? (err as OpalineError).hint! : [])
         .concat(verbose && err.stack ? err.stack.split("\n") : [])
     );

@@ -7,6 +7,10 @@ import chalk from "chalk";
 import mkdirp from "mkdirp";
 import { OpalineError } from "@opaline/core";
 import { createCommand, Task } from "@opaline/runner";
+import {
+  OP006_errorProjectNameIsRequired,
+  OP007_errorProjectFolderExists
+} from "../compiler/messages";
 
 let writeFile = promisify(fs.writeFile);
 let pexec = promisify(exec);
@@ -16,22 +20,17 @@ let pexec = promisify(exec);
  *
  * @usage {cliName} create app
  * @param {string[]} $inputs Name of a CLI tool
+ * @param {boolean} debug Enables verbose logging and stack traces
  */
-export default async function create([name] = []) {
+export default async function create([name] = [], debug = false) {
   if (!name) {
-    throw new OpalineError("OP006: Name of a CLI tools is required", [
-      "",
-      "> opaline create app"
-    ]);
+    throw OpalineError.fromArray(OP006_errorProjectNameIsRequired());
   }
 
-  return await createCommand([
-    initialize,
-    createMainFolder,
-    npmInit,
-    updatePackageJson,
-    bootstrapFiles
-  ])({ name });
+  return await createCommand(
+    [initialize, createMainFolder, npmInit, updatePackageJson, bootstrapFiles],
+    debug
+  )({ name });
 }
 
 let exist = async (file: string) => {
@@ -48,7 +47,7 @@ let initialize: Task<TaskCtx, TaskParams> = {
   async task(ctx, { name }, runner) {
     let dir = path.join(process.cwd(), name);
     if (!(await exist(dir))) {
-      throw new OpalineError(`OP007: Folder "${dir}" already exists...`);
+      throw OpalineError.fromArray(OP007_errorProjectFolderExists(dir));
     }
 
     runner.stopAndClearSpinner();
@@ -60,6 +59,7 @@ let initialize: Task<TaskCtx, TaskParams> = {
           type: "input",
           name: "bin",
           message: "Name of a bin file for the cli:",
+          hint: "> name --params",
           initial: name
         },
         {
@@ -145,13 +145,11 @@ let bootstrapFiles: Task<TaskCtx, TaskParams> = {
 
     return [
       "",
-      "Almost there! Just a few small steps left:",
+      "Almost there! Just a few steps left:",
       "",
       chalk`– {yellow cd ${ctx.name}}`,
       chalk`– {yellow npm install {dim or} yarn install}`,
       chalk`– {yellow npm run dev {dim or} yarn dev {dim # to start developing your CLI!}}`,
-      "",
-      chalk.green("Enjoy!"),
       ""
     ];
   }
