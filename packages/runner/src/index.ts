@@ -33,7 +33,7 @@ export class TaskWrapper<C = any, P = any> {
   private params: P;
   private sharedCtx: C;
   private task: Task;
-  private spinner: any;
+  private spinner: ora.Ora;
 
   isAborted = false;
 
@@ -58,6 +58,10 @@ export class TaskWrapper<C = any, P = any> {
 
   progress(text: string) {
     this.spinner.text = `${this.title} ${chalk.dim("[" + text + "]")}`;
+  }
+
+  stopAndClearSpinner() {
+    this.spinner.stop();
   }
 
   format(

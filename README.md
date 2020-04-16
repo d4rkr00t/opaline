@@ -13,37 +13,7 @@
 Install opaline:
 
 ```sh
-npm init -y
-npm install --save @opaline/core
-```
-
-Add build and watch scripts to `package.json`:
-
-```json
-"scripts": {
-  "build": "opaline build",
-  "dev": "opaline dev"
-},
-```
-
-Add `bin` to `package.json`, opaline will use this to generate an entry point for a CLI tool:
-
-```json
-"bin": {
-  "mycli": "./dist/cli.js"
-},
-```
-
-> You don't need to create this file, opaline will generate it for you.
-
-Create first command:
-
-```js
-// ./commands/index.js
-
-export default function command() {
-  console.log("hello world!");
-}
+npx @opaline/core create app
 ```
 
 Compile the CLI:
@@ -64,10 +34,11 @@ npm run dev # for dev mode with watch and auto linking
  *
  * @usage {cliName} --param1 10 --param2 20
  *
- * @param {string} param1 some parameter for a CLI
- * @param {string} [param2=20] some parameter for a CLI with a default value
+ * @param {string[]} $inputs
+ * @param {number}   [param1=20] some parameter for a CLI with a default value
+ * @param {string}   param2 some parameter for a CLI
  */
-export default function command($input, param1, param2) {
+export default function command($inputs, param1, param2) {
   console.log("hello world!");
 }
 ```

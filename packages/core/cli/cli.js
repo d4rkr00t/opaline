@@ -28,6 +28,26 @@ let config = {
         return command;
       }
     },
+    create: {
+      commandName: "create",
+      meta: {
+        title: "Bootstraps new Opaline based CLI tool",
+        description: "",
+        usage: "opaline create app",
+        examples: [],
+        shouldPassInputs: true,
+        options: {}
+      },
+      load: () => {
+        let command = require("./commands/create");
+
+        if (typeof command !== "function") {
+          throw new Error(`Command "create" doesn't export a function...`);
+        }
+
+        return command;
+      }
+    },
     dev: {
       commandName: "dev",
       meta: {

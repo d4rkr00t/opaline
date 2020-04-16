@@ -32,6 +32,7 @@ export declare class TaskWrapper<C = any, P = any> {
   skip(): void;
   abort(): void;
   progress(text: string): void;
+  stopAndClearSpinner(): void;
   format(
     text: PrintableOutput,
     formatter?: (text: string) => string
