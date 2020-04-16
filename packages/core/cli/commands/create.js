@@ -23,19 +23,21 @@ let pexec = util.promisify(cp.exec);
  *
  * @usage {cliName} create app
  * @param {string[]} $inputs Name of a CLI tool
- * @param {boolean} debug Enables verbose logging and stack traces
  */
-async function create([name] = [], debug = false) {
+async function create([name] = []) {
   if (!name) {
     throw core.OpalineError.fromArray(
       messages.OP006_errorProjectNameIsRequired()
     );
   }
 
-  return await runner.createCommand(
-    [initialize, createMainFolder, npmInit, updatePackageJson, bootstrapFiles],
-    debug
-  )({ name });
+  return await runner.createCommand([
+    initialize,
+    createMainFolder,
+    npmInit,
+    updatePackageJson,
+    bootstrapFiles
+  ])({ name });
 }
 
 let exist = async file => {
