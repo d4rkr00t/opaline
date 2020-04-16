@@ -4,11 +4,13 @@
   "private": true,
   "description": "",
   "scripts": {
-    "ci:build": "npm run build",
-    "ci:test:coverage": "nyc --reporter=lcov npm test",
+    "ci:build": "yarn build",
+    "ci:test:cov": "nyc --reporter=lcov yarn test",
     "test": "ava",
-    "test:coverage": "nyc --reporter=lcov --reporter=text npm test",
-    "build": "tsc -b ./",
+    "test:cov": "nyc --reporter=lcov --reporter=text yarn test",
+    "build": "yarn build:ts && yarn build:core:cli",
+    "build:ts": "tsc -b ./",
+    "build:core:cli": "cd packages/core && yarn build",
     "lint:staged": "lint-staged --no-stash",
     "postinstall": "npm run build"
   },

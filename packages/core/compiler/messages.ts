@@ -124,6 +124,7 @@ export function MSG_buildSuccess(
       );
     }
   }
+  message.push("");
 
   return message;
 }

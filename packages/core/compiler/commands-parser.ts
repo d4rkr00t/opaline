@@ -14,11 +14,11 @@ export async function parseCommands(
   commands: Array<string>
 ): Promise<Array<CommandData>> {
   return await Promise.all(
-    commands.map(command => parseCommand(project, command))
+    commands.map(command => parseSingleCommand(project, command))
   );
 }
 
-async function parseCommand(
+async function parseSingleCommand(
   project: ProjectInfo,
   command: string
 ): Promise<CommandData> {

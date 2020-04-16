@@ -40,7 +40,7 @@ let config = {
         title: "Prints inputs and flags",
         description: "",
         usage: "$ multicli --name john",
-        examples: [],
+        examples: ["$ multicli --name john"],
         shouldPassInputs: true,
         options: {
           name: {

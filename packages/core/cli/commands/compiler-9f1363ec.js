@@ -13,7 +13,7 @@ var sucrase = _interopDefault(require("@rollup/plugin-sucrase"));
 var rimraf = _interopDefault(require("rimraf"));
 var core = require("@opaline/core");
 var readPkgUp = _interopDefault(require("read-pkg-up"));
-var messages = require("./messages-b1455b32.js");
+var messages = require("./messages-353156fc.js");
 var parser = require("@babel/parser");
 var traverse = _interopDefault(require("@babel/traverse"));
 var doctrine = require("doctrine");
@@ -71,11 +71,11 @@ let readFile = util.promisify(fs.readFile);
 
 async function parseCommands(project, commands) {
   return await Promise.all(
-    commands.map(command => parseCommand(project, command))
+    commands.map(command => parseSingleCommand(project, command))
   );
 }
 
-async function parseCommand(project, command) {
+async function parseSingleCommand(project, command) {
   let [commandName] = command.split(".");
   let commandPath = path.join(project.commandsDirPath, command);
   let commandFileContent = await readFile(commandPath, "utf8");
@@ -109,6 +109,8 @@ function getMetaFromJSDoc({ jsdocComment, cliName }) {
     ? doctrine.parse(jsdocComment, { unwrap: true, sloppy: true })
     : { description: "", tags: [] };
   let [title, ...description] = jsdoc.description.split("\n\n");
+
+  console.log(jsdoc.tags);
 
   return {
     title: title || "No description",
