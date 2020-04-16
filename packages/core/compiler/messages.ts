@@ -127,6 +127,39 @@ export function MSG_buildSuccess(
 
   return message;
 }
+
+export function MSG_watchStarted(
+  commands: string[],
+  relativePathToCommands: string
+) {
+  return [
+    chalk`{green ${greenBadge(
+      "DEV MODE"
+    )} Watching commands {grey [+all of their dependencies]}}`,
+    "",
+    ...commands.map(
+      command =>
+        `${chalk.grey("– " + relativePathToCommands)}${chalk.magenta(command)}`
+    ),
+    ""
+  ];
+}
+
+export function MSG_watchUpdated(
+  commands: string[],
+  relativePathToCommands: string
+) {
+  return [
+    "",
+    blueBadge("UPDATED"),
+    "",
+    ...commands.map(
+      command =>
+        `${chalk.grey("– " + relativePathToCommands)}${chalk.magenta(command)}`
+    ),
+    ""
+  ];
+}
 //#endregion
 
 //#region Message helpers

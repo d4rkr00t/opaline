@@ -41,17 +41,25 @@ let info = [
       ] as any
     },
     [100, 100]
-  )
+  ),
+  messages.MSG_watchStarted(["build.ts", "create.ts", "dev.ts"], "commands/"),
+  messages.MSG_watchUpdated(["build.ts", "create.ts", "dev.ts"], "commands/")
 ];
 
 console.log();
+console.log("================");
 console.log("===  Errors  ===");
-console.log("");
+console.log("================");
+console.log();
+console.log();
 printAll(errors);
 
 console.log();
+console.log("==================");
 console.log("===  Messages  ===");
-console.log("");
+console.log("==================");
+console.log();
+console.log();
 printAll(info);
 
 function printAll(list: any) {

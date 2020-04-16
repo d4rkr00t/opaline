@@ -11,10 +11,9 @@ var chokidar = require("chokidar");
 var rollup = require("rollup");
 var sucrase = _interopDefault(require("@rollup/plugin-sucrase"));
 var rimraf = _interopDefault(require("rimraf"));
-var chalk = _interopDefault(require("chalk"));
 var core = require("@opaline/core");
 var readPkgUp = _interopDefault(require("read-pkg-up"));
-var messages = require("./messages-8a256e6e.js");
+var messages = require("./messages-b1455b32.js");
 var parser = require("@babel/parser");
 var traverse = _interopDefault(require("@babel/traverse"));
 var doctrine = require("doctrine");
@@ -362,24 +361,13 @@ class Compiler {
 
     if (this.watcher) {
       this.watcher.close();
-      core.print([
-        "",
-        `${chalk.blueBright("[updated]")}`,
-        "",
-        ...this.commands.map(
-          c => chalk.grey("– " + relativePathToCommands) + chalk.greenBright(c)
-        )
-      ]);
+      core.print(
+        messages.MSG_watchUpdated(this.commands, relativePathToCommands)
+      );
     } else {
-      core.print(chalk.green(`🦄 Welcome to Opaline Dev Mode!`));
-      core.print([
-        "",
-        `Watching commands ${chalk.grey("[+all of their dependencies]")}:`,
-        "",
-        ...this.commands.map(
-          c => chalk.grey("– " + relativePathToCommands) + chalk.greenBright(c)
-        )
-      ]);
+      core.print(
+        messages.MSG_watchStarted(this.commands, relativePathToCommands)
+      );
     }
 
     this.watcher = rollup.watch([this.createBundlerConfig()]);

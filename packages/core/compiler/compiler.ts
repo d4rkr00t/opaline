@@ -14,7 +14,9 @@ import { link } from "./link";
 import {
   OP003_errorNoCommandsFolder,
   OP004_errorEmptyCommandsFolder,
-  MSG_buildSuccess
+  MSG_buildSuccess,
+  MSG_watchStarted,
+  MSG_watchUpdated
 } from "./messages";
 
 let readdir = promisify(fs.readdir);
@@ -179,24 +181,9 @@ export class Compiler {
 
     if (this.watcher) {
       this.watcher.close();
-      print([
-        "",
-        `${chalk.blueBright("[updated]")}`,
-        "",
-        ...this.commands.map(
-          c => chalk.grey("– " + relativePathToCommands) + chalk.greenBright(c)
-        )
-      ]);
+      print(MSG_watchUpdated(this.commands, relativePathToCommands));
     } else {
-      print(chalk.green(`🦄 Welcome to Opaline Dev Mode!`));
-      print([
-        "",
-        `Watching commands ${chalk.grey("[+all of their dependencies]")}:`,
-        "",
-        ...this.commands.map(
-          c => chalk.grey("– " + relativePathToCommands) + chalk.greenBright(c)
-        )
-      ]);
+      print(MSG_watchStarted(this.commands, relativePathToCommands));
     }
 
     this.watcher = rollup.watch([this.createBundlerConfig()]);

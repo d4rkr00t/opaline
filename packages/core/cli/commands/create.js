@@ -7,9 +7,9 @@ function _interopDefault(ex) {
 var path = require("path");
 var fs = require("fs");
 var util = require("util");
-var chalk = _interopDefault(require("chalk"));
 var core = require("@opaline/core");
-var messages = require("./messages-8a256e6e.js");
+var chalk = _interopDefault(require("chalk"));
+var messages = require("./messages-b1455b32.js");
 var cp = require("child_process");
 var enquirer = require("enquirer");
 var mkdirp = _interopDefault(require("mkdirp"));

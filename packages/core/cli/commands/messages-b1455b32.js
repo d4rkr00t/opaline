@@ -127,6 +127,33 @@ function MSG_buildSuccess(
 
   return message;
 }
+
+function MSG_watchStarted(commands, relativePathToCommands) {
+  return [
+    chalk`{green ${greenBadge(
+      "DEV MODE"
+    )} Watching commands {grey [+all of their dependencies]}}`,
+    "",
+    ...commands.map(
+      command =>
+        `${chalk.grey("– " + relativePathToCommands)}${chalk.magenta(command)}`
+    ),
+    ""
+  ];
+}
+
+function MSG_watchUpdated(commands, relativePathToCommands) {
+  return [
+    "",
+    blueBadge("UPDATED"),
+    "",
+    ...commands.map(
+      command =>
+        `${chalk.grey("– " + relativePathToCommands)}${chalk.magenta(command)}`
+    ),
+    ""
+  ];
+}
 //#endregion
 
 //#region Message helpers
@@ -136,6 +163,10 @@ function codeSnippet(code) {
 
 function greenBadge(label) {
   return chalk.bgGreen.black(` ${label} `);
+}
+
+function blueBadge(label) {
+  return chalk.bgBlue.black(` ${label} `);
 }
 
 function redBadge(label) {
@@ -152,6 +183,8 @@ function errorBadge() {
 //#endregion
 
 exports.MSG_buildSuccess = MSG_buildSuccess;
+exports.MSG_watchStarted = MSG_watchStarted;
+exports.MSG_watchUpdated = MSG_watchUpdated;
 exports.OP001_errorBinIsEmpty = OP001_errorBinIsEmpty;
 exports.OP002_errorNoPackageJson = OP002_errorNoPackageJson;
 exports.OP003_errorNoCommandsFolder = OP003_errorNoCommandsFolder;
