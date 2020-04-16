@@ -1,12 +1,13 @@
 import test from "ava";
 import * as path from "path";
-import { parseCommands } from "./commands-parser";
-import { ProjectInfo } from "./project-info";
+import { parseCommands } from "../commands-parser";
+import { ProjectInfo } from "../project-info";
 
 test("parseCommands should be able to parse jsdoc from a command file", async t => {
   let project = {
     commandsDirPath: path.join(
       __dirname,
+      "..",
       "..",
       "..",
       "..",
@@ -25,6 +26,7 @@ test("parseCommands should be able to parse jsdoc from multiple files file", asy
   let project = {
     commandsDirPath: path.join(
       __dirname,
+      "..",
       "..",
       "..",
       "..",

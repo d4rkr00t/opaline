@@ -13,7 +13,8 @@ import { createEntryPoint } from "./entry-generator";
 import { link } from "./link";
 import {
   OP003_errorNoCommandsFolder,
-  OP004_errorEmptyCommandsFolder
+  OP004_errorEmptyCommandsFolder,
+  MSG_buildSuccess
 } from "./messages";
 
 let readdir = promisify(fs.readdir);
@@ -134,30 +135,17 @@ export class Compiler {
       let output = await bundle.write(config.output as rollup.OutputOptions);
       let endTime = process.hrtime(startTime);
 
-      let message = [
-        chalk.green(
-          `🦄 Built in ${(endTime[0] * 1000 + endTime[1] / 1e6).toFixed(2)}ms!`
-        ),
-        ""
-      ];
-      let outputPath = this.project.commandsOutputPath.replace(
-        this.project.projectRootDir + path.sep,
-        ""
-      );
-
-      for (let bundle of output.output) {
-        if (bundle.type === "chunk" && bundle.isEntry) {
-          message.push(
-            `${chalk.grey("– " + outputPath + path.sep)}${chalk.greenBright(
-              bundle.fileName
-            )}`
-          );
-        }
-      }
-
       await this.onBundled();
 
-      print(message);
+      print(
+        MSG_buildSuccess(
+          this.project.commandsOutputPath,
+          this.project.projectRootDir,
+          this.project.binOutputPath,
+          output,
+          endTime
+        )
+      );
     } catch (error) {
       console.error(error);
     }

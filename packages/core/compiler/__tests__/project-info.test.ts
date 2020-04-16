@@ -1,6 +1,6 @@
 import test from "ava";
 import * as path from "path";
-import { getProjectInfo } from "./project-info";
+import { getProjectInfo } from "../project-info";
 
 test("getProjectInfo: should throw an error, when there no 'bin' in package.json", async t => {
   let cwd = path.join(__dirname, "__fixtures__", "empty-bin");

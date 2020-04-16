@@ -14,7 +14,7 @@ var rimraf = _interopDefault(require("rimraf"));
 var chalk = _interopDefault(require("chalk"));
 var core = require("@opaline/core");
 var readPkgUp = _interopDefault(require("read-pkg-up"));
-var messages = require("./messages-95ed9aae.js");
+var messages = require("./messages-8a256e6e.js");
 var parser = require("@babel/parser");
 var traverse = _interopDefault(require("@babel/traverse"));
 var doctrine = require("doctrine");
@@ -318,30 +318,17 @@ class Compiler {
       let output = await bundle.write(config.output);
       let endTime = process.hrtime(startTime);
 
-      let message = [
-        chalk.green(
-          `🦄 Built in ${(endTime[0] * 1000 + endTime[1] / 1e6).toFixed(2)}ms!`
-        ),
-        ""
-      ];
-      let outputPath = this.project.commandsOutputPath.replace(
-        this.project.projectRootDir + path.sep,
-        ""
-      );
-
-      for (let bundle of output.output) {
-        if (bundle.type === "chunk" && bundle.isEntry) {
-          message.push(
-            `${chalk.grey("– " + outputPath + path.sep)}${chalk.greenBright(
-              bundle.fileName
-            )}`
-          );
-        }
-      }
-
       await this.onBundled();
 
-      core.print(message);
+      core.print(
+        messages.MSG_buildSuccess(
+          this.project.commandsOutputPath,
+          this.project.projectRootDir,
+          this.project.binOutputPath,
+          output,
+          endTime
+        )
+      );
     } catch (error) {
       console.error(error);
     }

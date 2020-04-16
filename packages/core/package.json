@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "build": "./cli/cli.js build",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "print:msg": "ts-node ./scripts/print-all-messages.ts"
   },
   "bin": {
     "opaline": "./cli/cli.js"

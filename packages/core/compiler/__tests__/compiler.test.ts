@@ -3,7 +3,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { promisify } from "util";
 import rimraf from "rimraf";
-import { Compiler } from "./compiler";
+import { Compiler } from "../compiler";
 
 let rm = promisify(rimraf) as typeof rimraf;
 let readdir = promisify(fs.readdir);

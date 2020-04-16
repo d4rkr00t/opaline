@@ -1,6 +1,8 @@
+import * as path from "path";
 import chalk from "chalk";
+import { RollupOutput } from "rollup";
 
-//#region Errors
+//#region Error Messages
 export function OP001_errorBinIsEmpty() {
   return [
     chalk.red(`${errorBadge()} OP001: Bin field is empty in "package.json"`),
@@ -80,6 +82,50 @@ export function OP007_errorProjectFolderExists(dir: string) {
   return [
     chalk.red(`${errorBadge()} OP007: Folder "${dir}" already exists`)
   ] as const;
+}
+//#endregion
+
+//#region Success Messages
+export function MSG_buildSuccess(
+  commandsOutputPath: string,
+  projectRootDir: string,
+  binOutputPath: string,
+  output: RollupOutput,
+  endTime: [number, number]
+) {
+  let outputPath = commandsOutputPath.replace(projectRootDir + path.sep, "");
+  let relativeBinOutputPath = binOutputPath
+    .replace(projectRootDir + path.sep, "")
+    .split(path.sep);
+  let binFileName = relativeBinOutputPath.pop();
+  let message = [
+    chalk.green(
+      `${doneBadge()} in ${(endTime[0] * 1000 + endTime[1] / 1e6).toFixed(
+        2
+      )}ms!`
+    ),
+    "",
+    chalk`{green Successfully compiled into {blue "${outputPath}"} folder.}`
+  ];
+
+  message.push("", chalk.bgMagenta.black(" OUTPUTS "), "");
+  message.push(
+    `${chalk.grey(
+      "– " + relativeBinOutputPath.join(path.sep) + path.sep
+    )}${chalk.magenta(binFileName)}`
+  );
+
+  for (let bundle of output.output) {
+    if (bundle.type === "chunk" && bundle.isEntry) {
+      message.push(
+        `${chalk.grey("– " + outputPath + path.sep)}${chalk.magenta(
+          bundle.fileName
+        )}`
+      );
+    }
+  }
+
+  return message;
 }
 //#endregion
 
