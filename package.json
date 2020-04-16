@@ -6,6 +6,7 @@
   "scripts": {
     "ci:build": "yarn build",
     "ci:test:cov": "nyc --reporter=lcov yarn test",
+    "ci:release": "changeset publish",
     "test": "ava",
     "test:cov": "nyc --reporter=lcov --reporter=text yarn test",
     "build": "yarn build:ts && yarn build:core:cli",
