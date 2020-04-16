@@ -3,6 +3,6 @@
   "changelog": "@changesets/cli/changelog",
   "commit": true,
   "linked": [],
-  "access": "restricted",
+  "access": "public",
   "baseBranch": "master"
 }
