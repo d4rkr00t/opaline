@@ -39,7 +39,7 @@
 - [JSDoc](#jsdoc)
   - [Supported JSDoc Tags](#supported-jsdoc-tags)
   - [Extra JSDoc Tags](#extra-jsdoc-tags)
-- [pacakage.json](#pacakagejson)
+- [package.json](#packagejson)
   - [package.json#bin](#packagejsonbin)
   - [package.json#description](#packagejsondescription)
 - [Examples](#examples)
@@ -151,7 +151,7 @@ OPTIONS
 | `@usage`    | Similar to example, but outlines the main example on how to use a CLI command. `@usage {cliName} build`                      |
 | `{cliName}` | A variable that will be replaced by the name of a CLI tool described in `package.json`. Supported by `@usage` and `@example` |
 
-## pacakage.json
+## package.json
 
 Opaline gets multiple things from a `package.json` file, to even more reduce configuration:
 
