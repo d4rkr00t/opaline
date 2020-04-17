@@ -180,7 +180,7 @@ There are 2 way of using the `bin` field in `package.json`:
 **Opaline** supports both of them. And uses those fields in a following way:
 
 1. Path to a CLI file – For both cases the file path is used as an output target for a CLI entry point, **and will be automatically created by Opaline, no need to manually create it.**
-2. Name of a CLI – For [1] the name will be `package.json#name`, if you need to have different name than then name of a package, use a option number 2, and then this name will be used as `{cliName}` in JSDoc. In both cases a name will be used when linking packages in dev mode. Which makes them accessible globally, by this name:
+2. Name of a CLI – For [1] the name will be `package.json#name`, if you need to have a different name than the name of a package, use an option 2. Name is used as `{cliName}` in JSDoc and also when linking packages in dev mode. Which makes them accessible globally, by this name:
    - `cli-name [COMMAND]`
 
 ### package.json#description
