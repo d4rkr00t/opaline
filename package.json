@@ -12,6 +12,7 @@
     "build": "yarn build:ts && yarn build:core:cli",
     "build:ts": "tsc -b ./",
     "build:core:cli": "cd packages/core && yarn build",
+    "dev:core:cli": "cd packages/core && yarn dev",
     "lint:staged": "lint-staged --no-stash",
     "postinstall": "npm run build"
   },
