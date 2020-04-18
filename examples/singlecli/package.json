@@ -1,6 +1,6 @@
 {
   "name": "single-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Example CLI tool using opaline CLI framework.",
   "keywords": [],
@@ -9,6 +9,6 @@
     "singlecli": "./cli/index.js"
   },
   "dependencies": {
-    "@opaline/core": "^0.1.0"
+    "@opaline/core": "^0.2.0"
   }
 }

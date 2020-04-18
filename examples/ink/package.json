@@ -1,6 +1,6 @@
 {
   "name": "opaline-ink-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Example CLI tool using opaline CLI framework.",
   "keywords": [],
@@ -9,7 +9,7 @@
     "opalink": "./cli/index.js"
   },
   "dependencies": {
-    "@opaline/core": "^0.1.0",
+    "@opaline/core": "^0.2.0",
     "@types/react": "^16.9.34",
     "delay": "^4.3.0",
     "ms": "^2.1.2",
