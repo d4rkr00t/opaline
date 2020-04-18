@@ -109,7 +109,7 @@ VERSION
 
 USAGE
   examples-for-docs inputs --param1 10 --param2 20
-****
+
 COMMANDS
   build     Description of a command is just a comment above the command's function. Params are described as JSDoc params:
 
