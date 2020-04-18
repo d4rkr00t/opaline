@@ -86,13 +86,18 @@ export class Compiler {
 
   private async getCommands() {
     try {
-      return (await readdir(this.project.commandsDirPath)).filter(
-        file =>
-          !file.endsWith(".d.ts") &&
-          !file.endsWith(".map") &&
-          !file.startsWith("_") &&
-          !file.startsWith(".")
-      );
+      return (
+        await readdir(this.project.commandsDirPath, { withFileTypes: true })
+      )
+        .filter(dirent => dirent.isFile())
+        .map(dirent => dirent.name)
+        .filter(
+          file =>
+            !file.endsWith(".d.ts") &&
+            !file.endsWith(".map") &&
+            !file.startsWith("_") &&
+            !file.startsWith(".")
+        );
     } catch (e) {
       throw OpalineError.fromArray(
         OP003_errorNoCommandsFolder(this.project.commandsDirPath)

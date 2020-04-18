@@ -1,6 +1,5 @@
 import * as path from "path";
 import readPkgUp from "read-pkg-up";
-import chalk from "chalk";
 import { OpalineError } from "@opaline/core";
 import {
   OP001_errorBinIsEmpty,

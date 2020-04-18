@@ -12,7 +12,7 @@ var delay = _interopDefault(require("delay"));
 var ms = _interopDefault(require("ms"));
 
 const _jsxFileName =
-  "/Users/ssysoev/Development/opaline/examples/ink/jest-components/summary.tsx";
+  "/Users/ssysoev/Development/opaline/examples/ink/commands/jest-components/summary.tsx";
 function Summary({ isFinished, passed, failed, time }) {
   return React__default.createElement(
     ink.Box,
@@ -114,7 +114,7 @@ function Summary({ isFinished, passed, failed, time }) {
 }
 
 const _jsxFileName$1 =
-  "/Users/ssysoev/Development/opaline/examples/ink/jest-components/test.tsx";
+  "/Users/ssysoev/Development/opaline/examples/ink/commands/jest-components/test.tsx";
 let getBackgroundForStatus = status => {
   if (status === "runs") {
     return {

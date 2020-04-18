@@ -5,7 +5,7 @@ import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import * as doctrine from "doctrine";
 import { ProjectInfo } from "./project-info";
-import { OpalineCommandMeta } from "../src/types";
+import { OpalineCommandMeta } from "../../src/types";
 
 let readFile = promisify(fs.readFile);
 

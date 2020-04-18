@@ -11,6 +11,7 @@ test("parseCommands should be able to parse jsdoc from a command file", async t 
       "..",
       "..",
       "..",
+      "..",
       "examples",
       "singlecli",
       "commands"
@@ -26,6 +27,7 @@ test("parseCommands should be able to parse jsdoc from multiple files file", asy
   let project = {
     commandsDirPath: path.join(
       __dirname,
+      "..",
       "..",
       "..",
       "..",

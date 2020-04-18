@@ -1,4 +1,4 @@
-import { Compiler } from "../compiler/compiler";
+import { Compiler } from "./compiler/compiler";
 
 /**
  * Development mode for building opaline based cli tools

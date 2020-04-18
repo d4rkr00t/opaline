@@ -3,8 +3,8 @@ import { Static, Box, render } from "ink";
 import PQueue from "p-queue";
 import delay from "delay";
 import ms from "ms";
-import Summary from "../jest-components/summary";
-import Test from "../jest-components/test";
+import Summary from "./jest-components/summary";
+import Test from "./jest-components/test";
 
 let paths = [
   "tests/login.js",

@@ -10,7 +10,7 @@ import { createCommand, Task } from "@opaline/runner";
 import {
   OP006_errorProjectNameIsRequired,
   OP007_errorProjectFolderExists
-} from "../compiler/messages";
+} from "./compiler/messages";
 
 let writeFile = promisify(fs.writeFile);
 let pexec = promisify(exec);

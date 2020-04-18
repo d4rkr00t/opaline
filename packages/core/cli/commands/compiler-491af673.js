@@ -10,10 +10,11 @@ var util = require("util");
 var chokidar = require("chokidar");
 var rollup = require("rollup");
 var sucrase = _interopDefault(require("@rollup/plugin-sucrase"));
+var resolve = _interopDefault(require("@rollup/plugin-node-resolve"));
 var rimraf = _interopDefault(require("rimraf"));
 var core = require("@opaline/core");
 var readPkgUp = _interopDefault(require("read-pkg-up"));
-var messages = require("./messages-353156fc.js");
+var messages = require("./messages-1184afb9.js");
 var parser = require("@babel/parser");
 var traverse = _interopDefault(require("@babel/traverse"));
 var doctrine = require("doctrine");
@@ -251,6 +252,9 @@ class Compiler {
         }
       },
       plugins: [
+        resolve({
+          extensions: [".js", ".ts", ".tsx"]
+        }),
         sucrase({
           exclude: ["node_modules/**"],
           transforms: ["typescript", "jsx"]
@@ -261,13 +265,18 @@ class Compiler {
 
   async getCommands() {
     try {
-      return (await readdir(this.project.commandsDirPath)).filter(
-        file =>
-          !file.endsWith(".d.ts") &&
-          !file.endsWith(".map") &&
-          !file.startsWith("_") &&
-          !file.startsWith(".")
-      );
+      return (
+        await readdir(this.project.commandsDirPath, { withFileTypes: true })
+      )
+        .filter(dirent => dirent.isFile())
+        .map(dirent => dirent.name)
+        .filter(
+          file =>
+            !file.endsWith(".d.ts") &&
+            !file.endsWith(".map") &&
+            !file.startsWith("_") &&
+            !file.startsWith(".")
+        );
     } catch (e) {
       throw core.OpalineError.fromArray(
         messages.OP003_errorNoCommandsFolder(this.project.commandsDirPath)
