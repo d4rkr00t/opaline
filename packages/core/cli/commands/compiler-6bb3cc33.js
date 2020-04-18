@@ -92,7 +92,7 @@ async function parseSingleCommand(project, command) {
 function getCommandJSDoc(content) {
   let ast = parser.parse(content, {
     sourceType: "module",
-    plugins: ["typescript"]
+    plugins: ["typescript", "jsx"]
   });
   let comment;
   traverse(ast, {
@@ -253,7 +253,7 @@ class Compiler {
       plugins: [
         sucrase({
           exclude: ["node_modules/**"],
-          transforms: ["typescript"]
+          transforms: ["typescript", "jsx"]
         })
       ]
     };

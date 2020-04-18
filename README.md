@@ -193,6 +193,8 @@ Tools built with **Opaline**:
 
 - [Opaline CLI itself](https://github.com/d4rkr00t/opaline/tree/master/packages/core/commands)
 - [Example Choose Reviewer Tool](https://github.com/d4rkr00t/review-tools)
+- [Using JSX and Ink](examples/ink/)
+  - [Ink](https://github.com/vadimdemedes/ink)
 
 ## Screenshots
 

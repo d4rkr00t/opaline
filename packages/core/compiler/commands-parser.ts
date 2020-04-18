@@ -38,7 +38,7 @@ async function parseSingleCommand(
 function getCommandJSDoc(content: string) {
   let ast = parser.parse(content, {
     sourceType: "module",
-    plugins: ["typescript"]
+    plugins: ["typescript", "jsx"]
   });
   let comment;
   traverse(ast, {

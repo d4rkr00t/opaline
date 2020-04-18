@@ -4,8 +4,8 @@ import { promisify } from "util";
 import * as chokidar from "chokidar";
 import * as rollup from "rollup";
 import sucrase from "@rollup/plugin-sucrase";
+import resolve from "@rollup/plugin-node-resolve";
 import rimraf from "rimraf";
-import chalk from "chalk";
 import { printWarning, print, OpalineError } from "@opaline/core";
 import { getProjectInfo, ProjectInfo } from "./project-info";
 import { parseCommands } from "./commands-parser";
@@ -73,9 +73,12 @@ export class Compiler {
         }
       },
       plugins: [
+        resolve({
+          extensions: [".js", ".ts", ".tsx"]
+        }),
         sucrase({
           exclude: ["node_modules/**"],
-          transforms: ["typescript"]
+          transforms: ["typescript", "jsx"]
         })
       ]
     };

@@ -9,7 +9,7 @@
     "multicli": "./cli/index.js"
   },
   "dependencies": {
-    "@opaline/core": "^0.0.2",
-    "@opaline/runner": "^0.0.1"
+    "@opaline/core": "^0.1.0",
+    "@opaline/runner": "^0.1.0"
   }
 }
