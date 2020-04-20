@@ -65,3 +65,33 @@ test("getMetaFromJSDoc should support aliases", t => {
   t.is(meta.options.name.alias, "n");
   t.is(meta.options.age.alias, "a");
 });
+
+test("getCommandJSDoc should support module.exports", t => {
+  let source = `
+  /**
+   * @param {string} name Name
+   * @short name=n
+   *
+   * @param {number} age Age
+   * @short age=a
+   */
+  module.exports = function cli(){}
+  `;
+  let jsdoc = getCommandJSDoc(source);
+  t.true(!!jsdoc);
+});
+
+test("getCommandJSDoc should support export default", t => {
+  let source = `
+  /**
+   * @param {string} name Name
+   * @short name=n
+   *
+   * @param {number} age Age
+   * @short age=a
+   */
+  export default function cli(){}
+  `;
+  let jsdoc = getCommandJSDoc(source);
+  t.true(!!jsdoc);
+});

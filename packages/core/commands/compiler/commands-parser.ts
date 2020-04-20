@@ -45,6 +45,22 @@ export function getCommandJSDoc(content: string) {
     ExportDefaultDeclaration(path) {
       comment =
         "/*" + (path.node.leadingComments || [{ value: "" }])[0].value + "\n*/";
+    },
+    AssignmentExpression(path) {
+      if (
+        path.node.left.type !== "MemberExpression" ||
+        path.node.left.property.name !== "exports" ||
+        !path.node.left.object.hasOwnProperty("name") ||
+        (path.node.left.object as any).name !== "module" ||
+        (path.node.right.type !== "FunctionExpression" &&
+          path.node.right.type !== "ArrowFunctionExpression")
+      ) {
+        return;
+      }
+      comment =
+        "/*" +
+        (path.parent.leadingComments || [{ value: "" }])[0].value +
+        "\n*/";
     }
   });
   return comment;

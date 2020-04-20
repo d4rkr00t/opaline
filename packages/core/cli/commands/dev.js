@@ -12,7 +12,7 @@ require('@opaline/core');
 require('read-pkg-up');
 require('chalk');
 require('./messages-1184afb9.js');
-var compiler = require('./compiler-e3f1ed63.js');
+var compiler = require('./compiler-44369dab.js');
 require('@babel/parser');
 require('@babel/traverse');
 require('doctrine');
