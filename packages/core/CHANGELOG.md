@@ -1,5 +1,25 @@
 # @opaline/core
 
+## 0.4.0
+
+### Minor Changes
+
+- f321d81: support parsing jsdoc from module.exports
+- 6485bc3: support aliases for parameters
+
+  Example:
+
+  ```js
+  /**
+   * @param {string} name Name
+   * @short name=n
+   *
+   * @param {number} age Age
+   * @short age=a
+   */
+  export default function cli() {}
+  ```
+
 ## 0.3.0
 
 ### Minor Changes

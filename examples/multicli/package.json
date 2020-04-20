@@ -1,6 +1,6 @@
 {
   "name": "multicli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "Example CLI tool using opaline CLI framework",
   "keywords": [],
@@ -9,7 +9,7 @@
     "multicli": "./cli/index.js"
   },
   "dependencies": {
-    "@opaline/core": "^0.3.0",
+    "@opaline/core": "^0.4.0",
     "@opaline/runner": "^0.1.0"
   }
 }
