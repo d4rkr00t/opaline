@@ -1,6 +1,10 @@
 import test from "ava";
 import * as path from "path";
-import { parseCommands } from "../commands-parser";
+import {
+  parseCommands,
+  getCommandJSDoc,
+  getMetaFromJSDoc
+} from "../commands-parser";
 import { ProjectInfo } from "../project-info";
 
 test("parseCommands should be able to parse jsdoc from a command file", async t => {
@@ -41,4 +45,23 @@ test("parseCommands should be able to parse jsdoc from multiple files file", asy
   let commands = ["index.js", "hello-world.js", "runner.js"];
   let parsedCommands = await parseCommands(project, commands);
   t.snapshot(parsedCommands);
+});
+
+test("getMetaFromJSDoc should support aliases", t => {
+  let source = `
+  /**
+   * @param {string} name Name
+   * @short name=n
+   *
+   * @param {number} age Age
+   * @short age=a
+   */
+  export default function cli(){}
+  `;
+  let meta = getMetaFromJSDoc({
+    jsdocComment: getCommandJSDoc(source),
+    cliName: "cli"
+  });
+  t.is(meta.options.name.alias, "n");
+  t.is(meta.options.age.alias, "a");
 });

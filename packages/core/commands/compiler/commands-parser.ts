@@ -18,7 +18,7 @@ export async function parseCommands(
   );
 }
 
-async function parseSingleCommand(
+export async function parseSingleCommand(
   project: ProjectInfo,
   command: string
 ): Promise<CommandData> {
@@ -35,7 +35,7 @@ async function parseSingleCommand(
   };
 }
 
-function getCommandJSDoc(content: string) {
+export function getCommandJSDoc(content: string) {
   let ast = parser.parse(content, {
     sourceType: "module",
     plugins: ["typescript", "jsx"]
@@ -50,7 +50,7 @@ function getCommandJSDoc(content: string) {
   return comment;
 }
 
-function getMetaFromJSDoc({
+export function getMetaFromJSDoc({
   jsdocComment,
   cliName
 }: {
@@ -61,6 +61,14 @@ function getMetaFromJSDoc({
     ? doctrine.parse(jsdocComment, { unwrap: true, sloppy: true })
     : { description: "", tags: [] };
   let [title, ...description] = jsdoc.description.split("\n\n");
+  let aliases = jsdoc.tags
+    .filter(tag => tag.title === "short")
+    .map(alias => alias.description)
+    .reduce((acc, alias) => {
+      let [full, short] = alias.split("=");
+      acc[full.trim()] = short.trim();
+      return acc;
+    }, {});
 
   return {
     title: title || "No description",
@@ -85,6 +93,7 @@ function getMetaFromJSDoc({
       acc[tag.name] = {
         title: tag.description,
         type,
+        alias: aliases[tag.name],
         default:
           defaultValue && type === "number"
             ? parseInt(defaultValue)

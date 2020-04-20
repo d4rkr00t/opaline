@@ -1,4 +1,4 @@
-# Snapshot report for `packages/core/compiler/__tests__/compiler.test.ts`
+# Snapshot report for `packages/core/commands/compiler/__tests__/compiler.test.ts`
 
 The actual snapshot is saved in `compiler.test.ts.snap`.
 

@@ -14,12 +14,13 @@ let config = {
         title: "Prints inputs and flags",
         description: "",
         usage: "$ multicli hello-world --name john",
-        examples: [],
+        examples: ["$ multicli hello-world --name john"],
         shouldPassInputs: true,
         options: {
           name: {
             title: "Some important flag",
             type: "string",
+            alias: "n",
             default: '"john"'
           }
         }
@@ -48,7 +49,12 @@ let config = {
             type: "string",
             default: '"john"'
           },
-          age: { title: "Some important flag", type: "number", default: 20 }
+          age: {
+            title: "Some important flag",
+            type: "number",
+            alias: "a",
+            default: 20
+          }
         }
       },
       load: () => {

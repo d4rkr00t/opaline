@@ -8,6 +8,7 @@
  * @param {string[]} $inputs
  * @param {string} [name="john"] Some important flag
  * @param {number} [age=20] Some important flag
+ * @short age=a
  * @example $ {cliName} --name john
  */
 function MainCommand($inputs, name, age) {
