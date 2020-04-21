@@ -13,6 +13,17 @@ export function createEntryPoint({
     path.dirname(project.binOutputPath),
     project.pkgJson.path
   );
+  console.log(commandsData);
+  let mainCommand = commandsData.find(
+    command => command.commandName === "index"
+  );
+  let description = mainCommand
+    ? mainCommand.meta.title +
+      (mainCommand.meta.description
+        ? "\n\n" + mainCommand.meta.description
+        : "")
+    : "";
+
   return `#!/usr/bin/env node
 
 let cli = require("@opaline/core").default;
@@ -20,7 +31,7 @@ let pkg = require("${pkgJsonRelativePath}");
 let config = {
   cliName: "${project.cliName}",
   cliVersion: pkg.version,
-  cliDescription: pkg.description,
+  cliDescription: ${JSON.stringify(description)} || pkg.description,
   isSingleCommand: ${commandsData.length === 1 ? "true" : "false"},
   commands: {
     ${commandsData

@@ -1,22 +1,22 @@
-'use strict';
+"use strict";
 
-require('path');
-require('fs');
-require('util');
-require('chokidar');
-require('rollup');
-require('@rollup/plugin-sucrase');
-require('@rollup/plugin-node-resolve');
-require('rimraf');
-require('@opaline/core');
-require('read-pkg-up');
-require('chalk');
-require('./messages-1184afb9.js');
-var compiler = require('./compiler-44369dab.js');
-require('@babel/parser');
-require('@babel/traverse');
-require('doctrine');
-require('child_process');
+require("path");
+require("fs");
+require("util");
+require("chokidar");
+require("rollup");
+require("@rollup/plugin-sucrase");
+require("@rollup/plugin-node-resolve");
+require("rimraf");
+require("@opaline/core");
+require("read-pkg-up");
+require("chalk");
+require("./messages-1184afb9.js");
+var compiler = require("./compiler-ace5bd88.js");
+require("@babel/parser");
+require("@babel/traverse");
+require("doctrine");
+require("child_process");
 
 /**
  * Production build for opaline based cli tool
@@ -24,7 +24,10 @@ require('child_process');
  * @usage {cliName} build
  */
 async function build() {
-  let compiler$1 = new compiler.Compiler({ cwd: process.cwd(), mode: "production" });
+  let compiler$1 = new compiler.Compiler({
+    cwd: process.cwd(),
+    mode: "production"
+  });
   return await compiler$1.compile({ watch: false });
 }
 
