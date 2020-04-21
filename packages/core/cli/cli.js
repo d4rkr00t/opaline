@@ -5,41 +5,64 @@ let pkg = require("../package.json");
 let config = {
   cliName: "opaline",
   cliVersion: pkg.version,
-  cliDescription: pkg.description,
+  cliDescription: "" || pkg.description,
   isSingleCommand: false,
   commands: {
-    "build": {
+    build: {
       commandName: "build",
-      meta: {"title":"Production build for opaline based cli tool","description":"","usage":"opaline build","examples":[],"shouldPassInputs":false,"options":{}},
+      meta: {
+        title: "Production build for opaline based cli tool",
+        description: "",
+        usage: "opaline build",
+        examples: [],
+        shouldPassInputs: false,
+        options: {}
+      },
       load: () => {
         let command = require("./commands/build");
 
         if (typeof command !== "function") {
-          throw new Error(`Command "build" doesn't export a function...`)
+          throw new Error(`Command "build" doesn't export a function...`);
         }
 
         return command;
       }
-    }, "create": {
+    },
+    create: {
       commandName: "create",
-      meta: {"title":"Bootstraps new Opaline based CLI tool","description":"","usage":"opaline create app","examples":[],"shouldPassInputs":true,"options":{}},
+      meta: {
+        title: "Bootstraps new Opaline based CLI tool",
+        description: "",
+        usage: "opaline create app",
+        examples: [],
+        shouldPassInputs: true,
+        options: {}
+      },
       load: () => {
         let command = require("./commands/create");
 
         if (typeof command !== "function") {
-          throw new Error(`Command "create" doesn't export a function...`)
+          throw new Error(`Command "create" doesn't export a function...`);
         }
 
         return command;
       }
-    }, "dev": {
+    },
+    dev: {
       commandName: "dev",
-      meta: {"title":"Development mode for building opaline based cli tools","description":"","usage":"opaline dev","examples":[],"shouldPassInputs":false,"options":{}},
+      meta: {
+        title: "Development mode for building opaline based cli tools",
+        description: "",
+        usage: "opaline dev",
+        examples: [],
+        shouldPassInputs: false,
+        options: {}
+      },
       load: () => {
         let command = require("./commands/dev");
 
         if (typeof command !== "function") {
-          throw new Error(`Command "dev" doesn't export a function...`)
+          throw new Error(`Command "dev" doesn't export a function...`);
         }
 
         return command;

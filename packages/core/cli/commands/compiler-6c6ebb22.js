@@ -14,7 +14,7 @@ var resolve = _interopDefault(require("@rollup/plugin-node-resolve"));
 var rimraf = _interopDefault(require("rimraf"));
 var core = require("@opaline/core");
 var readPkgUp = _interopDefault(require("read-pkg-up"));
-var messages = require("./messages-1184afb9.js");
+var messages = require("./messages-885f5fb4.js");
 var parser = require("@babel/parser");
 var traverse = _interopDefault(require("@babel/traverse"));
 var doctrine = require("doctrine");
@@ -82,7 +82,8 @@ async function parseSingleCommand(project, command) {
   let commandFileContent = await readFile(commandPath, "utf8");
   let meta = getMetaFromJSDoc({
     jsdocComment: getCommandJSDoc(commandFileContent),
-    cliName: project.cliName
+    cliName: project.cliName,
+    commandPath
   });
   return {
     commandName,
@@ -106,19 +107,22 @@ function getCommandJSDoc(content) {
         path.node.left.type !== "MemberExpression" ||
         path.node.left.property.name !== "exports" ||
         !path.node.left.object.hasOwnProperty("name") ||
-        path.node.left.object.name !== "module"
+        path.node.left.object.name !== "module" ||
+        (path.node.right.type !== "FunctionExpression" &&
+          path.node.right.type !== "ArrowFunctionExpression")
       ) {
         return;
       }
-      console.log(path.node.leadingComments);
       comment =
-        "/*" + (path.node.leadingComments || [{ value: "" }])[0].value + "\n*/";
+        "/*" +
+        (path.parent.leadingComments || [{ value: "" }])[0].value +
+        "\n*/";
     }
   });
   return comment;
 }
 
-function getMetaFromJSDoc({ jsdocComment, cliName }) {
+function getMetaFromJSDoc({ jsdocComment, cliName, commandPath }) {
   let jsdoc = jsdocComment
     ? doctrine.parse(jsdocComment, { unwrap: true, sloppy: true })
     : { description: "", tags: [] };
@@ -149,9 +153,13 @@ function getMetaFromJSDoc({ jsdocComment, cliName }) {
     ),
 
     options: jsdoc.tags.reduce((acc, tag) => {
+      if (tag.name === "$inputs") {
+        verify$InputsType(tag, commandPath);
+      }
       if (tag.title !== "param" || tag.name === "$inputs") return acc;
-      let type = tag.type.name || tag.type.expression.name;
+      let type = getTypeFromJSDocTag(tag);
       let defaultValue = tag.default;
+
       acc[tag.name] = {
         title: tag.description,
         type,
@@ -166,11 +174,47 @@ function getMetaFromJSDoc({ jsdocComment, cliName }) {
   };
 }
 
+function getTypeFromJSDocTag(tag) {
+  return tag.type.name || tag.type.expression.name;
+}
+
+function verify$InputsType(tag, commandPath) {
+  let type = getTypeFromJSDocTag(tag);
+  let notStringApplications = ((tag.type && tag.type.applications) || [])
+    .filter(app => app.name !== "string")
+    .map(app => app.name);
+
+  if (
+    (type === "string" || type === "Array") &&
+    !notStringApplications.length
+  ) {
+    return;
+  }
+
+  core.print(
+    messages.OP008_warningInputsNotArrayOrString(
+      type,
+      notStringApplications,
+      commandPath
+    )
+  );
+}
+
 function createEntryPoint({ project, commandsData }) {
   let pkgJsonRelativePath = path.relative(
     path.dirname(project.binOutputPath),
     project.pkgJson.path
   );
+  let mainCommand = commandsData.find(
+    command => command.commandName === "index"
+  );
+  let description = mainCommand
+    ? mainCommand.meta.title +
+      (mainCommand.meta.description
+        ? "\n\n" + mainCommand.meta.description
+        : "")
+    : "";
+
   return `#!/usr/bin/env node
 
 let cli = require("@opaline/core").default;
@@ -178,7 +222,7 @@ let pkg = require("${pkgJsonRelativePath}");
 let config = {
   cliName: "${project.cliName}",
   cliVersion: pkg.version,
-  cliDescription: pkg.description,
+  cliDescription: ${JSON.stringify(description)} || pkg.description,
   isSingleCommand: ${commandsData.length === 1 ? "true" : "false"},
   commands: {
     ${commandsData

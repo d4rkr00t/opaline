@@ -13,7 +13,6 @@ export function createEntryPoint({
     path.dirname(project.binOutputPath),
     project.pkgJson.path
   );
-  console.log(commandsData);
   let mainCommand = commandsData.find(
     command => command.commandName === "index"
   );

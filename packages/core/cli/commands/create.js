@@ -1,17 +1,19 @@
-'use strict';
+"use strict";
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+function _interopDefault(ex) {
+  return ex && typeof ex === "object" && "default" in ex ? ex["default"] : ex;
+}
 
-var path = require('path');
-var fs = require('fs');
-var util = require('util');
-var core = require('@opaline/core');
-var chalk = _interopDefault(require('chalk'));
-var messages = require('./messages-1184afb9.js');
-var cp = require('child_process');
-var enquirer = require('enquirer');
-var mkdirp = _interopDefault(require('mkdirp'));
-var runner = require('@opaline/runner');
+var path = require("path");
+var fs = require("fs");
+var util = require("util");
+var core = require("@opaline/core");
+var chalk = _interopDefault(require("chalk"));
+var messages = require("./messages-885f5fb4.js");
+var cp = require("child_process");
+var enquirer = require("enquirer");
+var mkdirp = _interopDefault(require("mkdirp"));
+var runner = require("@opaline/runner");
 
 let writeFile = util.promisify(fs.writeFile);
 let pexec = util.promisify(cp.exec);
@@ -20,11 +22,13 @@ let pexec = util.promisify(cp.exec);
  * Bootstraps new Opaline based CLI tool
  *
  * @usage {cliName} create app
- * @param {string[]} $inputs Name of a CLI tool
+ * @param {Array<string>} $inputs Name of a CLI tool
  */
 async function create([name] = []) {
   if (!name) {
-    throw core.OpalineError.fromArray(messages.OP006_errorProjectNameIsRequired());
+    throw core.OpalineError.fromArray(
+      messages.OP006_errorProjectNameIsRequired()
+    );
   }
 
   return await runner.createCommand([
@@ -36,7 +40,7 @@ async function create([name] = []) {
   ])({ name });
 }
 
-let exist = async (file) => {
+let exist = async file => {
   try {
     await util.promisify(fs.access)(file, fs.constants.F_OK);
     return false;
@@ -50,7 +54,9 @@ let initialize = {
   async task(ctx, { name }, runner) {
     let dir = path.join(process.cwd(), name);
     if (!(await exist(dir))) {
-      throw core.OpalineError.fromArray(messages.OP007_errorProjectFolderExists(dir));
+      throw core.OpalineError.fromArray(
+        messages.OP007_errorProjectFolderExists(dir)
+      );
     }
 
     runner.stopAndClearSpinner();
@@ -157,18 +163,6 @@ let bootstrapFiles = {
     ];
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 let commandFileTemplateJS = `/**
  * Use JSDoc comments to define help and parameters for a CLI.

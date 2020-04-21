@@ -85,6 +85,25 @@ export function OP007_errorProjectFolderExists(dir: string) {
 }
 //#endregion
 
+//#region Warning Messages
+export function OP008_warningInputsNotArrayOrString(
+  type: string,
+  applications: Array<string>,
+  commandPath: string
+) {
+  let printType = applications.length
+    ? `Array<${applications.join(" | ")}>`
+    : type;
+  return [
+    chalk.yellow(
+      `${warningBadge()} OP008: Type of $inputs must be "string | Array<string>", got: "${printType}" instead`
+    ),
+    "",
+    chalk.dim(`– File: ${commandPath}`)
+  ];
+}
+//#endregion
+
 //#region Success Messages
 export function MSG_buildSuccess(
   commandsOutputPath: string,

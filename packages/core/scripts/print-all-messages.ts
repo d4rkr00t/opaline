@@ -1,4 +1,4 @@
-import * as messages from "../compiler/messages";
+import * as messages from "../commands/compiler/messages";
 import { print } from "../src/utils/print";
 
 let commandsDirPath = "/User/john/cli/commands";
@@ -43,7 +43,17 @@ let info = [
     [100, 100]
   ),
   messages.MSG_watchStarted(["build.ts", "create.ts", "dev.ts"], "commands/"),
-  messages.MSG_watchUpdated(["build.ts", "create.ts", "dev.ts"], "commands/")
+  messages.MSG_watchUpdated(["build.ts", "create.ts", "dev.ts"], "commands/"),
+  messages.OP008_warningInputsNotArrayOrString(
+    "number",
+    [],
+    "commands/index.js"
+  ),
+  messages.OP008_warningInputsNotArrayOrString(
+    "Array",
+    ["number"],
+    "commands/index.js"
+  )
 ];
 
 console.log();

@@ -5,7 +5,9 @@ import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import * as doctrine from "doctrine";
 import { ProjectInfo } from "./project-info";
+import { print } from "@opaline/core";
 import { OpalineCommandMeta } from "../../src/types";
+import { OP008_warningInputsNotArrayOrString } from "./messages";
 
 let readFile = promisify(fs.readFile);
 
@@ -27,7 +29,8 @@ export async function parseSingleCommand(
   let commandFileContent = await readFile(commandPath, "utf8");
   let meta = getMetaFromJSDoc({
     jsdocComment: getCommandJSDoc(commandFileContent),
-    cliName: project.cliName
+    cliName: project.cliName,
+    commandPath
   });
   return {
     commandName,
@@ -68,10 +71,12 @@ export function getCommandJSDoc(content: string) {
 
 export function getMetaFromJSDoc({
   jsdocComment,
-  cliName
+  cliName,
+  commandPath
 }: {
   jsdocComment: string;
   cliName: string;
+  commandPath: string;
 }): OpalineCommandMeta {
   let jsdoc = jsdocComment
     ? doctrine.parse(jsdocComment, { unwrap: true, sloppy: true })
@@ -103,9 +108,13 @@ export function getMetaFromJSDoc({
     ),
 
     options: jsdoc.tags.reduce((acc, tag) => {
+      if (tag.name === "$inputs") {
+        verify$InputsType(tag, commandPath);
+      }
       if (tag.title !== "param" || tag.name === "$inputs") return acc;
-      let type = (tag.type as any).name || (tag.type as any).expression.name;
+      let type = getTypeFromJSDocTag(tag);
       let defaultValue = (tag as any).default;
+
       acc[tag.name] = {
         title: tag.description,
         type,
@@ -118,6 +127,35 @@ export function getMetaFromJSDoc({
       return acc;
     }, {})
   };
+}
+
+function getTypeFromJSDocTag(tag: doctrine.Tag) {
+  return (tag.type as any).name || (tag.type as any).expression.name;
+}
+
+function verify$InputsType(tag: doctrine.Tag, commandPath: string) {
+  let type = getTypeFromJSDocTag(tag);
+  let notStringApplications = (
+    (tag.type && (tag.type as any).applications) ||
+    []
+  )
+    .filter(app => app.name !== "string")
+    .map(app => app.name);
+
+  if (
+    (type === "string" || type === "Array") &&
+    !notStringApplications.length
+  ) {
+    return;
+  }
+
+  print(
+    OP008_warningInputsNotArrayOrString(
+      type,
+      notStringApplications,
+      commandPath
+    )
+  );
 }
 
 export type CommandData = {

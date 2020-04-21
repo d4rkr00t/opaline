@@ -1,9 +1,11 @@
-'use strict';
+"use strict";
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+function _interopDefault(ex) {
+  return ex && typeof ex === "object" && "default" in ex ? ex["default"] : ex;
+}
 
-var path = require('path');
-var chalk = _interopDefault(require('chalk'));
+var path = require("path");
+var chalk = _interopDefault(require("chalk"));
 
 //#region Error Messages
 function OP001_errorBinIsEmpty() {
@@ -18,7 +20,7 @@ function OP001_errorBinIsEmpty() {
       chalk`Choose any path and name for {yellow "cli.js"}, don't need to create this file,`,
       chalk`{yellow opaline} will generate it for you at provided path.`
     ]
-  ] ;
+  ];
 }
 
 function OP002_errorNoPackageJson() {
@@ -30,7 +32,7 @@ function OP002_errorNoPackageJson() {
       "",
       ...codeSnippet("λ npm init --yes")
     ]
-  ] ;
+  ];
 }
 
 function OP003_errorNoCommandsFolder(commandsDirPath) {
@@ -42,20 +44,17 @@ function OP003_errorNoCommandsFolder(commandsDirPath) {
       "",
       chalk`Please create {yellow "commands"} folder, because this is where {yellow opaline} is expecting to find cli commands to compile.`
     ]
-  ] ;
+  ];
 }
 
 function OP004_errorEmptyCommandsFolder(commandsDirPath) {
   return [
     chalk.red(`${errorBadge()} OP004: Commands folder is empty`),
     ["", chalk`Add files to {yellow "${commandsDirPath}"}.`]
-  ] ;
+  ];
 }
 
-function OP005_errorSrcEqDest(
-  commandsDirPath,
-  commandsOutputPath
-) {
+function OP005_errorSrcEqDest(commandsDirPath, commandsOutputPath) {
   return [
     chalk.red(`${errorBadge()} OP005: Source and output folder are the same`),
     [
@@ -71,20 +70,33 @@ function OP005_errorSrcEqDest(
         "}"
       ])
     ]
-  ] ;
+  ];
 }
 
 function OP006_errorProjectNameIsRequired() {
   return [
     chalk.red(`${errorBadge()} OP006: A project name is required!`),
     ["", ...codeSnippet([`λ opaline create app`])]
-  ] ;
+  ];
 }
 
 function OP007_errorProjectFolderExists(dir) {
+  return [chalk.red(`${errorBadge()} OP007: Folder "${dir}" already exists`)];
+}
+//#endregion
+
+//#region Warning Messages
+function OP008_warningInputsNotArrayOrString(type, applications, commandPath) {
+  let printType = applications.length
+    ? `Array<${applications.join(" | ")}>`
+    : type;
   return [
-    chalk.red(`${errorBadge()} OP007: Folder "${dir}" already exists`)
-  ] ;
+    chalk.yellow(
+      `${warningBadge()} OP008: Type of $inputs must be "string | Array<string>", got: "${printType}" instead`
+    ),
+    "",
+    chalk.dim(`– File: ${commandPath}`)
+  ];
 }
 //#endregion
 
@@ -132,10 +144,7 @@ function MSG_buildSuccess(
   return message;
 }
 
-function MSG_watchStarted(
-  commands,
-  relativePathToCommands
-) {
+function MSG_watchStarted(commands, relativePathToCommands) {
   return [
     chalk`{green ${greenBadge(
       "DEV MODE"
@@ -149,10 +158,7 @@ function MSG_watchStarted(
   ];
 }
 
-function MSG_watchUpdated(
-  commands,
-  relativePathToCommands
-) {
+function MSG_watchUpdated(commands, relativePathToCommands) {
   return [
     "",
     blueBadge("UPDATED"),
@@ -168,11 +174,15 @@ function MSG_watchUpdated(
 
 //#region Message helpers
 function codeSnippet(code) {
-  return ([] ).concat(code).map(line => chalk.dim(line));
+  return [].concat(code).map(line => chalk.dim(line));
 }
 
 function greenBadge(label) {
   return chalk.bgGreen.black(` ${label} `);
+}
+
+function yellowBadge(label) {
+  return chalk.bgYellow.black(` ${label} `);
 }
 
 function blueBadge(label) {
@@ -185,6 +195,10 @@ function redBadge(label) {
 
 function doneBadge() {
   return greenBadge("DONE");
+}
+
+function warningBadge() {
+  return yellowBadge("WARNING");
 }
 
 function errorBadge() {
@@ -202,3 +216,4 @@ exports.OP004_errorEmptyCommandsFolder = OP004_errorEmptyCommandsFolder;
 exports.OP005_errorSrcEqDest = OP005_errorSrcEqDest;
 exports.OP006_errorProjectNameIsRequired = OP006_errorProjectNameIsRequired;
 exports.OP007_errorProjectFolderExists = OP007_errorProjectFolderExists;
+exports.OP008_warningInputsNotArrayOrString = OP008_warningInputsNotArrayOrString;

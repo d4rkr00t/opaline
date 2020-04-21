@@ -19,7 +19,7 @@ let pexec = promisify(exec);
  * Bootstraps new Opaline based CLI tool
  *
  * @usage {cliName} create app
- * @param {string[]} $inputs Name of a CLI tool
+ * @param {Array<string>} $inputs Name of a CLI tool
  */
 export default async function create([name] = []) {
   if (!name) {
