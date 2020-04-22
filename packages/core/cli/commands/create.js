@@ -118,16 +118,29 @@ let updatePackageJson = {
 
     pkgJson.scripts.build = "opaline build";
     pkgJson.scripts.dev = "opaline dev";
+    pkgJson.scripts.typecheck = "exit 0";
+    pkgJson.scripts["lint:staged"] = "lint-staged";
+    pkgJson.scripts["prepare"] = "npm run typecheck";
+    pkgJson["pre-commit"] = ["lint:staged"];
+    pkgJson["lint-staged"] = {
+      "*.{js,ts,tsx}": ["prettier --write", "git add"]
+    };
 
     pkgJson.dependencies = {
       "@opaline/core": "*"
     };
 
     if (ctx.isTS) {
+      pkgJson.scripts.typecheck = "tsc";
+
       pkgJson.devDependencies = {
         typescript: "*"
       };
     }
+
+    pkgJson.devDependencies["lint-staged"] = "*";
+    pkgJson.devDependencies["pre-commit"] = "*";
+    pkgJson.devDependencies["prettier"] = "*";
 
     await writeFile(pkgJsonPath, JSON.stringify(pkgJson, null, 2), "utf8");
   }
