@@ -1,5 +1,17 @@
 # opaline-ink-cli
 
+## 1.0.4
+
+### Patch Changes
+
+- fb4c301: feat: prefer index.js title + description from JSDoc over package.json#description
+- 4880fc7: add lint-staged, prettier, pre-commit and tsc typecheck to generated with create project
+- 666ecde: warn when \$inputs type is wrong
+- Updated dependencies [fb4c301]
+- Updated dependencies [4880fc7]
+- Updated dependencies [666ecde]
+  - @opaline/core@0.5.0
+
 ## 1.0.3
 
 ### Patch Changes
