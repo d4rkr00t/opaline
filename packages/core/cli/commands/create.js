@@ -36,11 +36,11 @@ async function create([name] = []) {
     createMainFolder,
     npmInit,
     updatePackageJson,
-    bootstrapFiles
+    bootstrapFiles,
   ])({ name });
 }
 
-let exist = async file => {
+let exist = async (file) => {
   try {
     await util.promisify(fs.access)(file, fs.constants.F_OK);
     return false;
@@ -69,14 +69,14 @@ let initialize = {
           name: "bin",
           message: "Name of a bin file for the cli:",
           hint: "> name --params",
-          initial: name
+          initial: name,
         },
         {
           type: "confirm",
           name: "ists",
           message: "Use TypeScript?:",
-          initial: true
-        }
+          initial: true,
+        },
       ]);
     } catch (e) {
       runner.abort();
@@ -88,7 +88,7 @@ let initialize = {
     ctx.name = name;
     ctx.bin = responses.bin;
     ctx.isTS = responses.ists;
-  }
+  },
 };
 
 let createMainFolder = {
@@ -96,14 +96,14 @@ let createMainFolder = {
   async task(ctx) {
     await mkdirp(ctx.dir);
     await mkdirp(ctx.commandsDir);
-  }
+  },
 };
 
 let npmInit = {
   title: "Initializng npm package...",
   async task(ctx) {
     await pexec(`cd ${ctx.dir} && npm init --yes`);
-  }
+  },
 };
 
 let updatePackageJson = {
@@ -113,7 +113,7 @@ let updatePackageJson = {
     let pkgJson = require(pkgJsonPath);
 
     pkgJson.bin = {
-      [ctx.bin]: path.join(".", "dist", "cli.js")
+      [ctx.bin]: path.join(".", "dist", "cli.js"),
     };
 
     pkgJson.scripts.build = "opaline build";
@@ -123,18 +123,18 @@ let updatePackageJson = {
     pkgJson.scripts["prepare"] = "npm run typecheck";
     pkgJson["pre-commit"] = ["lint:staged"];
     pkgJson["lint-staged"] = {
-      "*.{js,ts,tsx}": ["prettier --write", "git add"]
+      "*.{js,ts,tsx}": ["prettier --write", "git add"],
     };
 
     pkgJson.dependencies = {
-      "@opaline/core": "*"
+      "@opaline/core": "*",
     };
 
     if (ctx.isTS) {
       pkgJson.scripts.typecheck = "tsc";
 
       pkgJson.devDependencies = {
-        typescript: "*"
+        typescript: "*",
       };
     }
 
@@ -143,7 +143,7 @@ let updatePackageJson = {
     pkgJson.devDependencies["prettier"] = "*";
 
     await writeFile(pkgJsonPath, JSON.stringify(pkgJson, null, 2), "utf8");
-  }
+  },
 };
 
 let bootstrapFiles = {
@@ -172,9 +172,9 @@ let bootstrapFiles = {
       chalk`– {yellow cd ${ctx.name}}`,
       chalk`– {yellow npm install {dim or} yarn install}`,
       chalk`– {yellow npm run dev {dim or} yarn dev {dim # to start developing your CLI!}}`,
-      ""
+      "",
     ];
-  }
+  },
 };
 
 let commandFileTemplateJS = `/**

@@ -3,11 +3,11 @@ import * as path from "path";
 import {
   parseCommands,
   getCommandJSDoc,
-  getMetaFromJSDoc
+  getMetaFromJSDoc,
 } from "../commands-parser";
 import { ProjectInfo } from "../project-info";
 
-test("parseCommands should be able to parse jsdoc from a command file", async t => {
+test("parseCommands should be able to parse jsdoc from a command file", async (t) => {
   let project = {
     commandsDirPath: path.join(
       __dirname,
@@ -20,14 +20,14 @@ test("parseCommands should be able to parse jsdoc from a command file", async t 
       "singlecli",
       "commands"
     ),
-    cliName: "example"
+    cliName: "example",
   } as ProjectInfo;
   let commands = ["index.js"];
   let parsedCommands = await parseCommands(project, commands);
   t.snapshot(parsedCommands);
 });
 
-test("parseCommands should be able to parse jsdoc from multiple files file", async t => {
+test("parseCommands should be able to parse jsdoc from multiple files file", async (t) => {
   let project = {
     commandsDirPath: path.join(
       __dirname,
@@ -40,14 +40,14 @@ test("parseCommands should be able to parse jsdoc from multiple files file", asy
       "multicli",
       "commands"
     ),
-    cliName: "example"
+    cliName: "example",
   } as ProjectInfo;
   let commands = ["index.js", "hello-world.js", "runner.js"];
   let parsedCommands = await parseCommands(project, commands);
   t.snapshot(parsedCommands);
 });
 
-test("getMetaFromJSDoc should support aliases", t => {
+test("getMetaFromJSDoc should support aliases", (t) => {
   let source = `
   /**
    * @param {string} name Name
@@ -60,13 +60,14 @@ test("getMetaFromJSDoc should support aliases", t => {
   `;
   let meta = getMetaFromJSDoc({
     jsdocComment: getCommandJSDoc(source),
-    cliName: "cli"
+    cliName: "cli",
+    commandPath: "",
   });
   t.is(meta.options.name.alias, "n");
   t.is(meta.options.age.alias, "a");
 });
 
-test("getCommandJSDoc should support module.exports", t => {
+test("getCommandJSDoc should support module.exports", (t) => {
   let source = `
   /**
    * @param {string} name Name
@@ -81,7 +82,7 @@ test("getCommandJSDoc should support module.exports", t => {
   t.true(!!jsdoc);
 });
 
-test("getCommandJSDoc should support export default", t => {
+test("getCommandJSDoc should support export default", (t) => {
   let source = `
   /**
    * @param {string} name Name

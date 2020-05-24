@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.OpalineError = void 0;
 class OpalineError extends Error {
   constructor(message, hint, code = 1) {
     super(message);

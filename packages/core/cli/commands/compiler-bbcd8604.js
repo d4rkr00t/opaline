@@ -17,7 +17,7 @@ var readPkgUp = _interopDefault(require("read-pkg-up"));
 var messages = require("./messages-885f5fb4.js");
 var parser = require("@babel/parser");
 var traverse = _interopDefault(require("@babel/traverse"));
-var doctrine = require("doctrine");
+var commentParser = _interopDefault(require("comment-parser"));
 var cp = require("child_process");
 
 async function readPackageJson(cwd) {
@@ -64,7 +64,7 @@ async function getProjectInfo(cwd) {
     cliName,
     binOutputPath,
     commandsOutputPath,
-    commandsDirPath
+    commandsDirPath,
   };
 }
 
@@ -72,7 +72,7 @@ let readFile = util.promisify(fs.readFile);
 
 async function parseCommands(project, commands) {
   return await Promise.all(
-    commands.map(command => parseSingleCommand(project, command))
+    commands.map((command) => parseSingleCommand(project, command))
   );
 }
 
@@ -83,18 +83,18 @@ async function parseSingleCommand(project, command) {
   let meta = getMetaFromJSDoc({
     jsdocComment: getCommandJSDoc(commandFileContent),
     cliName: project.cliName,
-    commandPath
+    commandPath,
   });
   return {
     commandName,
-    meta
+    meta,
   };
 }
 
 function getCommandJSDoc(content) {
   let ast = parser.parse(content, {
     sourceType: "module",
-    plugins: ["typescript", "jsx"]
+    plugins: ["typescript", "jsx"],
   });
   let comment;
   traverse(ast, {
@@ -117,46 +117,52 @@ function getCommandJSDoc(content) {
         "/*" +
         (path.parent.leadingComments || [{ value: "" }])[0].value +
         "\n*/";
-    }
+    },
   });
   return comment;
 }
 
 function getMetaFromJSDoc({ jsdocComment, cliName, commandPath }) {
   let jsdoc = jsdocComment
-    ? doctrine.parse(jsdocComment, { unwrap: true, sloppy: true })
+    ? commentParser(jsdocComment)[0] || { description: "", tags: [] }
     : { description: "", tags: [] };
   let [title, ...description] = jsdoc.description.split("\n\n");
   let aliases = jsdoc.tags
-    .filter(tag => tag.title === "short")
-    .map(alias => alias.description)
+    .filter((tag) => tag.tag === "short")
+    .map((alias) => alias.name)
     .reduce((acc, alias) => {
       let [full, short] = alias.split("=");
       acc[full.trim()] = short.trim();
       return acc;
     }, {});
+  let usage = jsdoc.tags.find((tag) => tag.tag === "usage") || {
+    name: "",
+    description: "",
+  };
 
   return {
     title: title || "No description",
     description: description.join("\n\n"),
 
-    usage: (
-      jsdoc.tags.find(tag => tag.title === "usage") || { description: "" }
-    ).description.replace("{cliName}", cliName),
+    usage: [usage.name, usage.description.replace("{cliName}", cliName)].join(
+      " "
+    ),
 
     examples: jsdoc.tags
-      .filter(tag => tag.title === "example")
-      .map(tag => tag.description.replace("{cliName}", cliName)),
+      .filter((tag) => tag.tag === "example")
+      .map((tag) =>
+        [tag.name, tag.description.replace("{cliName}", cliName)].join(" ")
+      ),
 
     shouldPassInputs: !!jsdoc.tags.find(
-      tag => tag.title === "param" && tag.name === "$inputs"
+      (tag) => tag.tag === "param" && tag.name === "$inputs"
     ),
 
     options: jsdoc.tags.reduce((acc, tag) => {
       if (tag.name === "$inputs") {
         verify$InputsType(tag, commandPath);
       }
-      if (tag.title !== "param" || tag.name === "$inputs") return acc;
+      if (tag.tag !== "param" || tag.name === "$inputs") return acc;
       let type = getTypeFromJSDocTag(tag);
       let defaultValue = tag.default;
 
@@ -167,27 +173,25 @@ function getMetaFromJSDoc({ jsdocComment, cliName, commandPath }) {
         default:
           defaultValue && type === "number"
             ? parseInt(defaultValue)
-            : defaultValue
+            : defaultValue,
       };
       return acc;
-    }, {})
+    }, {}),
   };
 }
 
 function getTypeFromJSDocTag(tag) {
-  return tag.type.name || tag.type.expression.name;
+  return tag.type;
 }
 
 function verify$InputsType(tag, commandPath) {
   let type = getTypeFromJSDocTag(tag);
-  let notStringApplications = ((tag.type && tag.type.applications) || [])
-    .filter(app => app.name !== "string")
-    .map(app => app.name);
+  let notStringApplications = [tag.type].filter(
+    (type) =>
+      !["string", "string[]", "array<string>"].includes(type.toLowerCase())
+  );
 
-  if (
-    (type === "string" || type === "Array") &&
-    !notStringApplications.length
-  ) {
+  if (!notStringApplications.length) {
     return;
   }
 
@@ -206,7 +210,7 @@ function createEntryPoint({ project, commandsData }) {
     project.pkgJson.path
   );
   let mainCommand = commandsData.find(
-    command => command.commandName === "index"
+    (command) => command.commandName === "index"
   );
   let description = mainCommand
     ? mainCommand.meta.title +
@@ -227,7 +231,7 @@ let config = {
   commands: {
     ${commandsData
       .map(
-        command => `"${command.commandName}": {
+        (command) => `"${command.commandName}": {
       commandName: "${command.commandName}",
       meta: ${JSON.stringify(command.meta)},
       load: () => {
@@ -308,24 +312,24 @@ class Compiler {
       input: this.getEntryPoints(this.commands),
       output: {
         dir: this.project.commandsOutputPath,
-        format: "cjs"
+        format: "cjs",
       },
-      external: id =>
+      external: (id) =>
         !id.startsWith("\0") && !id.startsWith(".") && !id.startsWith("/"),
-      onwarn: warning => {
+      onwarn: (warning) => {
         if (warning.code !== "EMPTY_BUNDLE") {
           core.printWarning(warning.message);
         }
       },
       plugins: [
         resolve({
-          extensions: [".js", ".ts", ".tsx"]
+          extensions: [".js", ".ts", ".tsx"],
         }),
         sucrase({
           exclude: ["node_modules/**"],
-          transforms: ["typescript", "jsx"]
-        })
-      ]
+          transforms: ["typescript", "jsx"],
+        }),
+      ],
     };
   }
 
@@ -334,10 +338,10 @@ class Compiler {
       return (
         await readdir(this.project.commandsDirPath, { withFileTypes: true })
       )
-        .filter(dirent => dirent.isFile())
-        .map(dirent => dirent.name)
+        .filter((dirent) => dirent.isFile())
+        .map((dirent) => dirent.name)
         .filter(
-          file =>
+          (file) =>
             !file.endsWith(".d.ts") &&
             !file.endsWith(".map") &&
             !file.startsWith("_") &&
@@ -351,7 +355,7 @@ class Compiler {
   }
 
   getEntryPoints(commands) {
-    return commands.map(c => path.join(this.project.commandsDirPath, c));
+    return commands.map((c) => path.join(this.project.commandsDirPath, c));
   }
 
   __init() {
@@ -359,7 +363,7 @@ class Compiler {
       let commandsData = await parseCommands(this.project, this.commands);
       let entryPoint = createEntryPoint({
         project: this.project,
-        commandsData
+        commandsData,
       });
       await writeFile(this.project.binOutputPath, entryPoint, "utf8");
       await chmod(this.project.binOutputPath, "755");
@@ -414,14 +418,14 @@ class Compiler {
     // Watch other FS changes that rollup watcher is not able to pick up.
     // E.g. creating/removing new entry points.
     let watcher = chokidar.watch(this.project.commandsDirPath, {
-      ignoreInitial: true
+      ignoreInitial: true,
     });
     watcher
-      .on("add", async file => {
+      .on("add", async (file) => {
         await this.updateCommands();
         this.createWatchBundler();
       })
-      .on("unlink", async file => {
+      .on("unlink", async (file) => {
         await this.updateCommands();
         this.createWatchBundler();
       });
@@ -446,7 +450,7 @@ class Compiler {
     }
 
     this.watcher = rollup.watch([this.createBundlerConfig()]);
-    this.watcher.on("event", event => {
+    this.watcher.on("event", (event) => {
       if (event.code === "BUNDLE_END") {
         this.onBundled();
       }

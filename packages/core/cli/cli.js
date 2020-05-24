@@ -13,10 +13,10 @@ let config = {
       meta: {
         title: "Production build for opaline based cli tool",
         description: "",
-        usage: "opaline build",
+        usage: "build ",
         examples: [],
         shouldPassInputs: false,
-        options: {}
+        options: {},
       },
       load: () => {
         let command = require("./commands/build");
@@ -26,17 +26,17 @@ let config = {
         }
 
         return command;
-      }
+      },
     },
     create: {
       commandName: "create",
       meta: {
         title: "Bootstraps new Opaline based CLI tool",
         description: "",
-        usage: "opaline create app",
+        usage: "create app",
         examples: [],
         shouldPassInputs: true,
-        options: {}
+        options: {},
       },
       load: () => {
         let command = require("./commands/create");
@@ -46,17 +46,17 @@ let config = {
         }
 
         return command;
-      }
+      },
     },
     dev: {
       commandName: "dev",
       meta: {
         title: "Development mode for building opaline based cli tools",
         description: "",
-        usage: "opaline dev",
+        usage: "dev ",
         examples: [],
         shouldPassInputs: false,
-        options: {}
+        options: {},
       },
       load: () => {
         let command = require("./commands/dev");
@@ -66,9 +66,9 @@ let config = {
         }
 
         return command;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 cli(process.argv, config);

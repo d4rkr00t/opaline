@@ -1,7 +1,7 @@
 "use strict";
 var __importDefault =
   (this && this.__importDefault) ||
-  function(mod) {
+  function (mod) {
     return mod && mod.__esModule ? mod : { default: mod };
   };
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -29,13 +29,13 @@ function formatSubCommandHelpData(help) {
       "",
       chalk_1.default.bold("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
-        opt => `${opt[0]}     ${opt[1]}`
+        (opt) => `${opt[0]}     ${opt[1]}`
       )
     );
   }
   if (help.description) {
     output.push("", chalk_1.default.bold("DESCRIPTION"), [
-      capFirst(help.description)
+      capFirst(help.description),
     ]);
   }
   if (help.examples && help.examples.length) {
@@ -49,7 +49,7 @@ function formatHelpData(help) {
     output.push("", help.cliDescription);
   }
   output.push("", chalk_1.default.bold("VERSION"), [
-    `${help.cliName}/${help.cliVersion}`
+    `${help.cliName}/${help.cliVersion}`,
   ]);
   if (help.usage) {
     output.push("", chalk_1.default.bold("USAGE"), [help.usage]);
@@ -58,16 +58,16 @@ function formatHelpData(help) {
     output.push(
       "",
       chalk_1.default.bold("COMMANDS"),
-      formatList(help.commands.map(c => [c.name, capFirst(c.title || "")])).map(
-        c => `${c[0]}     ${c[1]}`
-      ),
+      formatList(
+        help.commands.map((c) => [c.name, capFirst(c.title || "")])
+      ).map((c) => `${c[0]}     ${c[1]}`),
       "",
       join(
         [
           chalk_1.default.yellow("> NOTE:"),
           chalk_1.default.dim(
             `To view the usage information for a specific command, run '${help.cliName} [COMMAND] --help'`
-          )
+          ),
         ],
         " "
       )
@@ -78,7 +78,7 @@ function formatHelpData(help) {
       "",
       chalk_1.default.bold("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
-        opt => `${opt[0]}     ${opt[1]}`
+        (opt) => `${opt[0]}     ${opt[1]}`
       )
     );
   }
@@ -97,8 +97,8 @@ function isSubCommandHelp(help) {
  * Formats a list of [string, string] in a way that first string length is equal accross the array
  */
 function formatList(list) {
-  let minLength = Math.max(...list.map(l => l[0].length));
-  return list.map(line => [line[0].padEnd(minLength, " "), line[1]]);
+  let minLength = Math.max(...list.map((l) => l[0].length));
+  return list.map((line) => [line[0].padEnd(minLength, " "), line[1]]);
 }
 /**
  * Formats CLI options in following structure suitable for formatList:
@@ -113,10 +113,10 @@ function formatOption(option) {
         option.type ? chalk_1.default.dim(`[${option.type}]`) : "",
         option.default
           ? chalk_1.default.dim(`[default: ${option.default}]`)
-          : ""
+          : "",
       ],
       " "
-    )
+    ),
   ];
 }
 /**

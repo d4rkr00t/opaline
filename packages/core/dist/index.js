@@ -1,28 +1,54 @@
 "use strict";
 var __importDefault =
   (this && this.__importDefault) ||
-  function(mod) {
+  function (mod) {
     return mod && mod.__esModule ? mod : { default: mod };
   };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.printWarning = exports.printInfo = exports.printError = exports.print = exports.OpalineError = void 0;
 const help_theme_default_1 = __importDefault(
   require("@opaline/help-theme-default")
 );
 const help_1 = require("./handlers/help");
 const args_1 = require("./utils/args");
 const error_1 = require("./utils/error");
-exports.OpalineError = error_1.OpalineError;
+Object.defineProperty(exports, "OpalineError", {
+  enumerable: true,
+  get: function () {
+    return error_1.OpalineError;
+  },
+});
 const print_1 = require("./utils/print");
-exports.print = print_1.print;
-exports.printError = print_1.printError;
-exports.printInfo = print_1.printInfo;
-exports.printWarning = print_1.printWarning;
+Object.defineProperty(exports, "print", {
+  enumerable: true,
+  get: function () {
+    return print_1.print;
+  },
+});
+Object.defineProperty(exports, "printError", {
+  enumerable: true,
+  get: function () {
+    return print_1.printError;
+  },
+});
+Object.defineProperty(exports, "printInfo", {
+  enumerable: true,
+  get: function () {
+    return print_1.printInfo;
+  },
+});
+Object.defineProperty(exports, "printWarning", {
+  enumerable: true,
+  get: function () {
+    return print_1.printWarning;
+  },
+});
 async function opaline(rawArgv, config) {
   let helpFormatter = help_theme_default_1.default;
   let argv = rawArgv.slice(2);
   let commandName = argv[0];
   let isCommand = !!commandName && !commandName.startsWith("-");
-  let hasCommand = name => !!config.commands[name];
+  let hasCommand = (name) => !!config.commands[name];
   // 0. If no commands -> blow up!
   // 1. If --version and command is not passed -> print version
   // 2. If --help
@@ -50,13 +76,13 @@ async function opaline(rawArgv, config) {
       return help({
         helpFormatter,
         config,
-        commandName: "index"
+        commandName: "index",
       });
     } else if (isCommand && hasCommand(commandName)) {
       return help({
         helpFormatter,
         config,
-        commandName
+        commandName,
       });
     } else if (isCommand && !hasCommand(commandName)) {
       return error(
@@ -70,7 +96,7 @@ async function opaline(rawArgv, config) {
       commandName,
       config,
       argv,
-      isCommand
+      isCommand,
     });
   }
   // # 4 – single command cli
@@ -81,13 +107,13 @@ async function opaline(rawArgv, config) {
         commandName: "index",
         config,
         argv,
-        isCommand
+        isCommand,
       });
     } else {
       return help({
         helpFormatter,
         config,
-        commandName: ""
+        commandName: "",
       });
     }
   }
@@ -99,13 +125,13 @@ async function opaline(rawArgv, config) {
         commandName: "index",
         config,
         argv,
-        isCommand
+        isCommand,
       });
     } else {
       return help({
         helpFormatter,
         config,
-        commandName: ""
+        commandName: "",
       });
     }
   }
@@ -121,7 +147,7 @@ async function run({ config, commandName, argv, isCommand }) {
   );
   let inputs =
     isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
-  let args = Object.keys(command.meta.options || {}).map(opt => flags[opt]);
+  let args = Object.keys(command.meta.options || {}).map((opt) => flags[opt]);
   try {
     await command
       .load()
@@ -147,7 +173,7 @@ function help({ helpFormatter, config, commandName }) {
   help_1.helpCommand({
     helpFormatter,
     config,
-    commandName
+    commandName,
   });
   process.exit(0);
 }

@@ -1,10 +1,11 @@
 "use strict";
 var __importDefault =
   (this && this.__importDefault) ||
-  function(mod) {
+  function (mod) {
     return mod && mod.__esModule ? mod : { default: mod };
   };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.printInfo = exports.printError = exports.printWarning = exports.print = exports.indent = void 0;
 const chalk_1 = __importDefault(require("chalk"));
 function indent(text, level = 1) {
   return `${"".padStart(level * 2, " ")}${text}`;
@@ -12,7 +13,7 @@ function indent(text, level = 1) {
 exports.indent = indent;
 function print(text, level = 0) {
   if (Array.isArray(text)) {
-    text.forEach(item => {
+    text.forEach((item) => {
       if (Array.isArray(item)) {
         print(item, level + 1);
       } else {
