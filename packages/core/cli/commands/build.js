@@ -12,10 +12,10 @@ require("@opaline/core");
 require("read-pkg-up");
 require("chalk");
 require("./messages-885f5fb4.js");
-var compiler = require("./compiler-6c6ebb22.js");
+var compiler = require("./compiler-bbcd8604.js");
 require("@babel/parser");
 require("@babel/traverse");
-require("doctrine");
+require("comment-parser");
 require("child_process");
 
 /**
@@ -26,7 +26,7 @@ require("child_process");
 async function build() {
   let compiler$1 = new compiler.Compiler({
     cwd: process.cwd(),
-    mode: "production"
+    mode: "production",
   });
   return await compiler$1.compile({ watch: false });
 }

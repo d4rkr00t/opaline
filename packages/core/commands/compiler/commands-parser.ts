@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { promisify } from "util";
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
-import * as doctrine from "doctrine";
+import commentParser from "comment-parser";
 import { ProjectInfo } from "./project-info";
 import { print } from "@opaline/core";
 import { OpalineCommandMeta } from "../../src/types";
@@ -16,7 +16,7 @@ export async function parseCommands(
   commands: Array<string>
 ): Promise<Array<CommandData>> {
   return await Promise.all(
-    commands.map(command => parseSingleCommand(project, command))
+    commands.map((command) => parseSingleCommand(project, command))
   );
 }
 
@@ -30,18 +30,18 @@ export async function parseSingleCommand(
   let meta = getMetaFromJSDoc({
     jsdocComment: getCommandJSDoc(commandFileContent),
     cliName: project.cliName,
-    commandPath
+    commandPath,
   });
   return {
     commandName,
-    meta
+    meta,
   };
 }
 
 export function getCommandJSDoc(content: string) {
   let ast = parser.parse(content, {
     sourceType: "module",
-    plugins: ["typescript", "jsx"]
+    plugins: ["typescript", "jsx"],
   });
   let comment;
   traverse(ast, {
@@ -64,7 +64,7 @@ export function getCommandJSDoc(content: string) {
         "/*" +
         (path.parent.leadingComments || [{ value: "" }])[0].value +
         "\n*/";
-    }
+    },
   });
   return comment;
 }
@@ -72,48 +72,54 @@ export function getCommandJSDoc(content: string) {
 export function getMetaFromJSDoc({
   jsdocComment,
   cliName,
-  commandPath
+  commandPath,
 }: {
   jsdocComment: string;
   cliName: string;
   commandPath: string;
 }): OpalineCommandMeta {
   let jsdoc = jsdocComment
-    ? doctrine.parse(jsdocComment, { unwrap: true, sloppy: true })
+    ? commentParser(jsdocComment)[0] || { description: "", tags: [] }
     : { description: "", tags: [] };
   let [title, ...description] = jsdoc.description.split("\n\n");
   let aliases = jsdoc.tags
-    .filter(tag => tag.title === "short")
-    .map(alias => alias.description)
+    .filter((tag) => tag.tag === "short")
+    .map((alias) => alias.name)
     .reduce((acc, alias) => {
       let [full, short] = alias.split("=");
       acc[full.trim()] = short.trim();
       return acc;
     }, {});
+  let usage = jsdoc.tags.find((tag) => tag.tag === "usage") || {
+    name: "",
+    description: "",
+  };
 
   return {
     title: title || "No description",
     description: description.join("\n\n"),
 
-    usage: (
-      jsdoc.tags.find(tag => tag.title === "usage") || { description: "" }
-    ).description.replace("{cliName}", cliName),
+    usage: [usage.name, usage.description.replace("{cliName}", cliName)].join(
+      " "
+    ),
 
     examples: jsdoc.tags
-      .filter(tag => tag.title === "example")
-      .map(tag => tag.description.replace("{cliName}", cliName)),
+      .filter((tag) => tag.tag === "example")
+      .map((tag) =>
+        [tag.name, tag.description.replace("{cliName}", cliName)].join(" ")
+      ),
 
     shouldPassInputs: !!jsdoc.tags.find(
-      tag => tag.title === "param" && tag.name === "$inputs"
+      (tag) => tag.tag === "param" && tag.name === "$inputs"
     ),
 
     options: jsdoc.tags.reduce((acc, tag) => {
       if (tag.name === "$inputs") {
         verify$InputsType(tag, commandPath);
       }
-      if (tag.title !== "param" || tag.name === "$inputs") return acc;
+      if (tag.tag !== "param" || tag.name === "$inputs") return acc;
       let type = getTypeFromJSDocTag(tag);
-      let defaultValue = (tag as any).default;
+      let defaultValue = tag.default;
 
       acc[tag.name] = {
         title: tag.description,
@@ -122,30 +128,25 @@ export function getMetaFromJSDoc({
         default:
           defaultValue && type === "number"
             ? parseInt(defaultValue)
-            : defaultValue
+            : defaultValue,
       };
       return acc;
-    }, {})
+    }, {} as any),
   };
 }
 
-function getTypeFromJSDocTag(tag: doctrine.Tag) {
-  return (tag.type as any).name || (tag.type as any).expression.name;
+function getTypeFromJSDocTag(tag: commentParser.Tag) {
+  return tag.type;
 }
 
-function verify$InputsType(tag: doctrine.Tag, commandPath: string) {
+function verify$InputsType(tag: commentParser.Tag, commandPath: string) {
   let type = getTypeFromJSDocTag(tag);
-  let notStringApplications = (
-    (tag.type && (tag.type as any).applications) ||
-    []
-  )
-    .filter(app => app.name !== "string")
-    .map(app => app.name);
+  let notStringApplications = [tag.type].filter(
+    (type) =>
+      !["string", "string[]", "array<string>"].includes(type.toLowerCase())
+  );
 
-  if (
-    (type === "string" || type === "Array") &&
-    !notStringApplications.length
-  ) {
+  if (!notStringApplications.length) {
     return;
   }
 

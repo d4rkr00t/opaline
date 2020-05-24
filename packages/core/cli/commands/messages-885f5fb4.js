@@ -18,8 +18,8 @@ function OP001_errorBinIsEmpty() {
       ...codeSnippet(['"bin": {', '  "mycli": "./cli/cli.js"', "}"]),
       "",
       chalk`Choose any path and name for {yellow "cli.js"}, don't need to create this file,`,
-      chalk`{yellow opaline} will generate it for you at provided path.`
-    ]
+      chalk`{yellow opaline} will generate it for you at provided path.`,
+    ],
   ];
 }
 
@@ -30,8 +30,8 @@ function OP002_errorNoPackageJson() {
       "",
       `Please add one manually or by running:`,
       "",
-      ...codeSnippet("λ npm init --yes")
-    ]
+      ...codeSnippet("λ npm init --yes"),
+    ],
   ];
 }
 
@@ -42,15 +42,15 @@ function OP003_errorNoCommandsFolder(commandsDirPath) {
     ),
     [
       "",
-      chalk`Please create {yellow "commands"} folder, because this is where {yellow opaline} is expecting to find cli commands to compile.`
-    ]
+      chalk`Please create {yellow "commands"} folder, because this is where {yellow opaline} is expecting to find cli commands to compile.`,
+    ],
   ];
 }
 
 function OP004_errorEmptyCommandsFolder(commandsDirPath) {
   return [
     chalk.red(`${errorBadge()} OP004: Commands folder is empty`),
-    ["", chalk`Add files to {yellow "${commandsDirPath}"}.`]
+    ["", chalk`Add files to {yellow "${commandsDirPath}"}.`],
   ];
 }
 
@@ -67,16 +67,16 @@ function OP005_errorSrcEqDest(commandsDirPath, commandsOutputPath) {
       ...codeSnippet([
         '"bin": {',
         '  "mycli": "./my-output-folder/cli.js"',
-        "}"
-      ])
-    ]
+        "}",
+      ]),
+    ],
   ];
 }
 
 function OP006_errorProjectNameIsRequired() {
   return [
     chalk.red(`${errorBadge()} OP006: A project name is required!`),
-    ["", ...codeSnippet([`λ opaline create app`])]
+    ["", ...codeSnippet([`λ opaline create app`])],
   ];
 }
 
@@ -95,7 +95,7 @@ function OP008_warningInputsNotArrayOrString(type, applications, commandPath) {
       `${warningBadge()} OP008: Type of $inputs must be "string | Array<string>", got: "${printType}" instead`
     ),
     "",
-    chalk.dim(`– File: ${commandPath}`)
+    chalk.dim(`– File: ${commandPath}`),
   ];
 }
 //#endregion
@@ -120,7 +120,7 @@ function MSG_buildSuccess(
       )}ms!`
     ),
     "",
-    chalk`{green Successfully compiled into {blue "${outputPath}"} folder.}`
+    chalk`{green Successfully compiled into {blue "${outputPath}"} folder.}`,
   ];
 
   message.push("", chalk.bgMagenta.black(" OUTPUTS "), "");
@@ -151,10 +151,10 @@ function MSG_watchStarted(commands, relativePathToCommands) {
     )} Watching commands {grey [+all of their dependencies]}}`,
     "",
     ...commands.map(
-      command =>
+      (command) =>
         `${chalk.grey("– " + relativePathToCommands)}${chalk.magenta(command)}`
     ),
-    ""
+    "",
   ];
 }
 
@@ -164,17 +164,17 @@ function MSG_watchUpdated(commands, relativePathToCommands) {
     blueBadge("UPDATED"),
     "",
     ...commands.map(
-      command =>
+      (command) =>
         `${chalk.grey("– " + relativePathToCommands)}${chalk.magenta(command)}`
     ),
-    ""
+    "",
   ];
 }
 //#endregion
 
 //#region Message helpers
 function codeSnippet(code) {
-  return [].concat(code).map(line => chalk.dim(line));
+  return [].concat(code).map((line) => chalk.dim(line));
 }
 
 function greenBadge(label) {

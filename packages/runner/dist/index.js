@@ -1,10 +1,11 @@
 "use strict";
 var __importDefault =
   (this && this.__importDefault) ||
-  function(mod) {
+  function (mod) {
     return mod && mod.__esModule ? mod : { default: mod };
   };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createCommand = exports.TaskWrapper = exports.indent = void 0;
 const ora_1 = __importDefault(require("ora"));
 const chalk_1 = __importDefault(require("chalk"));
 const console_1 = require("./utils/console");
@@ -39,9 +40,9 @@ class TaskWrapper {
   stopAndClearSpinner() {
     this.spinner.stop();
   }
-  format(text, formatter = item => chalk_1.default.dim(`→ ${item}`)) {
+  format(text, formatter = (item) => chalk_1.default.dim(`→ ${item}`)) {
     if (Array.isArray(text)) {
-      return text.map(item => {
+      return text.map((item) => {
         if (Array.isArray(item)) {
           return this.format(item, formatter);
         } else {
@@ -59,7 +60,7 @@ class TaskWrapper {
       this.spinner.stop();
     }
     if (Array.isArray(text)) {
-      text.forEach(item => {
+      text.forEach((item) => {
         if (Array.isArray(item)) {
           this.print(item, level + 1);
         } else {
@@ -78,7 +79,7 @@ class TaskWrapper {
   }
   prompt(text) {
     this.spinner.stop();
-    return console_1.prompt(text).then(result => {
+    return console_1.prompt(text).then((result) => {
       this.spinner.start();
       return result;
     });
