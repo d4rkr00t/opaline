@@ -1,0 +1,14 @@
+{
+  "name": "not-found-cli",
+  "version": "1.0.4",
+  "private": true,
+  "description": "Example CLI tool using opaline CLI framework.",
+  "keywords": [],
+  "license": "MIT",
+  "bin": {
+    "not-found-cli": "./cli/index.js"
+  },
+  "dependencies": {
+    "@opaline/core": "^0.5.0"
+  }
+}

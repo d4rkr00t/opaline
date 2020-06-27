@@ -113,12 +113,21 @@ export function getMetaFromJSDoc({
       (tag) => tag.tag === "param" && tag.name === "$inputs"
     ),
 
+    shouldPassEverything: !!jsdoc.tags.find((tag) =>
+      getTypeFromJSDocTag(tag).startsWith("...")
+    ),
+
     options: jsdoc.tags.reduce((acc, tag) => {
       if (tag.name === "$inputs") {
         verify$InputsType(tag, commandPath);
       }
-      if (tag.tag !== "param" || tag.name === "$inputs") return acc;
       let type = getTypeFromJSDocTag(tag);
+      if (
+        tag.tag !== "param" ||
+        tag.name === "$inputs" ||
+        type.startsWith("...")
+      )
+        return acc;
       let defaultValue = tag.default;
 
       acc[tag.name] = {

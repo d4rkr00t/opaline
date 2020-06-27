@@ -29,7 +29,7 @@ function multiCommandCliHelp(args) {
   };
   function createSubCommandsHelp() {
     return Object.keys(commands)
-      .filter((c) => c !== "index")
+      .filter((c) => c !== "index" && c !== "404")
       .reduce((acc, commandName) => {
         let command = commands[commandName];
         acc.push({
@@ -45,7 +45,7 @@ function multiCommandCliHelp(args) {
     cliDescription: config.cliDescription,
     commands: createSubCommandsHelp(),
     options: formatOptions(options),
-    usage: defaultCommand && defaultCommand.meta.usage,
+    usage: defaultCommand && (defaultCommand.meta.usage || "").trim(),
     examples: (defaultCommand && defaultCommand.meta.examples) || [],
   });
 }

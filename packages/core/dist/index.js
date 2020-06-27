@@ -50,6 +50,7 @@ async function opaline(rawArgv, config) {
   let isCommand = !!commandName && !commandName.startsWith("-");
   let hasCommand = (name) => !!config.commands[name];
   // 0. If no commands -> blow up!
+  //   0.1. If command is private -> error
   // 1. If --version and command is not passed -> print version
   // 2. If --help
   //   2.1. If command is not passed -> help
@@ -60,11 +61,18 @@ async function opaline(rawArgv, config) {
   //   4.1. Check if index exists -> run
   //   4.2. If index doesn't exist -> help
   // 5. If command doesn't exist and multi command cli
-  //   5.1. If index exists -> run
-  //   5.2. If index doesn't exist -> help
+  //   5.1. Check if 404 exists -> run
+  //   5.2. If index exists -> run
+  //   5.3. If index doesn't exist -> help
   // # 0
   if (!Object.keys(config.commands).length) {
     return error(`Need to add at least 1 command...`);
+  }
+  // # 0.1
+  if (commandName === "404") {
+    return error(
+      `Command "${commandName}" is private and can't be called directly. Try "${config.cliName} --help"`
+    );
   }
   // # 1
   if (args_1.isVersion(argv) && !isCommand) {
@@ -119,8 +127,15 @@ async function opaline(rawArgv, config) {
   }
   // # 5 – multi-command cli
   else if (!config.isSingleCommand) {
-    // # 5.1 | 5.2
-    if (hasCommand("index")) {
+    // # 5.1 | 5.2 | 5.3
+    if (hasCommand("404") && isCommand) {
+      return await run({
+        commandName: "404",
+        config,
+        argv,
+        isCommand,
+      });
+    } else if (hasCommand("index")) {
       return await run({
         commandName: "index",
         config,
@@ -146,14 +161,29 @@ async function run({ config, commandName, argv, isCommand }) {
     buildOptions(command.meta.options)
   );
   let inputs =
-    isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
+    isCommand && commandName !== "index" && commandName !== "404"
+      ? rawInputs.slice(1)
+      : rawInputs;
   let args = Object.keys(command.meta.options || {}).map((opt) => flags[opt]);
+  let finalCommandArgs = [];
+  if (command.meta.shouldPassInputs || command.meta.shouldPassEverything) {
+    finalCommandArgs.push(inputs);
+  }
+  finalCommandArgs.push(...args);
+  if (command.meta.shouldPassEverything) {
+    let unusedFlags = Object.keys(flags || {})
+      .filter((flag) => !command.meta.options.hasOwnProperty(flag))
+      .reduce((acc, flag) => {
+        acc[flag] = flags[flag];
+        return acc;
+      }, {});
+    finalCommandArgs.push(unusedFlags);
+  }
   try {
-    await command
-      .load()
-      .apply(null, command.meta.shouldPassInputs ? [inputs, ...args] : args);
+    await command.load().apply(null, finalCommandArgs);
   } catch (error) {
     print_1.printError(error);
+    console.log(error.stack);
     if (error instanceof error_1.OpalineError) {
       process.exit(error.code);
     } else {
@@ -177,5 +207,3 @@ function help({ helpFormatter, config, commandName }) {
   });
   process.exit(0);
 }
-// TODO: logging
-// TODO: command aliases
