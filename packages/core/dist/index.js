@@ -147,7 +147,19 @@ async function run({ config, commandName, argv, isCommand }) {
   );
   let inputs =
     isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
-  let args = Object.keys(command.meta.options || {}).map((opt) => flags[opt]);
+  let commandOptions = command.meta.options || {};
+  let args = [];
+  let knownArgs = Object.keys(commandOptions).map((opt) => flags[opt]);
+  let restArgs = Object.keys(flags || {})
+    .filter((opt) => !commandOptions.hasOwnProperty(opt))
+    .reduce((acc, flag) => {
+      acc[flag] = flags[flag];
+      return acc;
+    }, {});
+  args.push(...knownArgs);
+  if (command.meta.shouldPassRestFlags) {
+    args.push(restArgs);
+  }
   try {
     await command
       .load()

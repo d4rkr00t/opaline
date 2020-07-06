@@ -5,9 +5,13 @@ import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import commentParser from "comment-parser";
 import { ProjectInfo } from "./project-info";
-import { print } from "@opaline/core";
+import { print, OpalineError } from "@opaline/core";
 import { OpalineCommandMeta } from "../../src/types";
-import { OP008_warningInputsNotArrayOrString } from "./messages";
+import {
+  OP008_warningInputsNotArrayOrString,
+  OP009_errorRestMustBeLast,
+  OP010_errorOneRestParam,
+} from "./messages";
 
 let readFile = promisify(fs.readFile);
 
@@ -15,9 +19,14 @@ export async function parseCommands(
   project: ProjectInfo,
   commands: Array<string>
 ): Promise<Array<CommandData>> {
-  return await Promise.all(
-    commands.map((command) => parseSingleCommand(project, command))
-  );
+  let results = [];
+
+  for (let command of commands) {
+    let result = await parseSingleCommand(project, command);
+    results.push(result);
+  }
+
+  return results;
 }
 
 export async function parseSingleCommand(
@@ -94,6 +103,26 @@ export function getMetaFromJSDoc({
     name: "",
     description: "",
   };
+  let params = jsdoc.tags.filter((tag) => tag.tag === "param");
+  let restSpreadParams = params.filter((tag) =>
+    getTypeFromJSDocTag(tag).startsWith("...")
+  );
+
+  if (restSpreadParams.length > 1) {
+    throw OpalineError.fromArray(OP010_errorOneRestParam(commandPath));
+  }
+
+  if (
+    restSpreadParams.length &&
+    !getTypeFromJSDocTag(params[params.length - 1]).startsWith("...")
+  ) {
+    throw OpalineError.fromArray(
+      OP009_errorRestMustBeLast(
+        commandPath,
+        getTypeFromJSDocTag(restSpreadParams[0])
+      )
+    );
+  }
 
   return {
     title: title || "No description",
@@ -113,11 +142,18 @@ export function getMetaFromJSDoc({
       (tag) => tag.tag === "param" && tag.name === "$inputs"
     ),
 
+    shouldPassRestFlags: !!restSpreadParams.length,
+
     options: jsdoc.tags.reduce((acc, tag) => {
       if (tag.name === "$inputs") {
         verify$InputsType(tag, commandPath);
       }
-      if (tag.tag !== "param" || tag.name === "$inputs") return acc;
+      if (
+        tag.tag !== "param" ||
+        tag.name === "$inputs" ||
+        getTypeFromJSDocTag(tag).startsWith("...")
+      )
+        return acc;
       let type = getTypeFromJSDocTag(tag);
       let defaultValue = tag.default;
 

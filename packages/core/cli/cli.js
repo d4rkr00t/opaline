@@ -16,6 +16,7 @@ let config = {
         usage: "build ",
         examples: [],
         shouldPassInputs: false,
+        shouldPassRestFlags: false,
         options: {},
       },
       load: () => {
@@ -36,6 +37,7 @@ let config = {
         usage: "create app",
         examples: [],
         shouldPassInputs: true,
+        shouldPassRestFlags: false,
         options: {},
       },
       load: () => {
@@ -56,6 +58,7 @@ let config = {
         usage: "dev ",
         examples: [],
         shouldPassInputs: false,
+        shouldPassRestFlags: false,
         options: {},
       },
       load: () => {

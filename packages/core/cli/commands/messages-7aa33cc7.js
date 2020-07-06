@@ -83,6 +83,22 @@ function OP006_errorProjectNameIsRequired() {
 function OP007_errorProjectFolderExists(dir) {
   return [chalk.red(`${errorBadge()} OP007: Folder "${dir}" already exists`)];
 }
+
+function OP009_errorRestMustBeLast(commandPath, type) {
+  return [
+    chalk.red(
+      `${errorBadge()} OP009: Parameter with type "${type}" must be last in ${commandPath}`
+    ),
+  ];
+}
+
+function OP010_errorOneRestParam(commandPath) {
+  return [
+    chalk.red(
+      `${errorBadge()} OP010: Only 1 Rest spread parameter allowed in ${commandPath}`
+    ),
+  ];
+}
 //#endregion
 
 //#region Warning Messages
@@ -217,3 +233,5 @@ exports.OP005_errorSrcEqDest = OP005_errorSrcEqDest;
 exports.OP006_errorProjectNameIsRequired = OP006_errorProjectNameIsRequired;
 exports.OP007_errorProjectFolderExists = OP007_errorProjectFolderExists;
 exports.OP008_warningInputsNotArrayOrString = OP008_warningInputsNotArrayOrString;
+exports.OP009_errorRestMustBeLast = OP009_errorRestMustBeLast;
+exports.OP010_errorOneRestParam = OP010_errorOneRestParam;

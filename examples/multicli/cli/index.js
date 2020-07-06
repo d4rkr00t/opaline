@@ -5,7 +5,7 @@ let pkg = require("../package.json");
 let config = {
   cliName: "multicli",
   cliVersion: pkg.version,
-  cliDescription: pkg.description,
+  cliDescription: "Prints inputs and flags" || pkg.description,
   isSingleCommand: false,
   commands: {
     "hello-world": {
@@ -16,14 +16,15 @@ let config = {
         usage: "$ multicli hello-world --name john",
         examples: ["$ multicli hello-world --name john"],
         shouldPassInputs: true,
+        shouldPassRestFlags: false,
         options: {
           name: {
             title: "Some important flag",
             type: "string",
             alias: "n",
-            default: '"john"'
-          }
-        }
+            default: "john",
+          },
+        },
       },
       load: () => {
         let command = require("./commands/hello-world");
@@ -33,7 +34,7 @@ let config = {
         }
 
         return command;
-      }
+      },
     },
     index: {
       commandName: "index",
@@ -43,19 +44,20 @@ let config = {
         usage: "$ multicli --name john",
         examples: ["$ multicli --name john"],
         shouldPassInputs: true,
+        shouldPassRestFlags: false,
         options: {
           name: {
             title: "Some important flag",
             type: "string",
-            default: '"john"'
+            default: "john",
           },
           age: {
             title: "Some important flag",
             type: "number",
             alias: "a",
-            default: 20
-          }
-        }
+            default: 20,
+          },
+        },
       },
       load: () => {
         let command = require("./commands/index");
@@ -65,17 +67,39 @@ let config = {
         }
 
         return command;
-      }
+      },
+    },
+    rest: {
+      commandName: "rest",
+      meta: {
+        title: "Prints inputs and flags",
+        description: "",
+        usage: "$ multicli --name john",
+        examples: ["$ multicli --name john"],
+        shouldPassInputs: true,
+        shouldPassRestFlags: true,
+        options: { rest: { title: "Rest flags", type: "string" } },
+      },
+      load: () => {
+        let command = require("./commands/rest");
+
+        if (typeof command !== "function") {
+          throw new Error(`Command "rest" doesn't export a function...`);
+        }
+
+        return command;
+      },
     },
     runner: {
       commandName: "runner",
       meta: {
         title: "No description",
         description: "",
-        usage: "",
+        usage: " ",
         examples: [],
         shouldPassInputs: false,
-        options: {}
+        shouldPassRestFlags: false,
+        options: {},
       },
       load: () => {
         let command = require("./commands/runner");
@@ -85,9 +109,9 @@ let config = {
         }
 
         return command;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 cli(process.argv, config);

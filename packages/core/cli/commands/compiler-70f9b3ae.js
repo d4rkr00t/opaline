@@ -14,7 +14,7 @@ var resolve = _interopDefault(require("@rollup/plugin-node-resolve"));
 var rimraf = _interopDefault(require("rimraf"));
 var core = require("@opaline/core");
 var readPkgUp = _interopDefault(require("read-pkg-up"));
-var messages = require("./messages-885f5fb4.js");
+var messages = require("./messages-7aa33cc7.js");
 var parser = require("@babel/parser");
 var traverse = _interopDefault(require("@babel/traverse"));
 var commentParser = _interopDefault(require("comment-parser"));
@@ -71,9 +71,14 @@ async function getProjectInfo(cwd) {
 let readFile = util.promisify(fs.readFile);
 
 async function parseCommands(project, commands) {
-  return await Promise.all(
-    commands.map((command) => parseSingleCommand(project, command))
-  );
+  let results = [];
+
+  for (let command of commands) {
+    let result = await parseSingleCommand(project, command);
+    results.push(result);
+  }
+
+  return results;
 }
 
 async function parseSingleCommand(project, command) {
@@ -139,6 +144,28 @@ function getMetaFromJSDoc({ jsdocComment, cliName, commandPath }) {
     name: "",
     description: "",
   };
+  let params = jsdoc.tags.filter((tag) => tag.tag === "param");
+  let restSpreadParams = params.filter((tag) =>
+    getTypeFromJSDocTag(tag).startsWith("...")
+  );
+
+  if (restSpreadParams.length > 1) {
+    throw core.OpalineError.fromArray(
+      messages.OP010_errorOneRestParam(commandPath)
+    );
+  }
+
+  if (
+    restSpreadParams.length &&
+    !getTypeFromJSDocTag(params[params.length - 1]).startsWith("...")
+  ) {
+    throw core.OpalineError.fromArray(
+      messages.OP009_errorRestMustBeLast(
+        commandPath,
+        getTypeFromJSDocTag(restSpreadParams[0])
+      )
+    );
+  }
 
   return {
     title: title || "No description",
@@ -158,11 +185,18 @@ function getMetaFromJSDoc({ jsdocComment, cliName, commandPath }) {
       (tag) => tag.tag === "param" && tag.name === "$inputs"
     ),
 
+    shouldPassRestFlags: !!restSpreadParams.length,
+
     options: jsdoc.tags.reduce((acc, tag) => {
       if (tag.name === "$inputs") {
         verify$InputsType(tag, commandPath);
       }
-      if (tag.tag !== "param" || tag.name === "$inputs") return acc;
+      if (
+        tag.tag !== "param" ||
+        tag.name === "$inputs" ||
+        getTypeFromJSDocTag(tag).startsWith("...")
+      )
+        return acc;
       let type = getTypeFromJSDocTag(tag);
       let defaultValue = tag.default;
 
@@ -290,6 +324,7 @@ class Compiler {
     Compiler.prototype.__init.call(this);
     this.cwd = cwd;
     this.mode = mode;
+    this.hadError = false;
   }
 
   async init(watch) {
@@ -360,15 +395,19 @@ class Compiler {
 
   __init() {
     this.onBundled = async () => {
-      let commandsData = await parseCommands(this.project, this.commands);
-      let entryPoint = createEntryPoint({
-        project: this.project,
-        commandsData,
-      });
-      await writeFile(this.project.binOutputPath, entryPoint, "utf8");
-      await chmod(this.project.binOutputPath, "755");
-      if (this.mode === "development") {
-        await link();
+      try {
+        let commandsData = await parseCommands(this.project, this.commands);
+        let entryPoint = createEntryPoint({
+          project: this.project,
+          commandsData,
+        });
+        await writeFile(this.project.binOutputPath, entryPoint, "utf8");
+        await chmod(this.project.binOutputPath, "755");
+        if (this.mode === "development") {
+          await link();
+        }
+      } catch (e) {
+        throw e;
       }
     };
   }
@@ -450,9 +489,20 @@ class Compiler {
     }
 
     this.watcher = rollup.watch([this.createBundlerConfig()]);
-    this.watcher.on("event", (event) => {
+    this.watcher.on("event", async (event) => {
       if (event.code === "BUNDLE_END") {
-        this.onBundled();
+        try {
+          await this.onBundled();
+          if (this.hadError) {
+            this.hadError = false;
+            core.print(
+              messages.MSG_watchUpdated(this.commands, relativePathToCommands)
+            );
+          }
+        } catch (e) {
+          core.printError(e);
+          this.hadError = true;
+        }
       }
     });
   }

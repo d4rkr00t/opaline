@@ -18,6 +18,7 @@ export type OpalineCommandMeta = {
   usage: string;
   examples: Array<string>;
   shouldPassInputs: boolean;
+  shouldPassRestFlags: boolean;
   options: Record<string, OpalineCommandOptions>;
 };
 
