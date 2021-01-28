@@ -16,7 +16,7 @@ import {
   OP004_errorEmptyCommandsFolder,
   MSG_buildSuccess,
   MSG_watchStarted,
-  MSG_watchUpdated
+  MSG_watchUpdated,
 } from "./messages";
 
 let readdir = promisify(fs.readdir);
@@ -34,7 +34,7 @@ export class Compiler {
 
   constructor({
     cwd,
-    mode = "development"
+    mode = "development",
   }: {
     cwd: string;
     mode: "development" | "production";
@@ -63,24 +63,25 @@ export class Compiler {
       input: this.getEntryPoints(this.commands),
       output: {
         dir: this.project.commandsOutputPath,
-        format: "cjs" as rollup.ModuleFormat
+        format: "cjs" as rollup.ModuleFormat,
+        exports: "auto",
       },
-      external: id =>
+      external: (id) =>
         !id.startsWith("\0") && !id.startsWith(".") && !id.startsWith("/"),
-      onwarn: warning => {
+      onwarn: (warning) => {
         if (warning.code !== "EMPTY_BUNDLE") {
           printWarning(warning.message);
         }
       },
       plugins: [
         resolve({
-          extensions: [".js", ".ts", ".tsx"]
+          extensions: [".js", ".ts", ".tsx"],
         }),
         sucrase({
           exclude: ["node_modules/**"],
-          transforms: ["typescript", "jsx"]
-        })
-      ]
+          transforms: ["typescript", "jsx"],
+        }),
+      ],
     };
   }
 
@@ -89,10 +90,10 @@ export class Compiler {
       return (
         await readdir(this.project.commandsDirPath, { withFileTypes: true })
       )
-        .filter(dirent => dirent.isFile())
-        .map(dirent => dirent.name)
+        .filter((dirent) => dirent.isFile())
+        .map((dirent) => dirent.name)
         .filter(
-          file =>
+          (file) =>
             !file.endsWith(".d.ts") &&
             !file.endsWith(".map") &&
             !file.startsWith("_") &&
@@ -106,14 +107,14 @@ export class Compiler {
   }
 
   private getEntryPoints(commands: Array<string>) {
-    return commands.map(c => path.join(this.project.commandsDirPath, c));
+    return commands.map((c) => path.join(this.project.commandsDirPath, c));
   }
 
   private onBundled = async () => {
     let commandsData = await parseCommands(this.project, this.commands);
     let entryPoint = createEntryPoint({
       project: this.project,
-      commandsData
+      commandsData,
     });
     await writeFile(this.project.binOutputPath, entryPoint, "utf8");
     await chmod(this.project.binOutputPath, "755");
@@ -167,14 +168,14 @@ export class Compiler {
     // Watch other FS changes that rollup watcher is not able to pick up.
     // E.g. creating/removing new entry points.
     let watcher = chokidar.watch(this.project.commandsDirPath, {
-      ignoreInitial: true
+      ignoreInitial: true,
     });
     watcher
-      .on("add", async file => {
+      .on("add", async (file) => {
         await this.updateCommands();
         this.createWatchBundler();
       })
-      .on("unlink", async file => {
+      .on("unlink", async (file) => {
         await this.updateCommands();
         this.createWatchBundler();
       });
@@ -195,7 +196,7 @@ export class Compiler {
     }
 
     this.watcher = rollup.watch([this.createBundlerConfig()]);
-    this.watcher.on("event", event => {
+    this.watcher.on("event", (event) => {
       if (event.code === "BUNDLE_END") {
         this.onBundled();
       }
