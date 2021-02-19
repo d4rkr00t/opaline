@@ -1,5 +1,11 @@
 # @opaline/core
 
+## 0.5.1
+
+### Patch Changes
+
+- b55ca0a: fix: annoying warning from rollup
+
 ## 0.5.0
 
 ### Minor Changes
