@@ -39,7 +39,7 @@ function formatSubCommandHelpData(help) {
     ]);
   }
   if (help.examples && help.examples.length) {
-    output.push("", chalk_1.default.bold("EXAMPLES"), ...help.examples);
+    output.push("", chalk_1.default.bold("EXAMPLES"), help.examples);
   }
   return output;
 }
@@ -83,7 +83,8 @@ function formatHelpData(help) {
     );
   }
   if (help.examples && help.examples.length) {
-    output.push("", chalk_1.default.bold("EXAMPLES"), ...help.examples);
+    console.log(11111);
+    output.push("", chalk_1.default.bold("EXAMPLES"), help.examples);
   }
   return output;
 }

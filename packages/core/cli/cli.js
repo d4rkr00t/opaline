@@ -34,7 +34,7 @@ let config = {
         title: "Bootstraps new Opaline based CLI tool",
         description: "",
         usage: "create app",
-        examples: [],
+        examples: ["create name-of-a-cli-tool"],
         shouldPassInputs: true,
         options: {},
       },

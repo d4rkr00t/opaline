@@ -26,7 +26,7 @@ function formatSubCommandHelpData(help: HelpSubCommandData) {
       "",
       chalk.bold("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
-        opt => `${opt[0]}     ${opt[1]}`
+        (opt) => `${opt[0]}     ${opt[1]}`
       )
     );
   }
@@ -36,7 +36,7 @@ function formatSubCommandHelpData(help: HelpSubCommandData) {
   }
 
   if (help.examples && help.examples.length) {
-    output.push("", chalk.bold("EXAMPLES"), ...help.examples);
+    output.push("", chalk.bold("EXAMPLES"), help.examples);
   }
 
   return output;
@@ -50,7 +50,7 @@ function formatHelpData(help: HelpData) {
   }
 
   output.push("", chalk.bold("VERSION"), [
-    `${help.cliName}/${help.cliVersion}`
+    `${help.cliName}/${help.cliVersion}`,
   ]);
 
   if (help.usage) {
@@ -61,16 +61,16 @@ function formatHelpData(help: HelpData) {
     output.push(
       "",
       chalk.bold("COMMANDS"),
-      formatList(help.commands.map(c => [c.name, capFirst(c.title || "")])).map(
-        c => `${c[0]}     ${c[1]}`
-      ),
+      formatList(
+        help.commands.map((c) => [c.name, capFirst(c.title || "")])
+      ).map((c) => `${c[0]}     ${c[1]}`),
       "",
       join(
         [
           chalk.yellow("> NOTE:"),
           chalk.dim(
             `To view the usage information for a specific command, run '${help.cliName} [COMMAND] --help'`
-          )
+          ),
         ],
         " "
       )
@@ -82,13 +82,13 @@ function formatHelpData(help: HelpData) {
       "",
       chalk.bold("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
-        opt => `${opt[0]}     ${opt[1]}`
+        (opt) => `${opt[0]}     ${opt[1]}`
       )
     );
   }
 
   if (help.examples && help.examples.length) {
-    output.push("", chalk.bold("EXAMPLES"), ...help.examples);
+    output.push("", chalk.bold("EXAMPLES"), help.examples);
   }
 
   return output;
@@ -105,8 +105,8 @@ function isSubCommandHelp(help: any): help is HelpSubCommandData {
  * Formats a list of [string, string] in a way that first string length is equal accross the array
  */
 function formatList(list: Array<[string, string]>): Array<[string, string]> {
-  let minLength = Math.max(...list.map(l => l[0].length));
-  return list.map(line => [line[0].padEnd(minLength, " "), line[1]]);
+  let minLength = Math.max(...list.map((l) => l[0].length));
+  return list.map((line) => [line[0].padEnd(minLength, " "), line[1]]);
 }
 
 /**
@@ -120,10 +120,10 @@ function formatOption(option: HelpOptionData): [string, string] {
       [
         capFirst(option.title || ""),
         option.type ? chalk.dim(`[${option.type}]`) : "",
-        option.default ? chalk.dim(`[default: ${option.default}]`) : ""
+        option.default ? chalk.dim(`[default: ${option.default}]`) : "",
       ],
       " "
-    )
+    ),
   ];
 }
 

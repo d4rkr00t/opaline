@@ -9,7 +9,7 @@ import { OpalineError } from "@opaline/core";
 import { createCommand, Task } from "@opaline/runner";
 import {
   OP006_errorProjectNameIsRequired,
-  OP007_errorProjectFolderExists
+  OP007_errorProjectFolderExists,
 } from "./compiler/messages";
 
 let writeFile = promisify(fs.writeFile);
@@ -20,6 +20,8 @@ let pexec = promisify(exec);
  *
  * @usage {cliName} create app
  * @param {Array<string>} $inputs Name of a CLI tool
+ *
+ * @example {cliName} create name-of-a-cli-tool
  */
 export default async function create([name] = []) {
   if (!name) {
@@ -31,7 +33,7 @@ export default async function create([name] = []) {
     createMainFolder,
     npmInit,
     updatePackageJson,
-    bootstrapFiles
+    bootstrapFiles,
   ])({ name });
 }
 
@@ -62,14 +64,14 @@ let initialize: Task<TaskCtx, TaskParams> = {
           name: "bin",
           message: "Name of a bin file for the cli:",
           hint: "> name --params",
-          initial: name
+          initial: name,
         },
         {
           type: "confirm",
           name: "ists",
           message: "Use TypeScript?:",
-          initial: true
-        }
+          initial: true,
+        },
       ]);
     } catch (e) {
       runner.abort();
@@ -81,7 +83,7 @@ let initialize: Task<TaskCtx, TaskParams> = {
     ctx.name = name;
     ctx.bin = responses.bin;
     ctx.isTS = responses.ists;
-  }
+  },
 };
 
 let createMainFolder: Task<TaskCtx, TaskParams> = {
@@ -89,14 +91,14 @@ let createMainFolder: Task<TaskCtx, TaskParams> = {
   async task(ctx) {
     await mkdirp(ctx.dir);
     await mkdirp(ctx.commandsDir);
-  }
+  },
 };
 
 let npmInit: Task<TaskCtx, TaskParams> = {
   title: "Initializng npm package...",
   async task(ctx) {
     await pexec(`cd ${ctx.dir} && npm init --yes`);
-  }
+  },
 };
 
 let updatePackageJson: Task<TaskCtx, TaskParams> = {
@@ -106,7 +108,7 @@ let updatePackageJson: Task<TaskCtx, TaskParams> = {
     let pkgJson = require(pkgJsonPath);
 
     pkgJson.bin = {
-      [ctx.bin]: path.join(".", "dist", "cli.js")
+      [ctx.bin]: path.join(".", "dist", "cli.js"),
     };
 
     pkgJson.scripts.build = "opaline build";
@@ -116,18 +118,18 @@ let updatePackageJson: Task<TaskCtx, TaskParams> = {
     pkgJson.scripts["prepare"] = "npm run typecheck";
     pkgJson["pre-commit"] = ["lint:staged"];
     pkgJson["lint-staged"] = {
-      "*.{js,ts,tsx}": ["prettier --write", "git add"]
+      "*.{js,ts,tsx}": ["prettier --write", "git add"],
     };
 
     pkgJson.dependencies = {
-      "@opaline/core": "*"
+      "@opaline/core": "*",
     };
 
     if (ctx.isTS) {
       pkgJson.scripts.typecheck = "tsc";
 
       pkgJson.devDependencies = {
-        typescript: "*"
+        typescript: "*",
       };
     }
 
@@ -136,7 +138,7 @@ let updatePackageJson: Task<TaskCtx, TaskParams> = {
     pkgJson.devDependencies["prettier"] = "*";
 
     await writeFile(pkgJsonPath, JSON.stringify(pkgJson, null, 2), "utf8");
-  }
+  },
 };
 
 let bootstrapFiles: Task<TaskCtx, TaskParams> = {
@@ -165,9 +167,9 @@ let bootstrapFiles: Task<TaskCtx, TaskParams> = {
       chalk`– {yellow cd ${ctx.name}}`,
       chalk`– {yellow npm install {dim or} yarn install}`,
       chalk`– {yellow npm run dev {dim or} yarn dev {dim # to start developing your CLI!}}`,
-      ""
+      "",
     ];
-  }
+  },
 };
 
 type TaskParams = {
