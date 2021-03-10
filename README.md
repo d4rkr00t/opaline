@@ -36,6 +36,7 @@
 - [Usage](#usage)
 - [Creating Commands](#creating-commands)
   - [Adding Command Parameters and Documentation](#adding-command-parameters-and-documentation)
+    - [Using unnamed arguments](#using-unnamed-arguments)
 - [JSDoc](#jsdoc)
   - [Supported JSDoc Tags](#supported-jsdoc-tags)
   - [Extra JSDoc Tags](#extra-jsdoc-tags)
@@ -82,7 +83,26 @@ export default function build() {
 
 ### Adding Command Parameters and Documentation
 
-Opaline uses JSDoc to define parameters and documentation for a command:
+Opaline uses JSDoc to define parameters and documentation for a command.
+
+#### Using unnamed arguments
+
+Opaline can pass all non-flag arguments to a command, for this command needs to define an `$inputs` argument in the JSDoc as shown below:
+
+```js
+// ./commands/build.js
+/**
+ * Description of a command is just a comment above the command's function.
+ * Params are described as JSDoc params:
+ *
+ * @param {Array<string>} $inputs Any non-flag arguments are passed here
+ */
+export default function build($inputs) {
+  console.log(`hello ${name}, language ${lang}`);
+}
+```
+
+It's also possible to define named (flag) arguments:
 
 ```js
 // ./commands/build.js
@@ -91,6 +111,7 @@ Opaline uses JSDoc to define parameters and documentation for a command:
  * Description of a command is just a comment above the command's function.
  * Params are described as JSDoc params:
  *
+ * @param {Array<string>} $input Any non-flag arguments are passed here
  * @param {string} name Name of an app to build
  * @param {string} [lang="TypeScript"] A parameter with default value
  */
