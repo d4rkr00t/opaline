@@ -116,9 +116,7 @@ function OP007_errorProjectFolderExists(dir) {
 
 //#region Warning Messages
 function OP008_warningInputsNotArrayOrString(type, applications, commandPath) {
-  let printType = applications.length
-    ? `Array<${applications.join(" | ")}>`
-    : type;
+  let printType = applications.length ? applications.join(" | ") : type;
   return [
     chalk__default["default"].yellow(
       `${warningBadge()} OP008: Type of $inputs must be "string | Array<string>", got: "${printType}" instead`

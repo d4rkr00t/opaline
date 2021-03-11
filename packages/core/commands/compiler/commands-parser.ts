@@ -8,6 +8,7 @@ import { ProjectInfo } from "./project-info";
 import { print } from "@opaline/core";
 import { OpalineCommandMeta } from "../../src/types";
 import { OP008_warningInputsNotArrayOrString } from "./messages";
+import { OpalineCommandOptions } from "../../dist/types";
 
 let readFile = promisify(fs.readFile);
 
@@ -52,7 +53,7 @@ export function getCommandJSDoc(content: string) {
     AssignmentExpression(path) {
       if (
         path.node.left.type !== "MemberExpression" ||
-        path.node.left.property.name !== "exports" ||
+        (path.node.left.property as any).name !== "exports" ||
         !path.node.left.object.hasOwnProperty("name") ||
         (path.node.left.object as any).name !== "module" ||
         (path.node.right.type !== "FunctionExpression" &&
@@ -117,7 +118,7 @@ export function getMetaFromJSDoc({
       (tag) => tag.tag === "param" && tag.name === "$inputs"
     ),
 
-    options: jsdoc.tags.reduce((acc, tag) => {
+    options: (jsdoc.tags as Array<commentParser.Tag>).reduce((acc, tag) => {
       if (tag.name === "$inputs") {
         verify$InputsType(tag, commandPath);
       }
@@ -137,7 +138,7 @@ export function getMetaFromJSDoc({
             : defaultValue,
       };
       return acc;
-    }, {} as any),
+    }, {} as Record<string, OpalineCommandOptions>),
   };
 }
 

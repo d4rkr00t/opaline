@@ -9,7 +9,7 @@ var chalk = require("chalk");
 var mkdirp = require("mkdirp");
 var core = require("@opaline/core");
 var runner = require("@opaline/runner");
-var messages = require("./messages-7db741fc.js");
+var messages = require("./messages-3b678966.js");
 
 function _interopDefaultLegacy(e) {
   return e && typeof e === "object" && "default" in e ? e : { default: e };

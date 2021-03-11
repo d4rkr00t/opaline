@@ -177,5 +177,3 @@ function help({ helpFormatter, config, commandName }) {
   });
   process.exit(0);
 }
-// TODO: logging
-// TODO: command aliases

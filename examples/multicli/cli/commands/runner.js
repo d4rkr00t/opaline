@@ -5,14 +5,14 @@ const createCommand = require("@opaline/runner").createCommand;
 let task1 = {
   title: "Task 1: doing something...",
   async task() {
-    await new Promise(resolve => setTimeout(resolve, 4000));
-  }
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+  },
 };
 let task2 = {
   title: "Task 2: doing something else ...",
   async task() {
-    await new Promise(resolve => setTimeout(resolve, 4000));
-  }
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+  },
 };
 
 async function runnerCommand() {

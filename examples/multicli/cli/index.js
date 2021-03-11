@@ -5,7 +5,7 @@ let pkg = require("../package.json");
 let config = {
   cliName: "multicli",
   cliVersion: pkg.version,
-  cliDescription: pkg.description,
+  cliDescription: "Prints inputs and flags" || pkg.description,
   isSingleCommand: false,
   commands: {
     "hello-world": {
@@ -21,9 +21,9 @@ let config = {
             title: "Some important flag",
             type: "string",
             alias: "n",
-            default: '"john"'
-          }
-        }
+            default: "john",
+          },
+        },
       },
       load: () => {
         let command = require("./commands/hello-world");
@@ -33,7 +33,7 @@ let config = {
         }
 
         return command;
-      }
+      },
     },
     index: {
       commandName: "index",
@@ -47,15 +47,15 @@ let config = {
           name: {
             title: "Some important flag",
             type: "string",
-            default: '"john"'
+            default: "john",
           },
           age: {
             title: "Some important flag",
             type: "number",
             alias: "a",
-            default: 20
-          }
-        }
+            default: 20,
+          },
+        },
       },
       load: () => {
         let command = require("./commands/index");
@@ -65,7 +65,7 @@ let config = {
         }
 
         return command;
-      }
+      },
     },
     runner: {
       commandName: "runner",
@@ -75,7 +75,7 @@ let config = {
         usage: "",
         examples: [],
         shouldPassInputs: false,
-        options: {}
+        options: {},
       },
       load: () => {
         let command = require("./commands/runner");
@@ -85,9 +85,9 @@ let config = {
         }
 
         return command;
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 cli(process.argv, config);

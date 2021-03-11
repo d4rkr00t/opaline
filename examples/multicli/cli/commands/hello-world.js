@@ -5,7 +5,7 @@
  *
  * @usage $ {cliName} hello-world --name john
  *
- * @param {string} $inputs
+ * @param {number} $inputs
  * @param {string} [name="john"] Some important flag
  * @short name=n
  *
