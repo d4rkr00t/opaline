@@ -115,7 +115,7 @@ It's also possible to define named (flag) arguments:
  * @param {string} name Name of an app to build
  * @param {string} [lang="TypeScript"] A parameter with default value
  */
-export default function build(name, lang) {
+export default function build($inputs, name, lang) {
   console.log(`hello ${name}, language ${lang}`);
 }
 ```
