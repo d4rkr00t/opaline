@@ -83,7 +83,6 @@ function formatHelpData(help) {
     );
   }
   if (help.examples && help.examples.length) {
-    console.log(11111);
     output.push("", chalk_1.default.bold("EXAMPLES"), help.examples);
   }
   return output;

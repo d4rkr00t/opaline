@@ -99,9 +99,13 @@ export function getMetaFromJSDoc({
     title: title || "No description",
     description: description.join("\n\n"),
 
-    usage: [usage.name, usage.description.replace("{cliName}", cliName)].join(
-      " "
-    ),
+    usage: [
+      usage.type === "cliName" ? cliName : "",
+      usage.name,
+      usage.description.replace("{cliName}", cliName),
+    ]
+      .filter(Boolean)
+      .join(" "),
 
     examples: jsdoc.tags
       .filter((tag) => tag.tag === "example")

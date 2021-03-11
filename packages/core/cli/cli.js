@@ -13,7 +13,7 @@ let config = {
       meta: {
         title: "Production build for opaline based cli tool",
         description: "",
-        usage: "build ",
+        usage: "opaline build",
         examples: [],
         shouldPassInputs: false,
         options: {},
@@ -33,8 +33,8 @@ let config = {
       meta: {
         title: "Bootstraps new Opaline based CLI tool",
         description: "",
-        usage: "create app",
-        examples: ["create name-of-a-cli-tool"],
+        usage: "opaline create app",
+        examples: [],
         shouldPassInputs: true,
         options: {},
       },
@@ -53,7 +53,7 @@ let config = {
       meta: {
         title: "Development mode for building opaline based cli tools",
         description: "",
-        usage: "dev ",
+        usage: "opaline dev",
         examples: [],
         shouldPassInputs: false,
         options: {},

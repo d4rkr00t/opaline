@@ -20,8 +20,6 @@ let pexec = promisify(exec);
  *
  * @usage {cliName} create app
  * @param {Array<string>} $inputs Name of a CLI tool
- *
- * @example {cliName} create name-of-a-cli-tool
  */
 export default async function create([name] = []) {
   if (!name) {
