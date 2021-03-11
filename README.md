@@ -167,11 +167,12 @@ OPTIONS
 
 ### Extra JSDoc Tags
 
-| Tag         | Description                                                                                                                  |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `@usage`    | Similar to example, but outlines the main example on how to use a CLI command. `@usage {cliName} build`                      |
-| `@short`    | Defines an alias (shortcut) for a parameter. `@short name=n`                                                                 |
-| `{cliName}` | A variable that will be replaced by the name of a CLI tool described in `package.json`. Supported by `@usage` and `@example` |
+| Tag              | Description                                                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `@param $inputs` | Indicates that command receives unnamed arguments                                                                            |
+| `@usage`         | Similar to example, but outlines the main example on how to use a CLI command. `@usage {cliName} build`                      |
+| `@short`         | Defines an alias (shortcut) for a parameter. `@short name=n`                                                                 |
+| `{cliName}`      | A variable that will be replaced by the name of a CLI tool described in `package.json`. Supported by `@usage` and `@example` |
 
 ## package.json
 
