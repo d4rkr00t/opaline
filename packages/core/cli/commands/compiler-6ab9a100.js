@@ -1,27 +1,34 @@
 "use strict";
 
-function _interopDefault(ex) {
-  return ex && typeof ex === "object" && "default" in ex ? ex["default"] : ex;
-}
-
 var path = require("path");
 var fs = require("fs");
 var util = require("util");
 var chokidar = require("chokidar");
 var rollup = require("rollup");
-var sucrase = _interopDefault(require("@rollup/plugin-sucrase"));
-var resolve = _interopDefault(require("@rollup/plugin-node-resolve"));
-var rimraf = _interopDefault(require("rimraf"));
+var sucrase = require("@rollup/plugin-sucrase");
+var resolve = require("@rollup/plugin-node-resolve");
+var rimraf = require("rimraf");
 var core = require("@opaline/core");
-var readPkgUp = _interopDefault(require("read-pkg-up"));
-var messages = require("./messages-885f5fb4.js");
+var readPkgUp = require("read-pkg-up");
+var messages = require("./messages-7db741fc.js");
 var parser = require("@babel/parser");
-var traverse = _interopDefault(require("@babel/traverse"));
-var commentParser = _interopDefault(require("comment-parser"));
+var traverse = require("@babel/traverse");
+var commentParser = require("comment-parser");
 var cp = require("child_process");
 
+function _interopDefaultLegacy(e) {
+  return e && typeof e === "object" && "default" in e ? e : { default: e };
+}
+
+var sucrase__default = /*#__PURE__*/ _interopDefaultLegacy(sucrase);
+var resolve__default = /*#__PURE__*/ _interopDefaultLegacy(resolve);
+var rimraf__default = /*#__PURE__*/ _interopDefaultLegacy(rimraf);
+var readPkgUp__default = /*#__PURE__*/ _interopDefaultLegacy(readPkgUp);
+var traverse__default = /*#__PURE__*/ _interopDefaultLegacy(traverse);
+var commentParser__default = /*#__PURE__*/ _interopDefaultLegacy(commentParser);
+
 async function readPackageJson(cwd) {
-  let pkgJson = await readPkgUp({ cwd, normalize: true });
+  let pkgJson = await readPkgUp__default["default"]({ cwd, normalize: true });
   if (!pkgJson) {
     throw core.OpalineError.fromArray(messages.OP002_errorNoPackageJson());
   }
@@ -97,7 +104,7 @@ function getCommandJSDoc(content) {
     plugins: ["typescript", "jsx"],
   });
   let comment;
-  traverse(ast, {
+  traverse__default["default"](ast, {
     ExportDefaultDeclaration(path) {
       comment =
         "/*" + (path.node.leadingComments || [{ value: "" }])[0].value + "\n*/";
@@ -124,7 +131,10 @@ function getCommandJSDoc(content) {
 
 function getMetaFromJSDoc({ jsdocComment, cliName, commandPath }) {
   let jsdoc = jsdocComment
-    ? commentParser(jsdocComment)[0] || { description: "", tags: [] }
+    ? commentParser__default["default"](jsdocComment)[0] || {
+        description: "",
+        tags: [],
+      }
     : { description: "", tags: [] };
   let [title, ...description] = jsdoc.description.split("\n\n");
   let aliases = jsdoc.tags
@@ -177,6 +187,8 @@ function getMetaFromJSDoc({ jsdocComment, cliName, commandPath }) {
         default:
           defaultValue && type === "number"
             ? parseInt(defaultValue)
+            : defaultValue
+            ? JSON.parse(defaultValue)
             : defaultValue,
       };
       return acc;
@@ -287,7 +299,7 @@ async function link() {
 let readdir = util.promisify(fs.readdir);
 let writeFile = util.promisify(fs.writeFile);
 let chmod = util.promisify(fs.chmod);
-let rm = util.promisify(rimraf);
+let rm = util.promisify(rimraf__default["default"]);
 
 class Compiler {
   constructor({ cwd, mode = "development" }) {
@@ -327,10 +339,10 @@ class Compiler {
         }
       },
       plugins: [
-        resolve({
+        resolve__default["default"]({
           extensions: [".js", ".ts", ".tsx"],
         }),
-        sucrase({
+        sucrase__default["default"]({
           exclude: ["node_modules/**"],
           transforms: ["typescript", "jsx"],
         }),

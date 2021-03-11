@@ -132,6 +132,8 @@ export function getMetaFromJSDoc({
         default:
           defaultValue && type === "number"
             ? parseInt(defaultValue)
+            : defaultValue
+            ? JSON.parse(defaultValue)
             : defaultValue,
       };
       return acc;

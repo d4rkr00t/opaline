@@ -1,19 +1,22 @@
 "use strict";
 
-function _interopDefault(ex) {
-  return ex && typeof ex === "object" && "default" in ex ? ex["default"] : ex;
+var fs = require("fs");
+var path = require("path");
+var cp = require("child_process");
+var util = require("util");
+var enquirer = require("enquirer");
+var chalk = require("chalk");
+var mkdirp = require("mkdirp");
+var core = require("@opaline/core");
+var runner = require("@opaline/runner");
+var messages = require("./messages-7db741fc.js");
+
+function _interopDefaultLegacy(e) {
+  return e && typeof e === "object" && "default" in e ? e : { default: e };
 }
 
-var path = require("path");
-var fs = require("fs");
-var util = require("util");
-var core = require("@opaline/core");
-var chalk = _interopDefault(require("chalk"));
-var messages = require("./messages-885f5fb4.js");
-var cp = require("child_process");
-var enquirer = require("enquirer");
-var mkdirp = _interopDefault(require("mkdirp"));
-var runner = require("@opaline/runner");
+var chalk__default = /*#__PURE__*/ _interopDefaultLegacy(chalk);
+var mkdirp__default = /*#__PURE__*/ _interopDefaultLegacy(mkdirp);
 
 let writeFile = util.promisify(fs.writeFile);
 let pexec = util.promisify(cp.exec);
@@ -94,8 +97,8 @@ let initialize = {
 let createMainFolder = {
   title: "Creating folders...",
   async task(ctx) {
-    await mkdirp(ctx.dir);
-    await mkdirp(ctx.commandsDir);
+    await mkdirp__default["default"](ctx.dir);
+    await mkdirp__default["default"](ctx.commandsDir);
   },
 };
 
@@ -169,9 +172,11 @@ let bootstrapFiles = {
       "",
       "Almost there! Just a few steps left:",
       "",
-      chalk`– {yellow cd ${ctx.name}}`,
-      chalk`– {yellow npm install {dim or} yarn install}`,
-      chalk`– {yellow npm run dev {dim or} yarn dev {dim # to start developing your CLI!}}`,
+      chalk__default["default"]`– {yellow cd ${ctx.name}}`,
+      chalk__default["default"]`– {yellow npm install {dim or} yarn install}`,
+      chalk__default[
+        "default"
+      ]`– {yellow npm run dev {dim or} yarn dev {dim # to start developing your CLI!}}`,
       "",
     ];
   },
