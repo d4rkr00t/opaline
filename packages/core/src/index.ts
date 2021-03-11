@@ -49,13 +49,13 @@ export default async function opaline(
       return help({
         helpFormatter,
         config,
-        commandName: "index"
+        commandName: "index",
       });
     } else if (isCommand && hasCommand(commandName)) {
       return help({
         helpFormatter,
         config,
-        commandName
+        commandName,
       });
     } else if (isCommand && !hasCommand(commandName)) {
       return error(
@@ -70,7 +70,7 @@ export default async function opaline(
       commandName,
       config,
       argv,
-      isCommand
+      isCommand,
     });
   }
 
@@ -82,13 +82,13 @@ export default async function opaline(
         commandName: "index",
         config,
         argv,
-        isCommand
+        isCommand,
       });
     } else {
       return help({
         helpFormatter,
         config,
-        commandName: ""
+        commandName: "",
       });
     }
   }
@@ -101,13 +101,13 @@ export default async function opaline(
         commandName: "index",
         config,
         argv,
-        isCommand
+        isCommand,
       });
     } else {
       return help({
         helpFormatter,
         config,
-        commandName: ""
+        commandName: "",
       });
     }
   }
@@ -117,7 +117,7 @@ async function run({
   config,
   commandName,
   argv,
-  isCommand
+  isCommand,
 }: {
   config: OpalineConfig;
   commandName: string;
@@ -133,7 +133,7 @@ async function run({
   );
   let inputs =
     isCommand && commandName !== "index" ? rawInputs.slice(1) : rawInputs;
-  let args = Object.keys(command.meta.options || {}).map(opt => flags[opt]);
+  let args = Object.keys(command.meta.options || {}).map((opt) => flags[opt]);
 
   try {
     await command
@@ -163,7 +163,7 @@ function error(msg: string) {
 function help({
   helpFormatter,
   config,
-  commandName
+  commandName,
 }: {
   helpFormatter: any;
   config: OpalineConfig;
@@ -172,10 +172,7 @@ function help({
   helpCommand({
     helpFormatter,
     config,
-    commandName
+    commandName,
   });
   process.exit(0);
 }
-
-// TODO: logging
-// TODO: command aliases
