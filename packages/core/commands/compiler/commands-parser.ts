@@ -146,7 +146,10 @@ function getTypeFromJSDocTag(tag: commentParser.Tag) {
   return tag.type;
 }
 
-function verify$InputsType(tag: commentParser.Tag, commandPath: string) {
+export function verify$InputsType(
+  tag: commentParser.Tag,
+  commandPath: string
+): boolean {
   let type = getTypeFromJSDocTag(tag);
   let notStringApplications = [tag.type].filter(
     (type) =>
@@ -154,7 +157,7 @@ function verify$InputsType(tag: commentParser.Tag, commandPath: string) {
   );
 
   if (!notStringApplications.length) {
-    return;
+    return true;
   }
 
   print(
@@ -164,6 +167,8 @@ function verify$InputsType(tag: commentParser.Tag, commandPath: string) {
       commandPath
     )
   );
+
+  return false;
 }
 
 export type CommandData = {

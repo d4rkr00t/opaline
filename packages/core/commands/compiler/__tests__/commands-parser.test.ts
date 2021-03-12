@@ -4,6 +4,7 @@ import {
   parseCommands,
   getCommandJSDoc,
   getMetaFromJSDoc,
+  verify$InputsType,
 } from "../commands-parser";
 import { ProjectInfo } from "../project-info";
 
@@ -95,4 +96,87 @@ test("getCommandJSDoc should support export default", (t) => {
   `;
   let jsdoc = getCommandJSDoc(source);
   t.true(!!jsdoc);
+});
+
+test("getCommandJSDoc should support return undefined if non of the supported formats found", (t) => {
+  let source = `
+  /**
+   * @param {string} name Name
+   * @short name=n
+   *
+   * @param {number} age Age
+   * @short age=a
+   */
+  module.whatever = function cli(){}
+  `;
+  let jsdoc = getCommandJSDoc(source);
+  t.true(jsdoc === undefined);
+});
+
+test("verify$InputsType should return true if a type is `string`", (t) => {
+  t.true(
+    verify$InputsType(
+      {
+        name: "$inputs",
+        tag: "param",
+        type: "string",
+        optional: true,
+        description: "",
+        line: 0,
+        source: "",
+      },
+      "command.ts"
+    )
+  );
+});
+
+test("verify$InputsType should return true if a type is `string[]`", (t) => {
+  t.true(
+    verify$InputsType(
+      {
+        name: "$inputs",
+        tag: "param",
+        type: "string[]",
+        optional: true,
+        description: "",
+        line: 0,
+        source: "",
+      },
+      "command.ts"
+    )
+  );
+});
+
+test("verify$InputsType should return true if a type is `Array<string>`", (t) => {
+  t.true(
+    verify$InputsType(
+      {
+        name: "$inputs",
+        tag: "param",
+        type: "Array<string>",
+        optional: true,
+        description: "",
+        line: 0,
+        source: "",
+      },
+      "command.ts"
+    )
+  );
+});
+
+test("verify$InputsType should return false if a type is not `string` or `string[]` or `Array<string>`", (t) => {
+  t.false(
+    verify$InputsType(
+      {
+        name: "$inputs",
+        tag: "param",
+        type: "Array<number>",
+        optional: true,
+        description: "",
+        line: 0,
+        source: "",
+      },
+      "command.ts"
+    )
+  );
 });
