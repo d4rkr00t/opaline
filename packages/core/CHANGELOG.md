@@ -1,5 +1,13 @@
 # @opaline/core
 
+## 0.5.3
+
+### Patch Changes
+
+- Updated dependencies [95b6984]
+  - @opaline/help-theme-default@0.0.2
+  - @opaline/runner@0.1.1
+
 ## 0.5.2
 
 ### Patch Changes
