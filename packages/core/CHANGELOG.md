@@ -1,5 +1,11 @@
 # @opaline/core
 
+## 0.5.2
+
+### Patch Changes
+
+- 035dd14: Fix various issues and update documentation
+
 ## 0.5.1
 
 ### Patch Changes
