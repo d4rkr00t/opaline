@@ -1,6 +1,6 @@
 "use strict";
 
-var compiler = require("./compiler-45579224.js");
+var compiler = require("./compiler-395157b8.js");
 require("path");
 require("fs");
 require("util");
@@ -11,8 +11,8 @@ require("@rollup/plugin-node-resolve");
 require("rimraf");
 require("@opaline/core");
 require("read-pkg-up");
-require("./messages-3b678966.js");
-require("chalk");
+require("./messages-841eed31.js");
+require("colorette");
 require("@babel/parser");
 require("@babel/traverse");
 require("comment-parser");

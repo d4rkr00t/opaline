@@ -5,17 +5,16 @@ var path = require("path");
 var cp = require("child_process");
 var util = require("util");
 var enquirer = require("enquirer");
-var chalk = require("chalk");
+var colorette = require("colorette");
 var mkdirp = require("mkdirp");
 var core = require("@opaline/core");
 var runner = require("@opaline/runner");
-var messages = require("./messages-3b678966.js");
+var messages = require("./messages-841eed31.js");
 
 function _interopDefaultLegacy(e) {
   return e && typeof e === "object" && "default" in e ? e : { default: e };
 }
 
-var chalk__default = /*#__PURE__*/ _interopDefaultLegacy(chalk);
 var mkdirp__default = /*#__PURE__*/ _interopDefaultLegacy(mkdirp);
 
 let writeFile = util.promisify(fs.writeFile);
@@ -172,11 +171,15 @@ let bootstrapFiles = {
       "",
       "Almost there! Just a few steps left:",
       "",
-      chalk__default["default"]`– {yellow cd ${ctx.name}}`,
-      chalk__default["default"]`– {yellow npm install {dim or} yarn install}`,
-      chalk__default[
-        "default"
-      ]`– {yellow npm run dev {dim or} yarn dev {dim # to start developing your CLI!}}`,
+      `– ${colorette.yellow(`cd ${ctx.name}`)}`,
+      `– ${colorette.yellow("npm install")} ${colorette.dim(
+        "or"
+      )} ${colorette.yellow("yarn install")}`,
+      `– ${colorette.yellow("npm run dev")} ${colorette.dim(
+        "or"
+      )} ${colorette.yellow("yarn dev")} ${colorette.dim(
+        "# to start developing your CLI!"
+      )}`,
       "",
     ];
   },

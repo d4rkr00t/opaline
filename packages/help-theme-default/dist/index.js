@@ -1,11 +1,6 @@
 "use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
 Object.defineProperty(exports, "__esModule", { value: true });
-const chalk_1 = __importDefault(require("chalk"));
+const colorette_1 = require("colorette");
 /**
  * Default formatter for help output
  */
@@ -22,24 +17,24 @@ function formatSubCommandHelpData(help) {
     output.push("", help.title);
   }
   if (help.usage) {
-    output.push("", chalk_1.default.bold("USAGE"), [help.usage]);
+    output.push("", colorette_1.bold("USAGE"), [help.usage]);
   }
   if (help.options && help.options.length) {
     output.push(
       "",
-      chalk_1.default.bold("OPTIONS"),
+      colorette_1.bold("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
         (opt) => `${opt[0]}     ${opt[1]}`
       )
     );
   }
   if (help.description) {
-    output.push("", chalk_1.default.bold("DESCRIPTION"), [
+    output.push("", colorette_1.bold("DESCRIPTION"), [
       capFirst(help.description),
     ]);
   }
   if (help.examples && help.examples.length) {
-    output.push("", chalk_1.default.bold("EXAMPLES"), help.examples);
+    output.push("", colorette_1.bold("EXAMPLES"), help.examples);
   }
   return output;
 }
@@ -48,24 +43,24 @@ function formatHelpData(help) {
   if (help.cliDescription) {
     output.push("", help.cliDescription);
   }
-  output.push("", chalk_1.default.bold("VERSION"), [
+  output.push("", colorette_1.bold("VERSION"), [
     `${help.cliName}/${help.cliVersion}`,
   ]);
   if (help.usage) {
-    output.push("", chalk_1.default.bold("USAGE"), [help.usage]);
+    output.push("", colorette_1.bold("USAGE"), [help.usage]);
   }
   if (help.commands && help.commands.length) {
     output.push(
       "",
-      chalk_1.default.bold("COMMANDS"),
+      colorette_1.bold("COMMANDS"),
       formatList(
         help.commands.map((c) => [c.name, capFirst(c.title || "")])
       ).map((c) => `${c[0]}     ${c[1]}`),
       "",
       join(
         [
-          chalk_1.default.yellow("> NOTE:"),
-          chalk_1.default.dim(
+          colorette_1.yellow("> NOTE:"),
+          colorette_1.dim(
             `To view the usage information for a specific command, run '${help.cliName} [COMMAND] --help'`
           ),
         ],
@@ -76,14 +71,14 @@ function formatHelpData(help) {
   if (help.options && help.options.length) {
     output.push(
       "",
-      chalk_1.default.bold("OPTIONS"),
+      colorette_1.bold("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
         (opt) => `${opt[0]}     ${opt[1]}`
       )
     );
   }
   if (help.examples && help.examples.length) {
-    output.push("", chalk_1.default.bold("EXAMPLES"), help.examples);
+    output.push("", colorette_1.bold("EXAMPLES"), help.examples);
   }
   return output;
 }
@@ -110,10 +105,8 @@ function formatOption(option) {
     join(
       [
         capFirst(option.title || ""),
-        option.type ? chalk_1.default.dim(`[${option.type}]`) : "",
-        option.default
-          ? chalk_1.default.dim(`[default: ${option.default}]`)
-          : "",
+        option.type ? colorette_1.dim(`[${option.type}]`) : "",
+        option.default ? colorette_1.dim(`[default: ${option.default}]`) : "",
       ],
       " "
     ),

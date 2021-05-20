@@ -1,43 +1,35 @@
 "use strict";
 
 var path = require("path");
-var chalk = require("chalk");
-
-function _interopDefaultLegacy(e) {
-  return e && typeof e === "object" && "default" in e ? e : { default: e };
-}
-
-var chalk__default = /*#__PURE__*/ _interopDefaultLegacy(chalk);
+var colorette = require("colorette");
 
 //#region Error Messages
 function OP001_errorBinIsEmpty() {
   return [
-    chalk__default["default"].red(
+    colorette.red(
       `${errorBadge()} OP001: Bin field is empty in "package.json"`
     ),
     [
       "",
-      chalk__default[
-        "default"
-      ]`Please add {yellow "bin"} field to {yellow "package.json"}, example:`,
+      `Please add ${colorette.yellow('"bin"')} field to ${colorette.yellow(
+        '"package.json"'
+      )}, example:`,
       "",
       ...codeSnippet(['"bin": {', '  "mycli": "./cli/cli.js"', "}"]),
       "",
-      chalk__default[
-        "default"
-      ]`Choose any path and name for {yellow "cli.js"}, don't need to create this file,`,
-      chalk__default[
-        "default"
-      ]`{yellow opaline} will generate it for you at provided path.`,
+      `Choose any path and name for ${colorette.yellow(
+        '"cli.js"'
+      )}, don't need to create this file,`,
+      `${colorette.yellow(
+        "opaline"
+      )} will generate it for you at provided path.`,
     ],
   ];
 }
 
 function OP002_errorNoPackageJson() {
   return [
-    chalk__default["default"].red(
-      `${errorBadge()} OP002: No "package.json" file found`
-    ),
+    colorette.red(`${errorBadge()} OP002: No "package.json" file found`),
     [
       "",
       `Please add one manually or by running:`,
@@ -49,43 +41,40 @@ function OP002_errorNoPackageJson() {
 
 function OP003_errorNoCommandsFolder(commandsDirPath) {
   return [
-    chalk__default["default"].red(
+    colorette.red(
       `${errorBadge()} OP003: "${commandsDirPath}" folder doesn't exist`
     ),
     [
       "",
-      chalk__default[
-        "default"
-      ]`Please create {yellow "commands"} folder, because this is where {yellow opaline} is expecting to find cli commands to compile.`,
+      `Please create ${colorette.yellow(
+        '"commands"'
+      )} folder, because this is where ${colorette.yellow(
+        "opaline"
+      )} is expecting to find cli commands to compile.`,
     ],
   ];
 }
 
 function OP004_errorEmptyCommandsFolder(commandsDirPath) {
   return [
-    chalk__default["default"].red(
-      `${errorBadge()} OP004: Commands folder is empty`
-    ),
-    [
-      "",
-      chalk__default["default"]`Add files to {yellow "${commandsDirPath}"}.`,
-    ],
+    colorette.red(`${errorBadge()} OP004: Commands folder is empty`),
+    ["", `Add files to ${colorette.yellow(`"${commandsDirPath}"`)}.`],
   ];
 }
 
 function OP005_errorSrcEqDest(commandsDirPath, commandsOutputPath) {
   return [
-    chalk__default["default"].red(
+    colorette.red(
       `${errorBadge()} OP005: Source and output folder are the same`
     ),
     [
       "",
-      chalk__default["default"].dim("– Source: " + commandsDirPath),
-      chalk__default["default"].dim("– Output: " + commandsOutputPath),
+      colorette.dim("– Source: " + commandsDirPath),
+      colorette.dim("– Output: " + commandsOutputPath),
       "",
-      chalk__default[
-        "default"
-      ]`Please update {yellow "bin"} field in {yellow "package.json"} to have a nested output folder:`,
+      `Please update ${colorette.yellow('"bin"')} field in ${colorette.yellow(
+        '"package.json"'
+      )} to have a nested output folder:`,
       "",
       ...codeSnippet([
         '"bin": {',
@@ -98,18 +87,14 @@ function OP005_errorSrcEqDest(commandsDirPath, commandsOutputPath) {
 
 function OP006_errorProjectNameIsRequired() {
   return [
-    chalk__default["default"].red(
-      `${errorBadge()} OP006: A project name is required!`
-    ),
+    colorette.red(`${errorBadge()} OP006: A project name is required!`),
     ["", ...codeSnippet([`λ opaline create app`])],
   ];
 }
 
 function OP007_errorProjectFolderExists(dir) {
   return [
-    chalk__default["default"].red(
-      `${errorBadge()} OP007: Folder "${dir}" already exists`
-    ),
+    colorette.red(`${errorBadge()} OP007: Folder "${dir}" already exists`),
   ];
 }
 //#endregion
@@ -118,11 +103,11 @@ function OP007_errorProjectFolderExists(dir) {
 function OP008_warningInputsNotArrayOrString(type, applications, commandPath) {
   let printType = applications.length ? applications.join(" | ") : type;
   return [
-    chalk__default["default"].yellow(
+    colorette.yellow(
       `${warningBadge()} OP008: Type of $inputs must be "string | Array<string>", got: "${printType}" instead`
     ),
     "",
-    chalk__default["default"].dim(`– File: ${commandPath}`),
+    colorette.dim(`– File: ${commandPath}`),
   ];
 }
 //#endregion
@@ -141,30 +126,30 @@ function MSG_buildSuccess(
     .split(path.sep);
   let binFileName = relativeBinOutputPath.pop();
   let message = [
-    chalk__default["default"].green(
+    colorette.green(
       `${doneBadge()} in ${(endTime[0] * 1000 + endTime[1] / 1e6).toFixed(
         2
       )}ms!`
     ),
     "",
-    chalk__default[
-      "default"
-    ]`{green Successfully compiled into {blue "${outputPath}"} folder.}`,
+    `${colorette.green("Successfully compiled into")} ${colorette.blue(
+      `"${outputPath}"`
+    )} ${colorette.green("folder.")}}`,
   ];
 
-  message.push("", chalk__default["default"].bgMagenta.black(" OUTPUTS "), "");
+  message.push("", colorette.bgMagenta(colorette.black(" OUTPUTS ")), "");
   message.push(
-    `${chalk__default["default"].grey(
+    `${colorette.gray(
       "– " + relativeBinOutputPath.join(path.sep) + path.sep
-    )}${chalk__default["default"].magenta(binFileName)}`
+    )}${colorette.magenta(binFileName)}`
   );
 
   for (let bundle of output.output) {
     if (bundle.type === "chunk" && bundle.isEntry) {
       message.push(
-        `${chalk__default["default"].grey(
-          "– " + outputPath + path.sep
-        )}${chalk__default["default"].magenta(bundle.fileName)}`
+        `${colorette.gray("– " + outputPath + path.sep)}${colorette.magenta(
+          bundle.fileName
+        )}`
       );
     }
   }
@@ -175,15 +160,15 @@ function MSG_buildSuccess(
 
 function MSG_watchStarted(commands, relativePathToCommands) {
   return [
-    chalk__default["default"]`{green ${greenBadge(
-      "DEV MODE"
-    )} Watching commands {grey [+all of their dependencies]}}`,
+    `${colorette.green(
+      `${greenBadge("DEV MODE")} Watching commands`
+    )} ${colorette.gray("[+all of their dependencies]")}}`,
     "",
     ...commands.map(
       (command) =>
-        `${chalk__default["default"].grey(
-          "– " + relativePathToCommands
-        )}${chalk__default["default"].magenta(command)}`
+        `${colorette.gray("– " + relativePathToCommands)}${colorette.magenta(
+          command
+        )}`
     ),
     "",
   ];
@@ -196,9 +181,9 @@ function MSG_watchUpdated(commands, relativePathToCommands) {
     "",
     ...commands.map(
       (command) =>
-        `${chalk__default["default"].grey(
-          "– " + relativePathToCommands
-        )}${chalk__default["default"].magenta(command)}`
+        `${colorette.gray("– " + relativePathToCommands)}${colorette.magenta(
+          command
+        )}`
     ),
     "",
   ];
@@ -207,23 +192,23 @@ function MSG_watchUpdated(commands, relativePathToCommands) {
 
 //#region Message helpers
 function codeSnippet(code) {
-  return [].concat(code).map((line) => chalk__default["default"].dim(line));
+  return [].concat(code).map((line) => colorette.dim(line));
 }
 
 function greenBadge(label) {
-  return chalk__default["default"].bgGreen.black(` ${label} `);
+  return colorette.bgGreen(colorette.black(` ${label} `));
 }
 
 function yellowBadge(label) {
-  return chalk__default["default"].bgYellow.black(` ${label} `);
+  return colorette.bgYellow(colorette.black(` ${label} `));
 }
 
 function blueBadge(label) {
-  return chalk__default["default"].bgBlue.black(` ${label} `);
+  return colorette.bgBlue(colorette.black(` ${label} `));
 }
 
 function redBadge(label) {
-  return chalk__default["default"].bgRed.black(` ${label} `);
+  return colorette.bgRed(colorette.black(` ${label} `));
 }
 
 function doneBadge() {

@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import { blue, red, yellow } from "colorette";
 import { OpalineError } from "../utils/error";
 
 //
@@ -16,7 +16,7 @@ export function indent(text: string, level: number = 1) {
 
 export function print(text: PrintableOutput, level: number = 0) {
   if (Array.isArray(text)) {
-    text.forEach(item => {
+    text.forEach((item) => {
       if (Array.isArray(item)) {
         print(item, level + 1);
       } else {
@@ -29,7 +29,7 @@ export function print(text: PrintableOutput, level: number = 0) {
 }
 
 export function printWarning(text: string) {
-  print(chalk.yellow("[WARN] ") + text);
+  print(yellow("[WARN] ") + text);
 }
 
 export function printError(
@@ -40,7 +40,7 @@ export function printError(
     print(err);
   } else {
     print(
-      [chalk.red(`${err.message}`)]
+      [red(`${err.message}`)]
         .concat((err as OpalineError).hint ? (err as OpalineError).hint! : [])
         .concat(verbose && err.stack ? err.stack.split("\n") : [])
     );
@@ -48,5 +48,5 @@ export function printError(
 }
 
 export function printInfo(text: string) {
-  print(chalk.blue("[INFO] ") + text);
+  print(blue("[INFO] ") + text);
 }

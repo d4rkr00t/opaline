@@ -36,15 +36,10 @@ var __importStar =
     __setModuleDefault(result, mod);
     return result;
   };
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.badgeGreen = exports.badgeRed = exports.prompt = void 0;
 const readline = __importStar(require("readline"));
-const chalk_1 = __importDefault(require("chalk"));
+const colorette_1 = require("colorette");
 function prompt(message) {
   return new Promise((resolve) => {
     const rl = readline.createInterface({
@@ -52,9 +47,7 @@ function prompt(message) {
       output: process.stdout,
     });
     rl.question(
-      chalk_1.default.blue(
-        `❯ ${message} ${chalk_1.default.dim("[yes|y|n|no]")}: `
-      ),
+      colorette_1.blue(`❯ ${message} ${colorette_1.dim("[yes|y|n|no]")}: `),
       (answer) => {
         rl.close();
         if (answer === "y" || answer === "yes") {
@@ -67,10 +60,10 @@ function prompt(message) {
 }
 exports.prompt = prompt;
 function badgeRed(text) {
-  return chalk_1.default.bgRed.black(` ${text} `);
+  return colorette_1.bgRed(colorette_1.black(` ${text} `));
 }
 exports.badgeRed = badgeRed;
 function badgeGreen(text) {
-  return chalk_1.default.bgGreen.black(` ${text} `);
+  return colorette_1.bgGreen(colorette_1.black(` ${text} `));
 }
 exports.badgeGreen = badgeGreen;

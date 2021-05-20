@@ -26,7 +26,7 @@
     "@types/doctrine": "^0.0.3",
     "@types/minimist": "^1.2.0",
     "@types/node": "^12.6.9",
-    "chalk": "^3.0.0",
+    "colorette": "^1.2.2",
     "chokidar": "^3.3.1",
     "comment-parser": "^0.7.4",
     "doctrine": "^3.0.0",

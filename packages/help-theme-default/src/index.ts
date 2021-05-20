@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import { bold, yellow, dim } from "colorette";
 
 /**
  * Default formatter for help output
@@ -18,13 +18,13 @@ function formatSubCommandHelpData(help: HelpSubCommandData) {
   }
 
   if (help.usage) {
-    output.push("", chalk.bold("USAGE"), [help.usage]);
+    output.push("", bold("USAGE"), [help.usage]);
   }
 
   if (help.options && help.options.length) {
     output.push(
       "",
-      chalk.bold("OPTIONS"),
+      bold("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
         (opt) => `${opt[0]}     ${opt[1]}`
       )
@@ -32,11 +32,11 @@ function formatSubCommandHelpData(help: HelpSubCommandData) {
   }
 
   if (help.description) {
-    output.push("", chalk.bold("DESCRIPTION"), [capFirst(help.description)]);
+    output.push("", bold("DESCRIPTION"), [capFirst(help.description)]);
   }
 
   if (help.examples && help.examples.length) {
-    output.push("", chalk.bold("EXAMPLES"), help.examples);
+    output.push("", bold("EXAMPLES"), help.examples);
   }
 
   return output;
@@ -49,26 +49,24 @@ function formatHelpData(help: HelpData) {
     output.push("", help.cliDescription);
   }
 
-  output.push("", chalk.bold("VERSION"), [
-    `${help.cliName}/${help.cliVersion}`,
-  ]);
+  output.push("", bold("VERSION"), [`${help.cliName}/${help.cliVersion}`]);
 
   if (help.usage) {
-    output.push("", chalk.bold("USAGE"), [help.usage]);
+    output.push("", bold("USAGE"), [help.usage]);
   }
 
   if (help.commands && help.commands.length) {
     output.push(
       "",
-      chalk.bold("COMMANDS"),
+      bold("COMMANDS"),
       formatList(
         help.commands.map((c) => [c.name, capFirst(c.title || "")])
       ).map((c) => `${c[0]}     ${c[1]}`),
       "",
       join(
         [
-          chalk.yellow("> NOTE:"),
-          chalk.dim(
+          yellow("> NOTE:"),
+          dim(
             `To view the usage information for a specific command, run '${help.cliName} [COMMAND] --help'`
           ),
         ],
@@ -80,7 +78,7 @@ function formatHelpData(help: HelpData) {
   if (help.options && help.options.length) {
     output.push(
       "",
-      chalk.bold("OPTIONS"),
+      bold("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
         (opt) => `${opt[0]}     ${opt[1]}`
       )
@@ -88,7 +86,7 @@ function formatHelpData(help: HelpData) {
   }
 
   if (help.examples && help.examples.length) {
-    output.push("", chalk.bold("EXAMPLES"), help.examples);
+    output.push("", bold("EXAMPLES"), help.examples);
   }
 
   return output;
@@ -119,8 +117,8 @@ function formatOption(option: HelpOptionData): [string, string] {
     join(
       [
         capFirst(option.title || ""),
-        option.type ? chalk.dim(`[${option.type}]`) : "",
-        option.default ? chalk.dim(`[default: ${option.default}]`) : "",
+        option.type ? dim(`[${option.type}]`) : "",
+        option.default ? dim(`[default: ${option.default}]`) : "",
       ],
       " "
     ),

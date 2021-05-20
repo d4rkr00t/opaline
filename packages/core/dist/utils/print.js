@@ -1,12 +1,7 @@
 "use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.printInfo = exports.printError = exports.printWarning = exports.print = exports.indent = void 0;
-const chalk_1 = __importDefault(require("chalk"));
+const colorette_1 = require("colorette");
 function indent(text, level = 1) {
   return `${"".padStart(level * 2, " ")}${text}`;
 }
@@ -26,7 +21,7 @@ function print(text, level = 0) {
 }
 exports.print = print;
 function printWarning(text) {
-  print(chalk_1.default.yellow("[WARN] ") + text);
+  print(colorette_1.yellow("[WARN] ") + text);
 }
 exports.printWarning = printWarning;
 function printError(err, verbose = false) {
@@ -34,7 +29,7 @@ function printError(err, verbose = false) {
     print(err);
   } else {
     print(
-      [chalk_1.default.red(`${err.message}`)]
+      [colorette_1.red(`${err.message}`)]
         .concat(err.hint ? err.hint : [])
         .concat(verbose && err.stack ? err.stack.split("\n") : [])
     );
@@ -42,6 +37,6 @@ function printError(err, verbose = false) {
 }
 exports.printError = printError;
 function printInfo(text) {
-  print(chalk_1.default.blue("[INFO] ") + text);
+  print(colorette_1.blue("[INFO] ") + text);
 }
 exports.printInfo = printInfo;

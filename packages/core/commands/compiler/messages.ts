@@ -1,26 +1,44 @@
 import * as path from "path";
-import chalk from "chalk";
+import {
+  bgBlue,
+  bgGreen,
+  bgMagenta,
+  bgRed,
+  bgYellow,
+  black,
+  blue,
+  dim,
+  gray,
+  green,
+  magenta,
+  red,
+  yellow,
+} from "colorette";
 import { RollupOutput } from "rollup";
 
 //#region Error Messages
 export function OP001_errorBinIsEmpty() {
   return [
-    chalk.red(`${errorBadge()} OP001: Bin field is empty in "package.json"`),
+    red(`${errorBadge()} OP001: Bin field is empty in "package.json"`),
     [
       "",
-      chalk`Please add {yellow "bin"} field to {yellow "package.json"}, example:`,
+      `Please add ${yellow('"bin"')} field to ${yellow(
+        '"package.json"'
+      )}, example:`,
       "",
       ...codeSnippet(['"bin": {', '  "mycli": "./cli/cli.js"', "}"]),
       "",
-      chalk`Choose any path and name for {yellow "cli.js"}, don't need to create this file,`,
-      chalk`{yellow opaline} will generate it for you at provided path.`,
+      `Choose any path and name for ${yellow(
+        '"cli.js"'
+      )}, don't need to create this file,`,
+      `${yellow("opaline")} will generate it for you at provided path.`,
     ],
   ] as const;
 }
 
 export function OP002_errorNoPackageJson() {
   return [
-    chalk.red(`${errorBadge()} OP002: No "package.json" file found`),
+    red(`${errorBadge()} OP002: No "package.json" file found`),
     [
       "",
       `Please add one manually or by running:`,
@@ -32,20 +50,22 @@ export function OP002_errorNoPackageJson() {
 
 export function OP003_errorNoCommandsFolder(commandsDirPath: string) {
   return [
-    chalk.red(
-      `${errorBadge()} OP003: "${commandsDirPath}" folder doesn't exist`
-    ),
+    red(`${errorBadge()} OP003: "${commandsDirPath}" folder doesn't exist`),
     [
       "",
-      chalk`Please create {yellow "commands"} folder, because this is where {yellow opaline} is expecting to find cli commands to compile.`,
+      `Please create ${yellow(
+        '"commands"'
+      )} folder, because this is where ${yellow(
+        "opaline"
+      )} is expecting to find cli commands to compile.`,
     ],
   ] as const;
 }
 
 export function OP004_errorEmptyCommandsFolder(commandsDirPath: string) {
   return [
-    chalk.red(`${errorBadge()} OP004: Commands folder is empty`),
-    ["", chalk`Add files to {yellow "${commandsDirPath}"}.`],
+    red(`${errorBadge()} OP004: Commands folder is empty`),
+    ["", `Add files to ${yellow(`"${commandsDirPath}"`)}.`],
   ] as const;
 }
 
@@ -54,13 +74,15 @@ export function OP005_errorSrcEqDest(
   commandsOutputPath: string
 ) {
   return [
-    chalk.red(`${errorBadge()} OP005: Source and output folder are the same`),
+    red(`${errorBadge()} OP005: Source and output folder are the same`),
     [
       "",
-      chalk.dim("– Source: " + commandsDirPath),
-      chalk.dim("– Output: " + commandsOutputPath),
+      dim("– Source: " + commandsDirPath),
+      dim("– Output: " + commandsOutputPath),
       "",
-      chalk`Please update {yellow "bin"} field in {yellow "package.json"} to have a nested output folder:`,
+      `Please update ${yellow('"bin"')} field in ${yellow(
+        '"package.json"'
+      )} to have a nested output folder:`,
       "",
       ...codeSnippet([
         '"bin": {',
@@ -73,14 +95,14 @@ export function OP005_errorSrcEqDest(
 
 export function OP006_errorProjectNameIsRequired() {
   return [
-    chalk.red(`${errorBadge()} OP006: A project name is required!`),
+    red(`${errorBadge()} OP006: A project name is required!`),
     ["", ...codeSnippet([`λ opaline create app`])],
   ] as const;
 }
 
 export function OP007_errorProjectFolderExists(dir: string) {
   return [
-    chalk.red(`${errorBadge()} OP007: Folder "${dir}" already exists`),
+    red(`${errorBadge()} OP007: Folder "${dir}" already exists`),
   ] as const;
 }
 //#endregion
@@ -93,11 +115,11 @@ export function OP008_warningInputsNotArrayOrString(
 ) {
   let printType = applications.length ? applications.join(" | ") : type;
   return [
-    chalk.yellow(
+    yellow(
       `${warningBadge()} OP008: Type of $inputs must be "string | Array<string>", got: "${printType}" instead`
     ),
     "",
-    chalk.dim(`– File: ${commandPath}`),
+    dim(`– File: ${commandPath}`),
   ];
 }
 //#endregion
@@ -116,28 +138,28 @@ export function MSG_buildSuccess(
     .split(path.sep);
   let binFileName = relativeBinOutputPath.pop();
   let message = [
-    chalk.green(
+    green(
       `${doneBadge()} in ${(endTime[0] * 1000 + endTime[1] / 1e6).toFixed(
         2
       )}ms!`
     ),
     "",
-    chalk`{green Successfully compiled into {blue "${outputPath}"} folder.}`,
+    `${green("Successfully compiled into")} ${blue(`"${outputPath}"`)} ${green(
+      "folder."
+    )}}`,
   ];
 
-  message.push("", chalk.bgMagenta.black(" OUTPUTS "), "");
+  message.push("", bgMagenta(black(" OUTPUTS ")), "");
   message.push(
-    `${chalk.grey(
-      "– " + relativeBinOutputPath.join(path.sep) + path.sep
-    )}${chalk.magenta(binFileName)}`
+    `${gray("– " + relativeBinOutputPath.join(path.sep) + path.sep)}${magenta(
+      binFileName
+    )}`
   );
 
   for (let bundle of output.output) {
     if (bundle.type === "chunk" && bundle.isEntry) {
       message.push(
-        `${chalk.grey("– " + outputPath + path.sep)}${chalk.magenta(
-          bundle.fileName
-        )}`
+        `${gray("– " + outputPath + path.sep)}${magenta(bundle.fileName)}`
       );
     }
   }
@@ -151,13 +173,12 @@ export function MSG_watchStarted(
   relativePathToCommands: string
 ) {
   return [
-    chalk`{green ${greenBadge(
-      "DEV MODE"
-    )} Watching commands {grey [+all of their dependencies]}}`,
+    `${green(`${greenBadge("DEV MODE")} Watching commands`)} ${gray(
+      "[+all of their dependencies]"
+    )}}`,
     "",
     ...commands.map(
-      (command) =>
-        `${chalk.grey("– " + relativePathToCommands)}${chalk.magenta(command)}`
+      (command) => `${gray("– " + relativePathToCommands)}${magenta(command)}`
     ),
     "",
   ];
@@ -172,8 +193,7 @@ export function MSG_watchUpdated(
     blueBadge("UPDATED"),
     "",
     ...commands.map(
-      (command) =>
-        `${chalk.grey("– " + relativePathToCommands)}${chalk.magenta(command)}`
+      (command) => `${gray("– " + relativePathToCommands)}${magenta(command)}`
     ),
     "",
   ];
@@ -182,23 +202,23 @@ export function MSG_watchUpdated(
 
 //#region Message helpers
 export function codeSnippet(code: string | string[]) {
-  return ([] as string[]).concat(code).map((line) => chalk.dim(line));
+  return ([] as string[]).concat(code).map((line) => dim(line));
 }
 
 export function greenBadge(label: string): string {
-  return chalk.bgGreen.black(` ${label} `);
+  return bgGreen(black(` ${label} `));
 }
 
 export function yellowBadge(label: string): string {
-  return chalk.bgYellow.black(` ${label} `);
+  return bgYellow(black(` ${label} `));
 }
 
 export function blueBadge(label: string): string {
-  return chalk.bgBlue.black(` ${label} `);
+  return bgBlue(black(` ${label} `));
 }
 
 export function redBadge(label: string): string {
-  return chalk.bgRed.black(` ${label} `);
+  return bgRed(black(` ${label} `));
 }
 
 export function doneBadge(): string {
@@ -218,6 +238,6 @@ export function errorBadge(): string {
 }
 
 export function separator() {
-  return chalk.dim("---------");
+  return dim("---------");
 }
 //#endregion

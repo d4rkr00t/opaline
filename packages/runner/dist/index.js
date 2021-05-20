@@ -7,7 +7,7 @@ var __importDefault =
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCommand = exports.TaskWrapper = exports.indent = void 0;
 const ora_1 = __importDefault(require("ora"));
-const chalk_1 = __importDefault(require("chalk"));
+const colorette_1 = require("colorette");
 const console_1 = require("./utils/console");
 function indent(text, level = 1) {
   return `${"".padStart(level * 2, " ")}${text}`;
@@ -27,20 +27,18 @@ class TaskWrapper {
     this.spinner = ora_1.default(this._title);
   }
   skip() {
-    this.spinner.info(chalk_1.default.dim(`[skip] ${this.title}`));
+    this.spinner.info(colorette_1.dim(`[skip] ${this.title}`));
   }
   abort() {
     this.isAborted = true;
   }
   progress(text) {
-    this.spinner.text = `${this.title} ${chalk_1.default.dim(
-      "[" + text + "]"
-    )}`;
+    this.spinner.text = `${this.title} ${colorette_1.dim("[" + text + "]")}`;
   }
   stopAndClearSpinner() {
     this.spinner.stop();
   }
-  format(text, formatter = (item) => chalk_1.default.dim(`→ ${item}`)) {
+  format(text, formatter = (item) => colorette_1.dim(`→ ${item}`)) {
     if (Array.isArray(text)) {
       return text.map((item) => {
         if (Array.isArray(item)) {
@@ -104,7 +102,7 @@ class TaskWrapper {
       (await this.task.abort(this.sharedCtx, this.params, this))
     ) {
       this.abort();
-      this.spinner.text = chalk_1.default.yellow(`[exit] ${this.title}`);
+      this.spinner.text = colorette_1.yellow(`[exit] ${this.title}`);
       this.spinner.warn();
       return;
     }
@@ -116,7 +114,7 @@ class TaskWrapper {
         this
       );
       if (this.isAborted) {
-        this.spinner.text = chalk_1.default.yellow(`[exit] ${this.title}`);
+        this.spinner.text = colorette_1.yellow(`[exit] ${this.title}`);
         this.spinner.warn();
       } else {
         this.spinner.text = this.title;

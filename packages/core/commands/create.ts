@@ -3,7 +3,7 @@ import * as path from "path";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { prompt } from "enquirer";
-import chalk from "chalk";
+import { dim, yellow } from "colorette";
 import mkdirp from "mkdirp";
 import { OpalineError } from "@opaline/core";
 import { createCommand, Task } from "@opaline/runner";
@@ -162,9 +162,11 @@ let bootstrapFiles: Task<TaskCtx, TaskParams> = {
       "",
       "Almost there! Just a few steps left:",
       "",
-      chalk`– {yellow cd ${ctx.name}}`,
-      chalk`– {yellow npm install {dim or} yarn install}`,
-      chalk`– {yellow npm run dev {dim or} yarn dev {dim # to start developing your CLI!}}`,
+      `– ${yellow(`cd ${ctx.name}`)}`,
+      `– ${yellow("npm install")} ${dim("or")} ${yellow("yarn install")}`,
+      `– ${yellow("npm run dev")} ${dim("or")} ${yellow("yarn dev")} ${dim(
+        "# to start developing your CLI!"
+      )}`,
       "",
     ];
   },

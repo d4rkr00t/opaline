@@ -1,5 +1,5 @@
 import ora from "ora";
-import chalk from "chalk";
+import { dim, yellow } from "colorette";
 import { prompt } from "./utils/console";
 
 export interface NestedPrintableOutput extends Array<PrintableOutput> {}
@@ -51,7 +51,7 @@ export class TaskWrapper<C = any, P = any> {
   }
 
   skip() {
-    this.spinner.info(chalk.dim(`[skip] ${this.title}`));
+    this.spinner.info(dim(`[skip] ${this.title}`));
   }
 
   abort() {
@@ -59,7 +59,7 @@ export class TaskWrapper<C = any, P = any> {
   }
 
   progress(text: string) {
-    this.spinner.text = `${this.title} ${chalk.dim("[" + text + "]")}`;
+    this.spinner.text = `${this.title} ${dim("[" + text + "]")}`;
   }
 
   stopAndClearSpinner() {
@@ -68,10 +68,10 @@ export class TaskWrapper<C = any, P = any> {
 
   format(
     text: PrintableOutput,
-    formatter: (text: string) => string = item => chalk.dim(`→ ${item}`)
+    formatter: (text: string) => string = (item) => dim(`→ ${item}`)
   ): PrintableOutput {
     if (Array.isArray(text)) {
-      return text.map(item => {
+      return text.map((item) => {
         if (Array.isArray(item)) {
           return this.format(item, formatter);
         } else {
@@ -92,7 +92,7 @@ export class TaskWrapper<C = any, P = any> {
     }
 
     if (Array.isArray(text)) {
-      text.forEach(item => {
+      text.forEach((item) => {
         if (Array.isArray(item)) {
           this.print(item, level + 1);
         } else {
@@ -143,7 +143,7 @@ export class TaskWrapper<C = any, P = any> {
       (await this.task.abort(this.sharedCtx, this.params, this))
     ) {
       this.abort();
-      this.spinner.text = chalk.yellow(`[exit] ${this.title}`);
+      this.spinner.text = yellow(`[exit] ${this.title}`);
       this.spinner.warn();
       return;
     }
@@ -158,7 +158,7 @@ export class TaskWrapper<C = any, P = any> {
       );
 
       if (this.isAborted) {
-        this.spinner.text = chalk.yellow(`[exit] ${this.title}`);
+        this.spinner.text = yellow(`[exit] ${this.title}`);
         this.spinner.warn();
       } else {
         this.spinner.text = this.title;

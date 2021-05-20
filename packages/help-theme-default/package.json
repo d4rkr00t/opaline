@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "@types/node": "^12.6.9",
-    "chalk": "^3.0.0"
+    "colorette": "^1.2.2"
   }
 }
