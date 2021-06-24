@@ -83,13 +83,14 @@ function singleCommandCliHelp(args) {
     help: helpFlag,
     version: versionFlag,
   };
+  let meta = (command && command.meta) || {};
   return args.helpFormatter({
     cliName: config.cliName,
     cliVersion: config.cliVersion,
     cliDescription: config.cliDescription,
     options: formatOptions(options),
-    usage: command.meta.usage,
-    examples: command.meta.examples || [],
+    usage: meta.usage,
+    examples: meta.examples || [],
   });
 }
 exports.singleCommandCliHelp = singleCommandCliHelp;

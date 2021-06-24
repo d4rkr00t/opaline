@@ -27,17 +27,17 @@ export function multiCommandCliHelp(args: HelpCommandArgs): PrintableOutput {
   let options = {
     ...(defaultCommand && defaultCommand.meta.options),
     help: helpFlag,
-    version: versionFlag
+    version: versionFlag,
   };
 
   function createSubCommandsHelp() {
     return Object.keys(commands)
-      .filter(c => c !== "index")
+      .filter((c) => c !== "index")
       .reduce<Array<HelpCommandData>>((acc, commandName) => {
         let command = commands[commandName];
         acc.push({
           name: commandName,
-          title: command.meta.title
+          title: command.meta.title,
         });
         return acc;
       }, []);
@@ -50,7 +50,7 @@ export function multiCommandCliHelp(args: HelpCommandArgs): PrintableOutput {
     commands: createSubCommandsHelp(),
     options: formatOptions(options),
     usage: defaultCommand && defaultCommand.meta.usage,
-    examples: (defaultCommand && defaultCommand.meta.examples) || []
+    examples: (defaultCommand && defaultCommand.meta.examples) || [],
   });
 }
 
@@ -69,7 +69,7 @@ export function subCommandHelp(args: HelpCommandArgs): PrintableOutput {
     description: command.meta.description,
     options: formatOptions(command.meta.options || {}),
     usage: command.meta.usage,
-    examples: command.meta.examples || []
+    examples: command.meta.examples || [],
   });
 
   if (!help.length) {
@@ -89,16 +89,17 @@ export function singleCommandCliHelp(args: HelpCommandArgs): PrintableOutput {
   let options = {
     ...(command && command.meta.options),
     help: helpFlag,
-    version: versionFlag
+    version: versionFlag,
   };
+  let meta = (command && command.meta) || {};
 
   return args.helpFormatter({
     cliName: config.cliName,
     cliVersion: config.cliVersion,
     cliDescription: config.cliDescription,
     options: formatOptions(options),
-    usage: command.meta.usage,
-    examples: command.meta.examples || []
+    usage: meta.usage,
+    examples: meta.examples || [],
   });
 }
 
@@ -109,11 +110,11 @@ type HelpCommandArgs = {
 };
 
 let helpFlag = {
-  title: "Output usage information"
+  title: "Output usage information",
 };
 
 let versionFlag = {
-  title: "Output the version number"
+  title: "Output the version number",
 };
 
 export function formatOptions(options: any): Array<HelpOptionData> {
