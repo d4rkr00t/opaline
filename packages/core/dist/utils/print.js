@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.printInfo = exports.printError = exports.printWarning = exports.print = exports.indent = void 0;
+exports.printInfo =
+  exports.printError =
+  exports.printWarning =
+  exports.print =
+  exports.indent =
+    void 0;
 const colorette_1 = require("colorette");
 function indent(text, level = 1) {
   return `${"".padStart(level * 2, " ")}${text}`;
@@ -21,7 +26,7 @@ function print(text, level = 0) {
 }
 exports.print = print;
 function printWarning(text) {
-  print(colorette_1.yellow("[WARN] ") + text);
+  print((0, colorette_1.yellow)("[WARN] ") + text);
 }
 exports.printWarning = printWarning;
 function printError(err, verbose = false) {
@@ -29,7 +34,7 @@ function printError(err, verbose = false) {
     print(err);
   } else {
     print(
-      [colorette_1.red(`${err.message}`)]
+      [(0, colorette_1.red)(`${err.message}`)]
         .concat(err.hint ? err.hint : [])
         .concat(verbose && err.stack ? err.stack.split("\n") : [])
     );
@@ -37,6 +42,6 @@ function printError(err, verbose = false) {
 }
 exports.printError = printError;
 function printInfo(text) {
-  print(colorette_1.blue("[INFO] ") + text);
+  print((0, colorette_1.blue)("[INFO] ") + text);
 }
 exports.printInfo = printInfo;

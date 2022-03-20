@@ -171,7 +171,7 @@ export class TaskWrapper<C = any, P = any> {
     } catch (e) {
       this.spinner.stop();
       if (this.debug) {
-        console.log(e.stack);
+        console.log((e as Error).stack);
       }
       throw e;
     }

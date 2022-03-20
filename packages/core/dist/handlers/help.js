@@ -1,17 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.formatOptions = exports.singleCommandCliHelp = exports.subCommandHelp = exports.multiCommandCliHelp = exports.helpCommand = void 0;
+exports.formatOptions =
+  exports.singleCommandCliHelp =
+  exports.subCommandHelp =
+  exports.multiCommandCliHelp =
+  exports.helpCommand =
+    void 0;
 const print_1 = require("../utils/print");
 /**
  * Help command handler
  */
 function helpCommand(args) {
   if (args.config.isSingleCommand) {
-    print_1.print(singleCommandCliHelp(args));
+    (0, print_1.print)(singleCommandCliHelp(args));
   } else if (args.commandName && args.commandName !== "index") {
-    print_1.print(subCommandHelp(args));
+    (0, print_1.print)(subCommandHelp(args));
   } else {
-    print_1.print(multiCommandCliHelp(args));
+    (0, print_1.print)(multiCommandCliHelp(args));
   }
 }
 exports.helpCommand = helpCommand;

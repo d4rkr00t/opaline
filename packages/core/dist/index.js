@@ -5,7 +5,12 @@ var __importDefault =
     return mod && mod.__esModule ? mod : { default: mod };
   };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.printWarning = exports.printInfo = exports.printError = exports.print = exports.OpalineError = void 0;
+exports.printWarning =
+  exports.printInfo =
+  exports.printError =
+  exports.print =
+  exports.OpalineError =
+    void 0;
 const help_theme_default_1 = __importDefault(
   require("@opaline/help-theme-default")
 );
@@ -67,11 +72,11 @@ async function opaline(rawArgv, config) {
     return error(`Need to add at least 1 command...`);
   }
   // # 1
-  if (args_1.isVersion(argv) && !isCommand) {
+  if ((0, args_1.isVersion)(argv) && !isCommand) {
     return version(config.cliVersion);
   }
   // # 2
-  else if (args_1.isHelp(argv)) {
+  else if ((0, args_1.isHelp)(argv)) {
     if (!isCommand) {
       return help({
         helpFormatter,
@@ -153,7 +158,7 @@ async function run({ config, commandName, argv, isCommand }) {
       .load()
       .apply(null, command.meta.shouldPassInputs ? [inputs, ...args] : args);
   } catch (error) {
-    print_1.printError(error);
+    (0, print_1.printError)(error);
     if (error instanceof error_1.OpalineError) {
       process.exit(error.code);
     } else {
@@ -166,11 +171,11 @@ function version(v) {
   process.exit(0);
 }
 function error(msg) {
-  print_1.printError(msg);
+  (0, print_1.printError)(msg);
   process.exit(1);
 }
 function help({ helpFormatter, config, commandName }) {
-  help_1.helpCommand({
+  (0, help_1.helpCommand)({
     helpFormatter,
     config,
     commandName,

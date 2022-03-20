@@ -234,4 +234,5 @@ exports.OP004_errorEmptyCommandsFolder = OP004_errorEmptyCommandsFolder;
 exports.OP005_errorSrcEqDest = OP005_errorSrcEqDest;
 exports.OP006_errorProjectNameIsRequired = OP006_errorProjectNameIsRequired;
 exports.OP007_errorProjectFolderExists = OP007_errorProjectFolderExists;
-exports.OP008_warningInputsNotArrayOrString = OP008_warningInputsNotArrayOrString;
+exports.OP008_warningInputsNotArrayOrString =
+  OP008_warningInputsNotArrayOrString;

@@ -4,12 +4,19 @@ var __createBinding =
   (Object.create
     ? function (o, m, k, k2) {
         if (k2 === undefined) k2 = k;
-        Object.defineProperty(o, k2, {
-          enumerable: true,
-          get: function () {
-            return m[k];
-          },
-        });
+        var desc = Object.getOwnPropertyDescriptor(m, k);
+        if (
+          !desc ||
+          ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)
+        ) {
+          desc = {
+            enumerable: true,
+            get: function () {
+              return m[k];
+            },
+          };
+        }
+        Object.defineProperty(o, k2, desc);
       }
     : function (o, m, k, k2) {
         if (k2 === undefined) k2 = k;
@@ -47,7 +54,9 @@ function prompt(message) {
       output: process.stdout,
     });
     rl.question(
-      colorette_1.blue(`❯ ${message} ${colorette_1.dim("[yes|y|n|no]")}: `),
+      (0, colorette_1.blue)(
+        `❯ ${message} ${(0, colorette_1.dim)("[yes|y|n|no]")}: `
+      ),
       (answer) => {
         rl.close();
         if (answer === "y" || answer === "yes") {
@@ -60,10 +69,10 @@ function prompt(message) {
 }
 exports.prompt = prompt;
 function badgeRed(text) {
-  return colorette_1.bgRed(colorette_1.black(` ${text} `));
+  return (0, colorette_1.bgRed)((0, colorette_1.black)(` ${text} `));
 }
 exports.badgeRed = badgeRed;
 function badgeGreen(text) {
-  return colorette_1.bgGreen(colorette_1.black(` ${text} `));
+  return (0, colorette_1.bgGreen)((0, colorette_1.black)(` ${text} `));
 }
 exports.badgeGreen = badgeGreen;

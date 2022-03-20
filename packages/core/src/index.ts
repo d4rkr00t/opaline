@@ -139,7 +139,7 @@ async function run({
     await command
       .load()
       .apply(null, command.meta.shouldPassInputs ? [inputs, ...args] : args);
-  } catch (error) {
+  } catch (error: any) {
     printError(error);
 
     if (error instanceof OpalineError) {

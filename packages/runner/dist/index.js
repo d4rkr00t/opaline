@@ -24,21 +24,23 @@ class TaskWrapper {
       typeof task.title === "string"
         ? task.title
         : task.title(this.sharedCtx, params);
-    this.spinner = ora_1.default(this._title);
+    this.spinner = (0, ora_1.default)(this._title);
   }
   skip() {
-    this.spinner.info(colorette_1.dim(`[skip] ${this.title}`));
+    this.spinner.info((0, colorette_1.dim)(`[skip] ${this.title}`));
   }
   abort() {
     this.isAborted = true;
   }
   progress(text) {
-    this.spinner.text = `${this.title} ${colorette_1.dim("[" + text + "]")}`;
+    this.spinner.text = `${this.title} ${(0, colorette_1.dim)(
+      "[" + text + "]"
+    )}`;
   }
   stopAndClearSpinner() {
     this.spinner.stop();
   }
-  format(text, formatter = (item) => colorette_1.dim(`→ ${item}`)) {
+  format(text, formatter = (item) => (0, colorette_1.dim)(`→ ${item}`)) {
     if (Array.isArray(text)) {
       return text.map((item) => {
         if (Array.isArray(item)) {
@@ -77,7 +79,7 @@ class TaskWrapper {
   }
   prompt(text) {
     this.spinner.stop();
-    return console_1.prompt(text).then((result) => {
+    return (0, console_1.prompt)(text).then((result) => {
       this.spinner.start();
       return result;
     });
@@ -102,7 +104,7 @@ class TaskWrapper {
       (await this.task.abort(this.sharedCtx, this.params, this))
     ) {
       this.abort();
-      this.spinner.text = colorette_1.yellow(`[exit] ${this.title}`);
+      this.spinner.text = (0, colorette_1.yellow)(`[exit] ${this.title}`);
       this.spinner.warn();
       return;
     }
@@ -114,7 +116,7 @@ class TaskWrapper {
         this
       );
       if (this.isAborted) {
-        this.spinner.text = colorette_1.yellow(`[exit] ${this.title}`);
+        this.spinner.text = (0, colorette_1.yellow)(`[exit] ${this.title}`);
         this.spinner.warn();
       } else {
         this.spinner.text = this.title;

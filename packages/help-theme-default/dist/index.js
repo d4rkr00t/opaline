@@ -17,24 +17,24 @@ function formatSubCommandHelpData(help) {
     output.push("", help.title);
   }
   if (help.usage) {
-    output.push("", colorette_1.bold("USAGE"), [help.usage]);
+    output.push("", (0, colorette_1.bold)("USAGE"), [help.usage]);
   }
   if (help.options && help.options.length) {
     output.push(
       "",
-      colorette_1.bold("OPTIONS"),
+      (0, colorette_1.bold)("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
         (opt) => `${opt[0]}     ${opt[1]}`
       )
     );
   }
   if (help.description) {
-    output.push("", colorette_1.bold("DESCRIPTION"), [
+    output.push("", (0, colorette_1.bold)("DESCRIPTION"), [
       capFirst(help.description),
     ]);
   }
   if (help.examples && help.examples.length) {
-    output.push("", colorette_1.bold("EXAMPLES"), help.examples);
+    output.push("", (0, colorette_1.bold)("EXAMPLES"), help.examples);
   }
   return output;
 }
@@ -43,24 +43,24 @@ function formatHelpData(help) {
   if (help.cliDescription) {
     output.push("", help.cliDescription);
   }
-  output.push("", colorette_1.bold("VERSION"), [
+  output.push("", (0, colorette_1.bold)("VERSION"), [
     `${help.cliName}/${help.cliVersion}`,
   ]);
   if (help.usage) {
-    output.push("", colorette_1.bold("USAGE"), [help.usage]);
+    output.push("", (0, colorette_1.bold)("USAGE"), [help.usage]);
   }
   if (help.commands && help.commands.length) {
     output.push(
       "",
-      colorette_1.bold("COMMANDS"),
+      (0, colorette_1.bold)("COMMANDS"),
       formatList(
         help.commands.map((c) => [c.name, capFirst(c.title || "")])
       ).map((c) => `${c[0]}     ${c[1]}`),
       "",
       join(
         [
-          colorette_1.yellow("> NOTE:"),
-          colorette_1.dim(
+          (0, colorette_1.yellow)("> NOTE:"),
+          (0, colorette_1.dim)(
             `To view the usage information for a specific command, run '${help.cliName} [COMMAND] --help'`
           ),
         ],
@@ -71,14 +71,14 @@ function formatHelpData(help) {
   if (help.options && help.options.length) {
     output.push(
       "",
-      colorette_1.bold("OPTIONS"),
+      (0, colorette_1.bold)("OPTIONS"),
       formatList(help.options.map(formatOption)).map(
         (opt) => `${opt[0]}     ${opt[1]}`
       )
     );
   }
   if (help.examples && help.examples.length) {
-    output.push("", colorette_1.bold("EXAMPLES"), help.examples);
+    output.push("", (0, colorette_1.bold)("EXAMPLES"), help.examples);
   }
   return output;
 }
@@ -105,8 +105,10 @@ function formatOption(option) {
     join(
       [
         capFirst(option.title || ""),
-        option.type ? colorette_1.dim(`[${option.type}]`) : "",
-        option.default ? colorette_1.dim(`[default: ${option.default}]`) : "",
+        option.type ? (0, colorette_1.dim)(`[${option.type}]`) : "",
+        option.default
+          ? (0, colorette_1.dim)(`[default: ${option.default}]`)
+          : "",
       ],
       " "
     ),
