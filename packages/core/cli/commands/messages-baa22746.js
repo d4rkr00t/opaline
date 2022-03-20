@@ -165,7 +165,7 @@ function MSG_buildSuccess(
     "",
     `${colorette.green("Successfully compiled into")} ${colorette.blue(
       `"${outputPath}"`
-    )} ${colorette.green("folder.")}}`,
+    )} ${colorette.green("folder.")}`,
   ];
 
   message.push("", colorette.bgMagenta(colorette.black(" OUTPUTS ")), "");

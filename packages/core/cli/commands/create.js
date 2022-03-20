@@ -9,7 +9,7 @@ var colorette = require("colorette");
 var mkdirp = require("mkdirp");
 var core = require("@opaline/core");
 var runner = require("@opaline/runner");
-var messages = require("./messages-6fb0911a.js");
+var messages = require("./messages-b3261a51.js");
 
 function _interopDefaultLegacy(e) {
   return e && typeof e === "object" && "default" in e ? e : { default: e };

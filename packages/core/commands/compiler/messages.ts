@@ -146,7 +146,7 @@ export function MSG_buildSuccess(
     "",
     `${green("Successfully compiled into")} ${blue(`"${outputPath}"`)} ${green(
       "folder."
-    )}}`,
+    )}`,
   ];
 
   message.push("", bgMagenta(black(" OUTPUTS ")), "");
@@ -175,7 +175,7 @@ export function MSG_watchStarted(
   return [
     `${green(`${greenBadge("DEV MODE")} Watching commands`)} ${gray(
       "[+all of their dependencies]"
-    )}}`,
+    )}`,
     "",
     ...commands.map(
       (command) => `${gray("– " + relativePathToCommands)}${magenta(command)}`

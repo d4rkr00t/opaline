@@ -10,7 +10,7 @@ var resolve = require("@rollup/plugin-node-resolve");
 var rimraf = require("rimraf");
 var core = require("@opaline/core");
 var readPkgUp = require("read-pkg-up");
-var messages = require("./messages-6fb0911a.js");
+var messages = require("./messages-baa22746.js");
 var parser = require("@babel/parser");
 var traverse = require("@babel/traverse");
 var commentParser = require("comment-parser");
@@ -508,7 +508,6 @@ class Compiler {
     this.watcher = rollup__namespace.watch([this.createBundlerConfig()]);
     this.watcher.on("event", (event) => {
       if (event.code === "BUNDLE_END") {
-        console.log(2);
         this.onBundled();
       }
     });
