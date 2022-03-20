@@ -123,17 +123,16 @@ let updatePackageJson: Task<TaskCtx, TaskParams> = {
       "@opaline/core": "*",
     };
 
+    pkgJson.devDependencies = {
+      "lint-staged": "*",
+      "pre-commit": "*",
+      prettier: "*",
+    };
+
     if (ctx.isTS) {
       pkgJson.scripts.typecheck = "tsc";
-
-      pkgJson.devDependencies = {
-        typescript: "*",
-      };
+      pkgJson.devDependencies["typescript"] = "*";
     }
-
-    pkgJson.devDependencies["lint-staged"] = "*";
-    pkgJson.devDependencies["pre-commit"] = "*";
-    pkgJson.devDependencies["prettier"] = "*";
 
     await writeFile(pkgJsonPath, JSON.stringify(pkgJson, null, 2), "utf8");
   },
