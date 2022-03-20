@@ -1,5 +1,11 @@
 # @opaline/help-theme-default
 
+## 0.0.4
+
+### Patch Changes
+
+- b4d74e1: fix extra } in some of the commands output
+
 ## 0.0.3
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@opaline/core",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "main": "./dist/index.js",
   "description": "Opaline CLI Tools Framework",
   "keywords": [],
@@ -20,7 +20,7 @@
   "dependencies": {
     "@babel/parser": "^7.17.8",
     "@babel/traverse": "^7.17.3",
-    "@opaline/help-theme-default": "^0.0.3",
+    "@opaline/help-theme-default": "^0.0.4",
     "@opaline/runner": "^0.1.2",
     "@types/babel__traverse": "^7.14.2",
     "@types/doctrine": "^0.0.5",
