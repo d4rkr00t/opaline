@@ -1,5 +1,13 @@
 # @opaline/core
 
+## 0.5.5
+
+### Patch Changes
+
+- b4d74e1: fix extra } in some of the commands output
+- Updated dependencies [b4d74e1]
+  - @opaline/help-theme-default@0.0.4
+
 ## 0.5.4
 
 ### Patch Changes
