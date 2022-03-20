@@ -1,5 +1,12 @@
 # @opaline/runner
 
+## 0.1.2
+
+### Patch Changes
+
+- d605fd2: update dependencies of @opaline/runner
+- 370c233: update dev dependencies
+
 ## 0.1.1
 
 ### Patch Changes
