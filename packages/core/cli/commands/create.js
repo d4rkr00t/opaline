@@ -9,15 +9,43 @@ var colorette = require("colorette");
 var mkdirp = require("mkdirp");
 var core = require("@opaline/core");
 var runner = require("@opaline/runner");
-var messages = require("./messages-841eed31.js");
+var messages = require("./messages-6fb0911a.js");
 
 function _interopDefaultLegacy(e) {
   return e && typeof e === "object" && "default" in e ? e : { default: e };
 }
 
+function _interopNamespace(e) {
+  if (e && e.__esModule) return e;
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== "default") {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(
+          n,
+          k,
+          d.get
+            ? d
+            : {
+                enumerable: true,
+                get: function () {
+                  return e[k];
+                },
+              }
+        );
+      }
+    });
+  }
+  n["default"] = e;
+  return Object.freeze(n);
+}
+
+var fs__namespace = /*#__PURE__*/ _interopNamespace(fs);
+var path__namespace = /*#__PURE__*/ _interopNamespace(path);
 var mkdirp__default = /*#__PURE__*/ _interopDefaultLegacy(mkdirp);
 
-let writeFile = util.promisify(fs.writeFile);
+let writeFile = util.promisify(fs__namespace.writeFile);
 let pexec = util.promisify(cp.exec);
 
 /**
@@ -44,7 +72,10 @@ async function create([name] = []) {
 
 let exist = async (file) => {
   try {
-    await util.promisify(fs.access)(file, fs.constants.F_OK);
+    await util.promisify(fs__namespace.access)(
+      file,
+      fs__namespace.constants.F_OK
+    );
     return false;
   } catch (e) {
     return true;
@@ -54,7 +85,7 @@ let exist = async (file) => {
 let initialize = {
   title: "Initialzing generator...",
   async task(ctx, { name }, runner) {
-    let dir = path.join(process.cwd(), name);
+    let dir = path__namespace.join(process.cwd(), name);
     if (!(await exist(dir))) {
       throw core.OpalineError.fromArray(
         messages.OP007_errorProjectFolderExists(dir)
@@ -86,7 +117,7 @@ let initialize = {
 
     // Create context for the following tasks
     ctx.dir = dir;
-    ctx.commandsDir = path.join(dir, "commands");
+    ctx.commandsDir = path__namespace.join(dir, "commands");
     ctx.name = name;
     ctx.bin = responses.bin;
     ctx.isTS = responses.ists;
@@ -111,11 +142,11 @@ let npmInit = {
 let updatePackageJson = {
   title: "Adding dependencies and scripts...",
   async task(ctx) {
-    let pkgJsonPath = path.join(ctx.dir, "package.json");
+    let pkgJsonPath = path__namespace.join(ctx.dir, "package.json");
     let pkgJson = require(pkgJsonPath);
 
     pkgJson.bin = {
-      [ctx.bin]: path.join(".", "dist", "cli.js"),
+      [ctx.bin]: path__namespace.join(".", "dist", "cli.js"),
     };
 
     pkgJson.scripts.build = "opaline build";
@@ -152,7 +183,10 @@ let bootstrapFiles = {
   async task(ctx) {
     // create index.ts or index.js with a hello world command
     await writeFile(
-      path.join(ctx.commandsDir, "index." + (ctx.isTS ? "ts" : "js")),
+      path__namespace.join(
+        ctx.commandsDir,
+        "index." + (ctx.isTS ? "ts" : "js")
+      ),
       ctx.isTS ? commandFileTemplateTS : commandFileTemplateJS,
       "utf8"
     );
@@ -160,7 +194,7 @@ let bootstrapFiles = {
     // create tsconfig if needed...
     if (ctx.isTS) {
       await writeFile(
-        path.join(ctx.dir, "tsconfig.json"),
+        path__namespace.join(ctx.dir, "tsconfig.json"),
         tsconfigTemplate,
         "utf8"
       );

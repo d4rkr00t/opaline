@@ -3,6 +3,34 @@
 var path = require("path");
 var colorette = require("colorette");
 
+function _interopNamespace(e) {
+  if (e && e.__esModule) return e;
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== "default") {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(
+          n,
+          k,
+          d.get
+            ? d
+            : {
+                enumerable: true,
+                get: function () {
+                  return e[k];
+                },
+              }
+        );
+      }
+    });
+  }
+  n["default"] = e;
+  return Object.freeze(n);
+}
+
+var path__namespace = /*#__PURE__*/ _interopNamespace(path);
+
 //#region Error Messages
 function OP001_errorBinIsEmpty() {
   return [
@@ -120,10 +148,13 @@ function MSG_buildSuccess(
   output,
   endTime
 ) {
-  let outputPath = commandsOutputPath.replace(projectRootDir + path.sep, "");
+  let outputPath = commandsOutputPath.replace(
+    projectRootDir + path__namespace.sep,
+    ""
+  );
   let relativeBinOutputPath = binOutputPath
-    .replace(projectRootDir + path.sep, "")
-    .split(path.sep);
+    .replace(projectRootDir + path__namespace.sep, "")
+    .split(path__namespace.sep);
   let binFileName = relativeBinOutputPath.pop();
   let message = [
     colorette.green(
@@ -140,16 +171,18 @@ function MSG_buildSuccess(
   message.push("", colorette.bgMagenta(colorette.black(" OUTPUTS ")), "");
   message.push(
     `${colorette.gray(
-      "– " + relativeBinOutputPath.join(path.sep) + path.sep
+      "– " +
+        relativeBinOutputPath.join(path__namespace.sep) +
+        path__namespace.sep
     )}${colorette.magenta(binFileName)}`
   );
 
   for (let bundle of output.output) {
     if (bundle.type === "chunk" && bundle.isEntry) {
       message.push(
-        `${colorette.gray("– " + outputPath + path.sep)}${colorette.magenta(
-          bundle.fileName
-        )}`
+        `${colorette.gray(
+          "– " + outputPath + path__namespace.sep
+        )}${colorette.magenta(bundle.fileName)}`
       );
     }
   }

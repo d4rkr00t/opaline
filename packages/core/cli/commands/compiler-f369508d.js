@@ -10,7 +10,7 @@ var resolve = require("@rollup/plugin-node-resolve");
 var rimraf = require("rimraf");
 var core = require("@opaline/core");
 var readPkgUp = require("read-pkg-up");
-var messages = require("./messages-841eed31.js");
+var messages = require("./messages-6fb0911a.js");
 var parser = require("@babel/parser");
 var traverse = require("@babel/traverse");
 var commentParser = require("comment-parser");
@@ -20,12 +20,44 @@ function _interopDefaultLegacy(e) {
   return e && typeof e === "object" && "default" in e ? e : { default: e };
 }
 
+function _interopNamespace(e) {
+  if (e && e.__esModule) return e;
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== "default") {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(
+          n,
+          k,
+          d.get
+            ? d
+            : {
+                enumerable: true,
+                get: function () {
+                  return e[k];
+                },
+              }
+        );
+      }
+    });
+  }
+  n["default"] = e;
+  return Object.freeze(n);
+}
+
+var path__namespace = /*#__PURE__*/ _interopNamespace(path);
+var fs__namespace = /*#__PURE__*/ _interopNamespace(fs);
+var chokidar__namespace = /*#__PURE__*/ _interopNamespace(chokidar);
+var rollup__namespace = /*#__PURE__*/ _interopNamespace(rollup);
 var sucrase__default = /*#__PURE__*/ _interopDefaultLegacy(sucrase);
 var resolve__default = /*#__PURE__*/ _interopDefaultLegacy(resolve);
 var rimraf__default = /*#__PURE__*/ _interopDefaultLegacy(rimraf);
 var readPkgUp__default = /*#__PURE__*/ _interopDefaultLegacy(readPkgUp);
+var parser__namespace = /*#__PURE__*/ _interopNamespace(parser);
 var traverse__default = /*#__PURE__*/ _interopDefaultLegacy(traverse);
 var commentParser__default = /*#__PURE__*/ _interopDefaultLegacy(commentParser);
+var cp__namespace = /*#__PURE__*/ _interopNamespace(cp);
 
 async function readPackageJson(cwd) {
   let pkgJson = await readPkgUp__default["default"]({ cwd, normalize: true });
@@ -37,7 +69,7 @@ async function readPackageJson(cwd) {
 
 async function getProjectInfo(cwd) {
   let pkgJson = await readPackageJson(cwd);
-  let projectRootDir = path.dirname(pkgJson.path);
+  let projectRootDir = path__namespace.dirname(pkgJson.path);
 
   if (!pkgJson.packageJson.bin) {
     throw core.OpalineError.fromArray(messages.OP001_errorBinIsEmpty());
@@ -47,14 +79,17 @@ async function getProjectInfo(cwd) {
     typeof pkgJson.packageJson.bin === "string"
       ? pkgJson.packageJson.name
       : Object.keys(pkgJson.packageJson.bin)[0];
-  let binOutputPath = path.join(
+  let binOutputPath = path__namespace.join(
     projectRootDir,
     typeof pkgJson.packageJson.bin === "string"
       ? pkgJson.packageJson.bin
       : pkgJson.packageJson.bin[cliName]
   );
-  let commandsOutputPath = path.join(path.dirname(binOutputPath), "commands");
-  let commandsDirPath = path.join(
+  let commandsOutputPath = path__namespace.join(
+    path__namespace.dirname(binOutputPath),
+    "commands"
+  );
+  let commandsDirPath = path__namespace.join(
     projectRootDir,
     (pkgJson["@opaline"] && pkgJson["@opaline"].root) || "./commands"
   );
@@ -75,7 +110,7 @@ async function getProjectInfo(cwd) {
   };
 }
 
-let readFile = util.promisify(fs.readFile);
+let readFile = util.promisify(fs__namespace.readFile);
 
 async function parseCommands(project, commands) {
   return await Promise.all(
@@ -85,7 +120,7 @@ async function parseCommands(project, commands) {
 
 async function parseSingleCommand(project, command) {
   let [commandName] = command.split(".");
-  let commandPath = path.join(project.commandsDirPath, command);
+  let commandPath = path__namespace.join(project.commandsDirPath, command);
   let commandFileContent = await readFile(commandPath, "utf8");
   let meta = getMetaFromJSDoc({
     jsdocComment: getCommandJSDoc(commandFileContent),
@@ -99,7 +134,7 @@ async function parseSingleCommand(project, command) {
 }
 
 function getCommandJSDoc(content) {
-  let ast = parser.parse(content, {
+  let ast = parser__namespace.parse(content, {
     sourceType: "module",
     plugins: ["typescript", "jsx"],
   });
@@ -223,8 +258,8 @@ function verify$InputsType(tag, commandPath) {
 }
 
 function createEntryPoint({ project, commandsData }) {
-  let pkgJsonRelativePath = path.relative(
-    path.dirname(project.binOutputPath),
+  let pkgJsonRelativePath = path__namespace.relative(
+    path__namespace.dirname(project.binOutputPath),
     project.pkgJson.path
   );
   let mainCommand = commandsData.find(
@@ -279,15 +314,15 @@ cli(process.argv, config);
 function getRelativeCommandPath(binOutputPath, commandName) {
   return (
     "." +
-    path.sep +
-    path.relative(
+    path__namespace.sep +
+    path__namespace.relative(
       binOutputPath,
-      path.join(binOutputPath, "commands", commandName)
+      path__namespace.join(binOutputPath, "commands", commandName)
     )
   );
 }
 
-let _exec = util.promisify(cp.exec);
+let _exec = util.promisify(cp__namespace.exec);
 
 async function link(exec = _exec) {
   let bin = "npm";
@@ -298,9 +333,9 @@ async function link(exec = _exec) {
   return await exec(`${bin} link`);
 }
 
-let readdir = util.promisify(fs.readdir);
-let writeFile = util.promisify(fs.writeFile);
-let chmod = util.promisify(fs.chmod);
+let readdir = util.promisify(fs__namespace.readdir);
+let writeFile = util.promisify(fs__namespace.writeFile);
+let chmod = util.promisify(fs__namespace.chmod);
 let rm = util.promisify(rimraf__default["default"]);
 
 class Compiler {
@@ -374,7 +409,9 @@ class Compiler {
   }
 
   getEntryPoints(commands) {
-    return commands.map((c) => path.join(this.project.commandsDirPath, c));
+    return commands.map((c) =>
+      path__namespace.join(this.project.commandsDirPath, c)
+    );
   }
 
   __init() {
@@ -405,7 +442,7 @@ class Compiler {
   async build() {
     let startTime = process.hrtime();
     let config = this.createBundlerConfig();
-    let bundle = await rollup.rollup(config);
+    let bundle = await rollup__namespace.rollup(config);
 
     try {
       // Clean up old bundles
@@ -436,7 +473,7 @@ class Compiler {
 
     // Watch other FS changes that rollup watcher is not able to pick up.
     // E.g. creating/removing new entry points.
-    let watcher = chokidar.watch(this.project.commandsDirPath, {
+    let watcher = chokidar__namespace.watch(this.project.commandsDirPath, {
       ignoreInitial: true,
     });
     watcher
@@ -453,9 +490,9 @@ class Compiler {
   async createWatchBundler() {
     let relativePathToCommands =
       this.project.commandsDirPath.replace(
-        this.project.projectRootDir + path.sep,
+        this.project.projectRootDir + path__namespace.sep,
         ""
-      ) + path.sep;
+      ) + path__namespace.sep;
 
     if (this.watcher) {
       this.watcher.close();
@@ -468,9 +505,10 @@ class Compiler {
       );
     }
 
-    this.watcher = rollup.watch([this.createBundlerConfig()]);
+    this.watcher = rollup__namespace.watch([this.createBundlerConfig()]);
     this.watcher.on("event", (event) => {
       if (event.code === "BUNDLE_END") {
+        console.log(2);
         this.onBundled();
       }
     });
