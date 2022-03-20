@@ -1,5 +1,21 @@
 # @opaline/core
 
+## 0.5.4
+
+### Patch Changes
+
+- d605fd2: update dependencies of @opaline/runner
+- 370c233: update dev dependencies
+- a8d005c: devDependencies property doesn't exist when assigning dependencies
+- 3aa636a: update dependnecies
+- a8d005c: devDependencies property doesn't exist when assigning dependencies
+- 8874c76: update @opaline/help-theme-default dependencies
+- Updated dependencies [d605fd2]
+- Updated dependencies [370c233]
+- Updated dependencies [8874c76]
+  - @opaline/runner@0.1.2
+  - @opaline/help-theme-default@0.0.3
+
 ## 0.5.3
 
 ### Patch Changes
