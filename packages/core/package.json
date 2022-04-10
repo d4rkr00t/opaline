@@ -31,7 +31,7 @@
     "comment-parser": "^0.7.4",
     "doctrine": "^3.0.0",
     "enquirer": "^2.3.6",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "minimist-options": "^4.1.0",
     "mkdirp": "^1.0.4",
     "rollup": "^2.70.1",
